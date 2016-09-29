@@ -50,19 +50,19 @@ private:
 	}
 
 public:
-	void insert(T ele, decltype(Dims)... args)
+	void set(T ele, decltype(Dims)... args)
 	{
 		dim_t i = std::make_tuple(args...);
 		dim_bound_check(dim_tuple, i);
-		container.insert(std::make_pair(i, ele));
+		container.insert_or_assign(i, ele);
 	}
 
 	template<decltype(Dims)... Args>
-	void insert(T ele)
+	void set(T ele)
 	{
 		static_assert(dim_bound_check_static<Dims...>(Args...),"Matrix bound check failed");
 		dim_t i = std::make_tuple(Args...);
-		container.insert(std::make_pair(i, ele));
+		container.insert_or_assign(i, ele);
 	}
 };
 
