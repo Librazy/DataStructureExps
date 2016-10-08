@@ -1,5 +1,4 @@
 #pragma once
-#include <cstddef>
 #include <map>
 #include <tuple>
 #include <functional>
@@ -7,6 +6,7 @@
 #include <utility> 
 #include <cassert>
 #include <vector>
+#include <iostream>
 
 #ifndef SparseMatrix_defined
 
