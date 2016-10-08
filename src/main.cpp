@@ -6,7 +6,7 @@ int main()
 {
 	//++Start SparseMatrix2 test
 	{
-		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } }); Shall Not Compile
+		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
 
 		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{0,0,4 } });
 
@@ -23,7 +23,7 @@ int main()
 		assert((mat3.get<1, 0>() == 28));
 		assert((mat4.get<0, 0>() == 14));
 		assert((mat4.get<0, 1>() == 28));
-		//assert((mat4.get<0, 2>() == 28)); Shall Not Compile
+		//assert((mat4.get<0, 2>() == 28)); //将会触发编译器报错：Matrix bound check failed
 
 		auto mat5 = SparseMatrix2<int, 2, 3>();
 		mat5.set<0, 0>(1);
