@@ -1,4 +1,4 @@
-#include <cassert>
+ï»¿#include <cassert>
 #include <sstream>
 #include "SparseMatrix.hpp"
 
@@ -6,7 +6,7 @@ int main()
 {
 	//++Start SparseMatrix2 test
 	{
-		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //½«»á´¥·¢±àÒëÆ÷±¨´í£ºCol size doesn't match
+		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //å°†ä¼šè§¦å‘ç¼–è¯‘å™¨æŠ¥é”™ï¼šCol size doesn't match
 
 		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{0,0,4 } });
 
@@ -23,7 +23,7 @@ int main()
 		assert((mat3.get<1, 0>() == 28));
 		assert((mat4.get<0, 0>() == 14));
 		assert((mat4.get<0, 1>() == 28));
-		//assert((mat4.get<0, 2>() == 28)); //½«»á´¥·¢±àÒëÆ÷±¨´í£ºMatrix bound check failed
+		//assert((mat4.get<0, 2>() == 28)); //å°†ä¼šè§¦å‘ç¼–è¯‘å™¨æŠ¥é”™ï¼šMatrix bound check failed
 
 		auto mat5 = SparseMatrix2<int, 2, 3>();
 		mat5.set<0, 0>(1);

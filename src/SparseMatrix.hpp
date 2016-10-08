@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #ifndef SparseMatrix_defined
 // ReSharper disable CppUnusedIncludeDirective
@@ -19,44 +19,44 @@ class SparseMatrix2;
 template <typename T, size_t DimA, size_t DimB>
 std::ostream& operator<< (std::ostream& out, const SparseMatrix2<T, DimA, DimB>& d) noexcept;
 
-/// @brief ¶şÎ¬Ï¡Êè¾ØÕó
+/// @brief äºŒç»´ç¨€ç–çŸ©é˜µ
 /// @details
-/// ¶şÎ¬Ï¡Êè¾ØÕó£¬ÊµÏÖÁË¾ØÕóµÄ»ù±¾²Ù×÷
-/// @tparam T ¾ØÕóÔªËØÀàĞÍ
-/// @tparam DimA ¾ØÕóĞĞÊı
-/// @tparam DimB ¾ØÕóÁĞÊı
+/// äºŒç»´ç¨€ç–çŸ©é˜µï¼Œå®ç°äº†çŸ©é˜µçš„åŸºæœ¬æ“ä½œ
+/// @tparam T çŸ©é˜µå…ƒç´ ç±»å‹
+/// @tparam DimA çŸ©é˜µè¡Œæ•°
+/// @tparam DimB çŸ©é˜µåˆ—æ•°
 template <typename T, size_t DimA, size_t DimB>
 class SparseMatrix2
 {
 public:
-	/// Ä¬ÈÏ¹¹Ôìº¯Êı
+	/// é»˜è®¤æ„é€ å‡½æ•°
 	constexpr SparseMatrix2();
 
-	/// @brief ÒÔ¶şÎ¬Êı×éÎª²ÎÊıµÄ¹¹Ôìº¯Êı
-	/// @param Args ÊäÈëµÄ¶şÎ¬¾ØÕó
-	/// @tparam A ¾ØÕóĞĞÊı
-	/// @tparam B ¾ØÕóÁĞÊı
+	/// @brief ä»¥äºŒç»´æ•°ç»„ä¸ºå‚æ•°çš„æ„é€ å‡½æ•°
+	/// @param Args è¾“å…¥çš„äºŒç»´çŸ©é˜µ
+	/// @tparam A çŸ©é˜µè¡Œæ•°
+	/// @tparam B çŸ©é˜µåˆ—æ•°
 	template<size_t A, size_t B>
 	SparseMatrix2(const T (&Args)[A][B]);
 
-	//ÉùÃ÷ËùÓĞÄ£°æÌØ»¯ÎªÓÑÔªÀà
+	//å£°æ˜æ‰€æœ‰æ¨¡ç‰ˆç‰¹åŒ–ä¸ºå‹å…ƒç±»
 	template<typename, size_t, size_t> friend class SparseMatrix2;
 
-	/// ¾ØÕó×ø±êÀàĞÍ
+	/// çŸ©é˜µåæ ‡ç±»å‹
 	using dim_t = std::tuple<size_t, size_t>;
 
-	/// ¾ØÕóÈıÔª×éÀàĞÍ
+	/// çŸ©é˜µä¸‰å…ƒç»„ç±»å‹
 	using item_t = std::tuple<T, const dim_t>;
 
 private:
 
-	/// ¾ØÕóµÄÎ¬¶ÈĞÅÏ¢
+	/// çŸ©é˜µçš„ç»´åº¦ä¿¡æ¯
 	static const dim_t dim_tuple;
 
-	/// ¾ØÕóÄÚ²¿´æ´¢
+	/// çŸ©é˜µå†…éƒ¨å­˜å‚¨
 	std::map<const dim_t, T> container;
 
-	/// ¶¯Ì¬±ß½ç¼ì²é
+	/// åŠ¨æ€è¾¹ç•Œæ£€æŸ¥
 	template<size_t I = 0>
 	typename std::enable_if<I == std::tuple_size<dim_t>::value, void>::type
 		static constexpr dim_bound_check(dim_t const&, dim_t const&) noexcept;
@@ -66,75 +66,75 @@ private:
 
 protected:
 
-	/// @brief ²»´ø±ß½ç¼ì²éµÄ»ñÈ¡
-	/// @return Öµ
-	/// @param DimAg ĞĞ×ø±ê
-	/// @param DimBg ÁĞ×ø±ê
+	/// @brief ä¸å¸¦è¾¹ç•Œæ£€æŸ¥çš„è·å–
+	/// @return å€¼
+	/// @param DimAg è¡Œåæ ‡
+	/// @param DimBg åˆ—åæ ‡
 	T get_no_check(size_t DimAg, size_t DimBg) const;
 
 public:
 
-	/// @brief ¶¯Ì¬±ß½ç¼ì²éµÄÉèÖÃ
-	/// @param ele Öµ
-	/// @param DimAs ĞĞ×ø±ê
-	/// @param DimBs ÁĞ×ø±ê
+	/// @brief åŠ¨æ€è¾¹ç•Œæ£€æŸ¥çš„è®¾ç½®
+	/// @param ele å€¼
+	/// @param DimAs è¡Œåæ ‡
+	/// @param DimBs åˆ—åæ ‡
 	void set(T ele, size_t DimAs, size_t DimBs);
 
-	/// @brief ¾²Ì¬±ß½ç¼ì²éµÄÉèÖÃ
-	/// @param ele Öµ
-	/// @tparam DimA ĞĞ×ø±ê
-	/// @tparam DimB ÁĞ×ø±ê
+	/// @brief é™æ€è¾¹ç•Œæ£€æŸ¥çš„è®¾ç½®
+	/// @param ele å€¼
+	/// @tparam DimA è¡Œåæ ‡
+	/// @tparam DimB åˆ—åæ ‡
 	template<size_t DimAs, size_t DimBs>
 	void set(T ele) noexcept;
 
-	/// @brief ¶¯Ì¬±ß½ç¼ì²éµÄ»ñÈ¡
-	/// @return Öµ
-	/// @param DimAg ĞĞ×ø±ê
-	/// @param DimBg ÁĞ×ø±ê
+	/// @brief åŠ¨æ€è¾¹ç•Œæ£€æŸ¥çš„è·å–
+	/// @return å€¼
+	/// @param DimAg è¡Œåæ ‡
+	/// @param DimBg åˆ—åæ ‡
 	T get(size_t DimAg, size_t DimBg) const;
 
-	/// @brief ¾²Ì¬±ß½ç¼ì²éµÄ»ñÈ¡
-	/// @return Öµ
-	/// @tparam DimAg ĞĞ×ø±ê
-	/// @tparam DimBg ÁĞ×ø±ê
+	/// @brief é™æ€è¾¹ç•Œæ£€æŸ¥çš„è·å–
+	/// @return å€¼
+	/// @tparam DimAg è¡Œåæ ‡
+	/// @tparam DimBg åˆ—åæ ‡
 	template<size_t DimAg, size_t DimBg>
 	T get() const noexcept;
 
-	/// @brief AxBÓëBxCµÄ¾ØÕó³Ë»ı
-	/// @return ³Ë»ı
-	/// @param m2 Ä¿±ê¾ØÕó
-	/// @tparam DimA ¾ØÕó1µÄĞĞÊı
-	/// @tparam DimB ¾ØÕó1µÄÁĞÊı¼´¾ØÕó2µÄĞĞÊı
-	/// @tparam DimC ¾ØÕó2µÄÁĞÊı
+	/// @brief AxBä¸BxCçš„çŸ©é˜µä¹˜ç§¯
+	/// @return ä¹˜ç§¯
+	/// @param m2 ç›®æ ‡çŸ©é˜µ
+	/// @tparam DimA çŸ©é˜µ1çš„è¡Œæ•°
+	/// @tparam DimB çŸ©é˜µ1çš„åˆ—æ•°å³çŸ©é˜µ2çš„è¡Œæ•°
+	/// @tparam DimC çŸ©é˜µ2çš„åˆ—æ•°
 	template <size_t DimC>
 	SparseMatrix2<T, DimA, DimC> Mul(SparseMatrix2<T, DimB, DimC> m2) const noexcept;
 
-	/// @brief AxBµÄ¾ØÕó¼Ó·¨
-	/// @return ºÍ
-	/// @param m2 Ä¿±ê¾ØÕó
-	/// @tparam DimA ¾ØÕóµÄĞĞÊı
-	/// @tparam DimB ¾ØÕóµÄÁĞÊı
+	/// @brief AxBçš„çŸ©é˜µåŠ æ³•
+	/// @return å’Œ
+	/// @param m2 ç›®æ ‡çŸ©é˜µ
+	/// @tparam DimA çŸ©é˜µçš„è¡Œæ•°
+	/// @tparam DimB çŸ©é˜µçš„åˆ—æ•°
 	SparseMatrix2<T, DimA, DimB> Add(SparseMatrix2<T, DimA, DimB> m2) const noexcept;
 
-	/// @brief AxBµÄ¾ØÕó¼õ·¨
-	/// @return ²î
-	/// @param m2 Ä¿±ê¾ØÕó
-	/// @tparam DimA ¾ØÕóµÄĞĞÊı
-	/// @tparam DimB ¾ØÕóµÄÁĞÊı
+	/// @brief AxBçš„çŸ©é˜µå‡æ³•
+	/// @return å·®
+	/// @param m2 ç›®æ ‡çŸ©é˜µ
+	/// @tparam DimA çŸ©é˜µçš„è¡Œæ•°
+	/// @tparam DimB çŸ©é˜µçš„åˆ—æ•°
 	SparseMatrix2<T, DimA, DimB> Sub(SparseMatrix2<T, DimA, DimB> m2) const noexcept;
 
-	/// @brief AxBµÄ¾ØÕó×ªÖÃ
-	/// @return ×ªÖÃ
-	/// @tparam DimA ¾ØÕóµÄĞĞÊı
-	/// @tparam DimB ¾ØÕóµÄÁĞÊı
+	/// @brief AxBçš„çŸ©é˜µè½¬ç½®
+	/// @return è½¬ç½®
+	/// @tparam DimA çŸ©é˜µçš„è¡Œæ•°
+	/// @tparam DimB çŸ©é˜µçš„åˆ—æ•°
 	SparseMatrix2<T, DimB, DimA> Rev() const noexcept;
 
-	/// @brief AxBµÄ¾ØÕóÊä³ö
-	/// @return Ô­Êä³öÁ÷
-	/// @param out Êä³öÁ÷
-	/// @param d Êä³öµÄ¾ØÕó
-	/// @tparam DimA ¾ØÕóµÄĞĞÊı
-	/// @tparam DimB ¾ØÕóµÄÁĞÊı
+	/// @brief AxBçš„çŸ©é˜µè¾“å‡º
+	/// @return åŸè¾“å‡ºæµ
+	/// @param out è¾“å‡ºæµ
+	/// @param d è¾“å‡ºçš„çŸ©é˜µ
+	/// @tparam DimA çŸ©é˜µçš„è¡Œæ•°
+	/// @tparam DimB çŸ©é˜µçš„åˆ—æ•°
 	friend std::ostream& operator<< <>(std::ostream& out, const SparseMatrix2<T, DimA, DimB>& d) noexcept;
 };
 
