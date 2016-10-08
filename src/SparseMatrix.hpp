@@ -1,16 +1,12 @@
 #pragma once
-#include <map>
-#include <tuple>
-#include <functional>
-#include <exception>
-#include <utility> 
-#include <cassert>
-#include <vector>
-#include <iostream>
 
 #ifndef SparseMatrix_defined
-
-
+// ReSharper disable CppUnusedIncludeDirective
+#include <iostream>
+#include <map>
+#include <tuple>
+#include <utility> 
+#include <vector>
 
 template <size_t ...Dims>
 constexpr bool dim_bound_check_static(decltype(Dims)... args) {
@@ -165,13 +161,13 @@ SparseMatrix2<T, DimA, DimB>::SparseMatrix2(const T (&Args)[A][B])
 template <typename T, size_t DimA, size_t DimB>
 template<size_t I>
 typename std::enable_if<I == std::tuple_size<typename SparseMatrix2<T, DimA, DimB>::dim_t>::value, void>::type
-constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const&, dim_t const&) noexcept// Unused arguments are given no names.
+constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const&, dim_t const&) noexcept
 { }
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t I>
 typename std::enable_if < I < std::tuple_size<typename SparseMatrix2<T, DimA, DimB>::dim_t>::value, void>::type
-	constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t const& t2)
+constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t const& t2)
 {
 	auto x = std::get<I>(t1);
 	auto y = std::get<I>(t2);
