@@ -1,20 +1,22 @@
-#include <iostream>
 #include <cassert>
 #include <sstream>
+#include <iostream>
 #include "SparseMatrix.hpp"
 int main()
 {
 	//++Start SparseMatrix2 test
 	{
-		auto mat = SparseMatrix2<int, 2, 3>();
-		mat.set<0, 0>(1);
-		mat.set<0, 1>(1);
-		mat.set<1, 2>(4);
+		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } }); Shall Not Compile
+
+		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{0,0,4 } });
+
 		auto mat2 = SparseMatrix2<int, 3, 1>();
 		mat2.set<0, 0>(4);
 		mat2.set<1, 0>(1);
 		mat2.set<2, 0>(2);
-		auto mat3 = mat.Mul(mat2);
+
+
+		auto mat3 = mat * mat2;
 		auto mat4 = mat3.Rev();
 
 		assert((mat3.get<0, 0>() == 14));
