@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifndef SparseMatrix_defined
 // ReSharper disable CppUnusedIncludeDirective

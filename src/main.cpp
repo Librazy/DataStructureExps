@@ -1,7 +1,6 @@
-﻿#include <cassert>
-#include <sstream>
 #include "SparseMatrix.hpp"
-
+#include <cassert>
+#include <sstream>
 int main()
 {
 	//++Start SparseMatrix2 test
