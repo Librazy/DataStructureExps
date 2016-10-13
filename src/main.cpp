@@ -40,16 +40,31 @@ int main()
 	std::cout << "SparseMatrix2 Test Completed" << std::endl;
 	//++ End SparseMatrix2 test
 	
+	//++Start BFS test
 	{
-		auto x = BFS(0,0,4,4, 5, 5,
+		auto map =
 R"(
 0 1 0 0 0
 0 1 0 1 0
 0 0 0 0 0
 0 1 1 1 0
 0 0 0 1 0
-)"
-		);
+)";
+		auto x = BFS(0, 0, 4, 4, 5, 5, map);
+		auto w = BFS_pretty_graph(x, 5, 5, map);
+		std::wstringstream wss;
+		wss.imbue(std::locale("chs")); 
+		wss << w;
+
+		assert(wss.str() ==
+			LR"(★■　　　
+↓■　■　
+→→→→↓
+■■■↓
+■★)");
 	}
+	std::cout << "BFS Test Completed" << std::endl;
+	//++ End BFS test
+
 	return 0;
 }
