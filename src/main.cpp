@@ -1,4 +1,5 @@
 #include "SparseMatrix.hpp"
+#include "BFS.hpp"
 #include <cassert>
 #include <sstream>
 int main()
@@ -39,6 +40,16 @@ int main()
 	std::cout << "SparseMatrix2 Test Completed" << std::endl;
 	//++ End SparseMatrix2 test
 	
-
+	{
+		auto x = BFS(0,0,4,4, 5, 5,
+R"(
+0 1 0 0 0
+0 1 0 1 0
+0 0 0 0 0
+0 1 1 1 0
+0 0 0 1 0
+)"
+		);
+	}
 	return 0;
 }
