@@ -4,7 +4,11 @@
 #include <sstream>
 int main()
 {
-	std::wcout.imbue(std::locale("zh_CN.UTF-8"));
+#ifdef _WIN32
+		std::wcout.imbue(std::locale("chs"));
+#else
+		std::wcout.imbue(std::locale("zh_CN.UTF-8"));
+#endif
 	//++Start SparseMatrix2 test
 	{
 		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
