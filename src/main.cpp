@@ -4,6 +4,7 @@
 #include <sstream>
 int main()
 {
+	std::wcout.imbue(std::locale("zh_CN.UTF-8"));
 	//++Start SparseMatrix2 test
 	{
 		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
@@ -35,11 +36,11 @@ int main()
 		std::stringstream ss;
 		ss << mat;
 		assert(ss.str() == "1 1 0\n0 0 4\n");
-		
+
 	}
-	std::cout << "SparseMatrix2 Test Completed" << std::endl;
+	std::wcout << L"SparseMatrix2 Test Completed" << std::endl;
 	//++ End SparseMatrix2 test
-	
+
 	//++Start BFS test
 	{
 		auto map =
@@ -53,17 +54,18 @@ R"(
 		auto x = BFS(0, 0, 4, 4, 5, 5, map);
 		auto w = BFS_pretty_graph(x, 5, 5, map);
 		std::wstringstream wss;
-		wss.imbue(std::locale("chs")); 
+		wss.imbue(std::locale("zh_CN.UTF-8"));
 		wss << w;
-
-		assert(wss.str() ==
-			LR"(★■　　　
+		std::wcout << w;
+		assert(w == 
+LR"(★■　　　
 ↓■　■　
 →→→→↓
 ■■■↓
-■★)");
+　　　■★
+)");
 	}
-	std::cout << "BFS Test Completed" << std::endl;
+	std::wcout << L"BFS Test Completed" << std::endl;
 	//++ End BFS test
 
 	return 0;

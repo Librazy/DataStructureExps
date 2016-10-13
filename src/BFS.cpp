@@ -75,11 +75,9 @@ std::wstring BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t
 
 	for (size_t i = 0; i != h; ++i) {
 		for (size_t j = 0; j != w; ++j) {
-			std::cout << map[i][j] << " ";
 			res << arr[map[i][j]];
 		}
 		res << std::endl;
-		std::cout << std::endl;
 	}
 	return res.str();
 }
