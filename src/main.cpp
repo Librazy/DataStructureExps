@@ -43,7 +43,7 @@ int main()
 
 	}
 	std::wcout << L"SparseMatrix2 Test Completed" << std::endl;
-	//++ End SparseMatrix2 test
+	//++End SparseMatrix2 test
 
 	//++Start BFS test
 	{
@@ -57,11 +57,13 @@ R"(
 )";
 		auto x = BFS(0, 0, 4, 4, 5, 5, map);
 		auto w = BFS_pretty_graph(x, 5, 5, map);
-		std::wstringstream wss;
+		std::wstringstream wss,wss2;
 #ifdef _WIN32
 		wss.imbue(std::locale("chs"));
+		wss2.imbue(std::locale("chs"));
 #else
 		wss.imbue(std::locale("zh_CN.UTF-8"));
+		wss2.imbue(std::locale("zh_CN.UTF-8"));
 #endif
 		wss << w;
 		auto ans =
@@ -71,10 +73,11 @@ LR"(★■　　　
 　■■■↓
 　　　■★
 )";
-		assert(w == ans);
+		wss2 << ans;
+		assert(wss.str() == wss2.str());
 	}
 	std::wcout << L"BFS Test Completed" << std::endl;
-	//++ End BFS test
+	//++End BFS test
 
 	return 0;
 }
