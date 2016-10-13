@@ -62,7 +62,7 @@ std::wstring BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t
 			ss >> map[i][j];
 		}
 	}
-	wchar_t arr[] = {L'¡¡', L'¡ö', L'¡ü', L'¡û', L'¡ı', L'¡ú', L'¡ï'};
+	wchar_t arr[] = {L'ã€€', L'â– ', L'â†‘', L'â†', L'â†“', L'â†’', L'â˜…'};
 
 	for (auto it = ans.begin(); it != ans.end(); ++it) {
 		if (it == ans.end() - 1 || it == ans.begin()) {
