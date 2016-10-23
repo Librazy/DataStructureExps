@@ -57,7 +57,7 @@ bool Is(const char*& Stream, const char* Text)
 	return false;
 }
 
-std::unique_ptr<Expression> GetNumber(const char*& Stream)
+std::unique_ptr<NumberExpression> GetNumber(const char*& Stream)
 {
 	auto Result = 0;
 	auto GotNumber = false;
