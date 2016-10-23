@@ -1,7 +1,11 @@
+#include <iostream>
+#include <cmath>
 #include "SparseMatrix.hpp"
 #include "BFS.hpp"
 #include <cassert>
 #include <sstream>
+#include "Expression.hpp"
+
 int main()
 {
 #ifdef _WIN32
@@ -9,6 +13,8 @@ int main()
 #else
 		std::wcout.imbue(std::locale("zh_CN.UTF-8"));
 #endif
+
+#ifdef SparseMatrix_enabled
 	//++Start SparseMatrix2 test
 	{
 		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
@@ -44,7 +50,9 @@ int main()
 	}
 	std::wcout << L"SparseMatrix2 Test Completed" << std::endl;
 	//++End SparseMatrix2 test
+#endif
 
+#ifdef BFS_enabled
 	//++Start BFS test
 	{
 		auto map =
@@ -57,27 +65,35 @@ R"(
 )";
 		auto x = BFS(0, 0, 4, 4, 5, 5, map);
 		auto w = BFS_pretty_graph(x, 5, 5, map);
-		std::wstringstream wss,wss2;
-#ifdef _WIN32
-		wss.imbue(std::locale("chs"));
-		wss2.imbue(std::locale("chs"));
-#else
-		wss.imbue(std::locale("zh_CN.UTF-8"));
-		wss2.imbue(std::locale("zh_CN.UTF-8"));
-#endif
-		wss << w;
+		std::stringstream ss,ss2;
+		ss << w;
 		auto ans =
-LR"(★■　　　
-↓■　■　
-→→→→↓
-　■■■↓
-　　　■★
+R"(FW   
+DW W 
+RRRRD
+ WWWD
+   WF
 )";
-		wss2 << ans;
-		assert(wss.str() == wss2.str());
+		ss2 << ans;
+		assert(ss.str() == ss2.str());
 	}
 	std::wcout << L"BFS Test Completed" << std::endl;
 	//++End BFS test
+#endif
 
+#ifdef Expression_enabled
+	//++Start Expression test
+	{
+		auto str = "1+2+(40*34-22)*2";
+		auto exp = GetExp(str);
+		assert(exp->Eval() == 2679.0);
+
+		auto str1 = "2-3*4-5/6";
+		auto exp1 = GetExp(str1);
+		assert(fabs(exp1->Eval() - (2.0-3.0*4.0-5.0/6.0)) < 0.01);
+	}
+	std::wcout << L"Expression Test Completed" << std::endl;
+	//++End Expression test
+#endif
 	return 0;
 }

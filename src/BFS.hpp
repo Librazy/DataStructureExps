@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef BFS_enabled
+
 #ifndef BFS_defined
 // ReSharper disable CppUnusedIncludeDirective
 #include <iostream>
@@ -37,9 +39,11 @@ std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans);
  * \param m 
  * \return 
  */
-std::wstring BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m);
+std::string BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m);
 
 
 #define BFS_defined
+
+#endif
 
 #endif

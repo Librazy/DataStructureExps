@@ -1,5 +1,7 @@
 #include "BFS.hpp"
 
+#ifdef BFS_defined
+
 std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size_t y2, size_t w, size_t h, std::string m)
 {
 	std::vector<std::vector<int>> map(h, std::vector<int>(w));
@@ -51,9 +53,9 @@ std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans)
 	return res.str();
 }
 
-std::wstring BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m)
+std::string BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m)
 {
-	std::wstringstream res;
+	std::stringstream res;
 	std::vector<std::vector<int>> map(h, std::vector<int>(w));
 	std::stringstream ss(m);
 
@@ -62,7 +64,7 @@ std::wstring BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t
 			ss >> map[i][j];
 		}
 	}
-	wchar_t arr[] = {L'　', L'■', L'↑', L'←', L'↓', L'→', L'★'};
+	char arr[] = {' ', 'W', 'U', 'L', 'D', 'R', 'F'};
 
 	for (auto it = ans.begin(); it != ans.end(); ++it) {
 		if (it == ans.end() - 1 || it == ans.begin()) {
@@ -81,3 +83,5 @@ std::wstring BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t
 	}
 	return res.str();
 }
+
+#endif

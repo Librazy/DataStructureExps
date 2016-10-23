@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef SparseMatrix_enabled
+
 #ifndef SparseMatrix_defined
 // ReSharper disable CppUnusedIncludeDirective
 #include <iostream>
@@ -414,5 +416,7 @@ T SparseMatrix< T, Dims...>::get() const noexcept
 }
 
 #define SparseMatrix_defined
+
+#endif
 
 #endif
