@@ -7,12 +7,12 @@
 #include <iostream>
 #include <map>
 #include <tuple>
-#include <utility> 
+#include <utility>
 #include <vector>
 
 template <size_t ...Dims>
 constexpr bool dim_bound_check_static(decltype(Dims)... args) {
-	return ((args < Dims) && ... && true);
+	return (true && ... && (args < Dims));
 }
 
 template <typename T, size_t DimA, size_t DimB>
