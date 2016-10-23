@@ -8,11 +8,16 @@
 
 int main()
 {
+	try{
 #ifdef _WIN32
 		std::wcout.imbue(std::locale("chs"));
 #else
 		std::wcout.imbue(std::locale("zh_CN.UTF-8"));
 #endif
+	}catch(std::runtime_error){
+		setlocale(LC_ALL, "chs");
+		std::ios_base::sync_with_stdio(false);
+	}
 
 #ifdef SparseMatrix_enabled
 	//++Start SparseMatrix2 test
@@ -48,7 +53,7 @@ int main()
 		assert(ss.str() == "1 1 0\n0 0 4\n");
 
 	}
-	std::wcout << L"SparseMatrix2 Test Completed" << std::endl;
+	std::wcout << L"SparseMatrix2 测试完成" << std::endl;
 	//++End SparseMatrix2 test
 #endif
 
@@ -77,7 +82,7 @@ RRRRD
 		ss2 << ans;
 		assert(ss.str() == ss2.str());
 	}
-	std::wcout << L"BFS Test Completed" << std::endl;
+	std::wcout << L"BFS 测试完成" << std::endl;
 	//++End BFS test
 #endif
 
@@ -96,7 +101,7 @@ RRRRD
 		auto exp2 = GetExp(str2);
 		assert(fabs(exp2->Eval() - (2-3*4-5.0/6+7*(8-(9*10+1.0)/2 +20+2*10)-20+12)) < 0.01);
 	}
-	std::wcout << L"Expression Test Completed" << std::endl;
+	std::wcout << L"Expression 测试完成" << std::endl;
 	//++End Expression test
 #endif
 	return 0;
