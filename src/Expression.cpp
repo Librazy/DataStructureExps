@@ -1,4 +1,4 @@
-﻿#include "Expression.hpp"
+#include "Expression.hpp"
 
 #ifdef Expression_defined
 

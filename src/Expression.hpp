@@ -7,7 +7,7 @@
 #include<memory>
 
 /**
- * \brief ¶şÔª²Ù×÷·û
+ * \brief äºŒå…ƒæ“ä½œç¬¦
  */
 enum class BinaryOperator
 {
@@ -18,7 +18,7 @@ enum class BinaryOperator
 };
 
 /**
- * \brief ³éÏó±í´ïÊ½
+ * \brief æŠ½è±¡è¡¨è¾¾å¼
  */
 struct Expression
 {
@@ -30,7 +30,7 @@ struct Expression
 };
 
 /**
- * \brief µ¥ÊıÖµ±í´ïÊ½
+ * \brief å•æ•°å€¼è¡¨è¾¾å¼
  */
 struct NumberExpression : Expression
 {
@@ -42,7 +42,7 @@ struct NumberExpression : Expression
 };
 
 /**
- * \brief ¶şÔªÔËËã±í´ïÊ½
+ * \brief äºŒå…ƒè¿ç®—è¡¨è¾¾å¼
  */
 struct BinaryExpression : Expression
 {
@@ -55,7 +55,7 @@ struct BinaryExpression : Expression
 };
 
 /**
- * \brief Òì³£Àà
+ * \brief å¼‚å¸¸ç±»
  */
 struct Exception
 {
@@ -66,38 +66,38 @@ struct Exception
 };
 
 /**
- * \brief ±í´ïÊ½Á÷ @Stream µÄÏÂÒ»¸öÊÇ·ñÊÇ @Text
- * \param Stream ±í´ïÊ½Á÷
- * \param Text ĞèÒªÅĞ¶ÏµÄ×Ö·û
- * \return ÊÇ·ñÎª @Text
+ * \brief è¡¨è¾¾å¼æµ @Stream çš„ä¸‹ä¸€ä¸ªæ˜¯å¦æ˜¯ @Text
+ * \param Stream è¡¨è¾¾å¼æµ
+ * \param Text éœ€è¦åˆ¤æ–­çš„å­—ç¬¦
+ * \return æ˜¯å¦ä¸º @Text
  */
 bool Is(const char*& Stream, const char* Text);
 
 /**
- * \brief ÔÚ±í´ïÊ½Á÷ÖĞÌáÈ¡ÊıÖµ
- * \param Stream ±í´ïÊ½Á÷
- * \return Ö¸Ïò»ñÈ¡µÄNumberExpressionµÄunique_ptr
+ * \brief åœ¨è¡¨è¾¾å¼æµä¸­æå–æ•°å€¼
+ * \param Stream è¡¨è¾¾å¼æµ
+ * \return æŒ‡å‘è·å–çš„NumberExpressionçš„unique_ptr
  */
 std::unique_ptr<NumberExpression> GetNumber(const char*& Stream);
 
 /**
- * \brief ÔÚ±í´ïÊ½Á÷ÖĞÌáÈ¡Term: Number | ¡°(¡° Exp ¡°)¡±
- * \param Stream ±í´ïÊ½Á÷
- * \return Ö¸Ïò»ñÈ¡µÄExpressionµÄunique_ptr
+ * \brief åœ¨è¡¨è¾¾å¼æµä¸­æå–Term: Number | â€œ(â€œ Exp â€œ)â€
+ * \param Stream è¡¨è¾¾å¼æµ
+ * \return æŒ‡å‘è·å–çš„Expressionçš„unique_ptr
  */
 std::unique_ptr<Expression> GetTerm(const char*& Stream);
 
 /**
- * \brief ÔÚ±í´ïÊ½Á÷ÖĞÌáÈ¡Facto: Term ( ( ¡°*¡± | ¡°/¡± ) Term) *
- * \param Stream ±í´ïÊ½Á÷
- * \return Ö¸Ïò»ñÈ¡µÄExpressionµÄunique_ptr
+ * \brief åœ¨è¡¨è¾¾å¼æµä¸­æå–Facto: Term ( ( â€œ*â€ | â€œ/â€ ) Term) *
+ * \param Stream è¡¨è¾¾å¼æµ
+ * \return æŒ‡å‘è·å–çš„Expressionçš„unique_ptr
  */
 std::unique_ptr<Expression> GetFactor(const char*& Stream);
 
 /**
- * \brief ÔÚ±í´ïÊ½Á÷ÖĞÌáÈ¡Exp: Factor ( ( ¡°+¡± | ¡°-¡° ) Factor) *
- * \param Stream ±í´ïÊ½Á÷
- * \return Ö¸Ïò»ñÈ¡µÄExpressionµÄunique_ptr
+ * \brief åœ¨è¡¨è¾¾å¼æµä¸­æå–Exp: Factor ( ( â€œ+â€ | â€œ-â€œ ) Factor) *
+ * \param Stream è¡¨è¾¾å¼æµ
+ * \return æŒ‡å‘è·å–çš„Expressionçš„unique_ptr
  */
 std::unique_ptr<Expression> GetExp(const char*& Stream);
 
