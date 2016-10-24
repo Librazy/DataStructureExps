@@ -6,6 +6,7 @@
 
 #include<memory>
 #include<cstring>
+#include<sstream>
 
 /**
  * \brief 二元操作符
@@ -38,7 +39,6 @@ struct NumberExpression : Expression
 	int Value;
 
 	explicit NumberExpression(int number);
-
 	double Eval() override;
 };
 
@@ -51,7 +51,7 @@ struct BinaryExpression : Expression
 	std::unique_ptr<Expression> Second;
 	BinaryOperator Op;
 
-	BinaryExpression(BinaryOperator theOp, std::unique_ptr<Expression>&& theLeft, std::unique_ptr<Expression>&& theRight);
+	BinaryExpression(BinaryOperator Op, std::unique_ptr<Expression>&& First, std::unique_ptr<Expression>&& Second);
 	double Eval() override;
 };
 
@@ -60,10 +60,10 @@ struct BinaryExpression : Expression
  */
 struct Exception
 {
-	const char* Start;
+	std::string Start;
 	const wchar_t* Error;
 
-	Exception(const char* aStart, const wchar_t* aError);
+	Exception(std::string aStart, const wchar_t* aError);
 };
 
 /**
@@ -72,35 +72,42 @@ struct Exception
  * \param Text 需要判断的字符
  * \return 是否为 @Text
  */
-bool Is(const char*& Stream, const char* Text);
+bool Is(std::stringstream& Stream, const char Text);
 
 /**
  * \brief 在表达式流中提取数值
  * \param Stream 表达式流
  * \return 指向获取的NumberExpression的unique_ptr
  */
-std::unique_ptr<NumberExpression> GetNumber(const char*& Stream);
+std::unique_ptr<NumberExpression> GetNumber(std::stringstream& Stream);
 
 /**
- * \brief 在表达式流中提取Term: Number | “(“ Exp “)”
+ * \brief 在表达式流中提取Term: Number | "(" Exp ")"
  * \param Stream 表达式流
  * \return 指向获取的Expression的unique_ptr
  */
-std::unique_ptr<Expression> GetTerm(const char*& Stream);
+std::unique_ptr<Expression> GetTerm(std::stringstream& Stream);
 
 /**
- * \brief 在表达式流中提取Facto: Term ( ( “*” | “/” ) Term) *
+ * \brief 在表达式流中提取Facto: Term ( ( "*" | "/" ) Term) *
  * \param Stream 表达式流
  * \return 指向获取的Expression的unique_ptr
  */
-std::unique_ptr<Expression> GetFactor(const char*& Stream);
+std::unique_ptr<Expression> GetFactor(std::stringstream& Stream);
 
 /**
- * \brief 在表达式流中提取Exp: Factor ( ( “+” | “-“ ) Factor) *
+ * \brief 在表达式流中提取Exp: Factor ( ( "+" | "-" ) Factor) *
  * \param Stream 表达式流
  * \return 指向获取的Expression的unique_ptr
  */
-std::unique_ptr<Expression> GetExp(const char*& Stream);
+std::unique_ptr<Expression> GetExp(std::stringstream& Stream);
+
+/**
+ * \brief 在表达式中提取Exp: Factor ( ( "+" | "-" ) Factor) *
+ * \param Exp 表达式
+ * \return 指向获取的Expression的unique_ptr
+ */
+std::unique_ptr<Expression> GetExp(std::string Exp);
 
 #define Expression_defined
 

@@ -84,13 +84,17 @@ RRRRD
 #ifdef Expression_enabled
 	//++Start Expression test
 	{
-		auto str = "1+2+(40*34-22)*2";
+		auto str = "1+2+   (40*34-22)*2";
 		auto exp = GetExp(str);
 		assert(exp->Eval() == 2679.0);
 
 		auto str1 = "2-3*4-5/6";
 		auto exp1 = GetExp(str1);
-		assert(fabs(exp1->Eval() - (2.0-3.0*4.0-5.0/6.0)) < 0.01);
+		assert(fabs(exp1->Eval() - (2-3*4-5.0/6)) < 0.01);
+		
+		auto str2 = "2-3*4-5/6 + 7*(8-   (9*10+1)/2 +20+2*10    ) -20 +12";
+		auto exp2 = GetExp(str2);
+		assert(fabs(exp2->Eval() - (2-3*4-5.0/6+7*(8-(9*10+1.0)/2 +20+2*10)-20+12)) < 0.01);
 	}
 	std::wcout << L"Expression Test Completed" << std::endl;
 	//++End Expression test
