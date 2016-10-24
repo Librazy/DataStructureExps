@@ -5,6 +5,7 @@
 #ifndef Expression_defined
 
 #include<memory>
+#include<cstring>
 
 /**
  * \brief 二元操作符
