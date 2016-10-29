@@ -1,10 +1,12 @@
-#include <iostream>
-#include <cmath>
+// ReSharper disable CppUnusedIncludeDirective
+#include "Expression.hpp"
 #include "SparseMatrix.hpp"
 #include "BFS.hpp"
+
+#include <iostream>
+#include <cmath>
 #include <cassert>
 #include <sstream>
-#include "Expression.hpp"
 
 int main()
 {

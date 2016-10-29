@@ -4,6 +4,7 @@
 
 #ifndef Expression_defined
 
+// ReSharper disable CppUnusedIncludeDirective
 #include<memory>
 #include<cstring>
 #include<sstream>
