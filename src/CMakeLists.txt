@@ -10,7 +10,7 @@ if (COVERALLS)
         ON                 ) # If we should upload.
 endif()
 
-enable_testing()
+
 
 set(ENABLE_BFS true CACHE BOOL "If BFS enabled.")
 
@@ -37,9 +37,3 @@ endif()
 if(ENABLE_Expression)
   target_compile_definitions(DsExpLib PRIVATE Expression_enabled)
 endif()
-
-add_executable(DsExp main.cpp)
-
-target_link_libraries(DsExp DsExpLib)
-
-add_test(DsExpLib ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DsExp)

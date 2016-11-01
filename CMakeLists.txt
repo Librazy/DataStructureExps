@@ -19,5 +19,15 @@ if(NOT MSVC)
   endif()
   set(CMAKE_CXX_FLAGS                  "-std=c++1z -Wall")
 endif()
+
 include_directories(${DsExp_SOURCE_DIR}/src)
+
 add_subdirectory(src)
+
+enable_testing()
+
+add_executable(DsExp main.cpp)
+
+target_link_libraries(DsExp DsExpLib)
+
+add_test(DsExpLib ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DsExp)

@@ -1,7 +1,7 @@
 // ReSharper disable CppUnusedIncludeDirective
-#include "Expression.hpp"
-#include "SparseMatrix.hpp"
-#include "BFS.hpp"
+#include "src/Expression.hpp"
+#include "src/SparseMatrix.hpp"
+#include "src/BFS.hpp"
 
 #include <iostream>
 #include <cmath>
