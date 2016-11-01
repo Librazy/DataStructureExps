@@ -73,6 +73,8 @@ R"(
 		auto x = BFS(0, 0, 4, 4, 5, 5, map);
 
 		auto t = BFS_pretty_text(x);
+		std::stringstream ss1,ss2;
+		ss1 << t;
 		auto anstext =
 R"((0,0)
 (1,0)
@@ -84,11 +86,12 @@ R"((0,0)
 (3,4)
 (4,4)
 )";
-		assert(t == anstext);
+		ss2 << anstext;
+		assert(ss1.str() == ss2.str());
 
 		auto w = BFS_pretty_graph(x, 5, 5, map);
-		std::stringstream ss,ss2;
-		ss << w;
+		std::stringstream ss3,ss4;
+		ss3 << w;
 		auto ans =
 R"(FW   
 DW W 
@@ -96,8 +99,8 @@ RRRRD
  WWWD
    WF
 )";
-		ss2 << ans;
-		assert(ss.str() == ss2.str());
+		ss4 << ans;
+		assert(ss3.str() == ss4.str());
 	}
 	std::wcout << L"BFS 测试完成" << std::endl;
 	//++End BFS test

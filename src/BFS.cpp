@@ -49,7 +49,6 @@ std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans)
 	for (auto it = ans.rbegin(); it != ans.rend(); ++it) {
 		res << "(" << std::get<0>(*it) << "," << std::get<1>(*it) << ")" << std::endl;
 	}
-	res << std::endl;
 	return res.str();
 }
 
