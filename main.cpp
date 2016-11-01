@@ -59,7 +59,7 @@ int main()
 	//++End SparseMatrix2 test
 #endif
 
-#ifdef BFS_enabled
+#ifndef BFS_disabled
 	//++Start BFS test
 	{
 		auto map =
@@ -88,7 +88,7 @@ RRRRD
 	//++End BFS test
 #endif
 
-#ifdef Expression_enabled
+#ifndef Expression_disabled
 	//++Start Expression test
 	{
 		auto str = "1+2+   (40*34-22)*2";

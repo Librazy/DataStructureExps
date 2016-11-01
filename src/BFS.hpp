@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef BFS_enabled
+#ifndef BFS_disabled
 
 #ifndef BFS_defined
 // ReSharper disable CppUnusedIncludeDirective

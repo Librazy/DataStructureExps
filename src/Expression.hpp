@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef Expression_enabled
+#ifndef Expression_disabled
 
 #ifndef Expression_defined
 
