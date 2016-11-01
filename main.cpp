@@ -71,6 +71,21 @@ R"(
 0 0 0 1 0
 )";
 		auto x = BFS(0, 0, 4, 4, 5, 5, map);
+
+		auto t = BFS_pretty_text(x);
+		auto anstext =
+R"((0,0)
+(1,0)
+(2,0)
+(2,1)
+(2,2)
+(2,3)
+(2,4)
+(3,4)
+(4,4)
+)";
+		assert(t == anstext);
+
 		auto w = BFS_pretty_graph(x, 5, 5, map);
 		std::stringstream ss,ss2;
 		ss << w;
