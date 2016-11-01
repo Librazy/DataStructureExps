@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 add_library(DsExpLib BFS.cpp Expression.cpp)
 
 if (COVERALLS)
-    set(COVERAGE_SRCS src/SparseMatrix.hpp src/BFS.cpp src/Expression.cpp)
+    set(COVERAGE_SRCS src/BFS.cpp src/Expression.cpp)
 
     # Create the coveralls target.
     coveralls_setup(
