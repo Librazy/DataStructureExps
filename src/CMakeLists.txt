@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-add_executable(DsExp main.cpp SparseMatrix.hpp BFS.hpp BFS.cpp Expression.hpp Expression.cpp)
+add_library(DsExpLib SparseMatrix.hpp BFS.hpp BFS.cpp Expression.hpp Expression.cpp)
 
 if (COVERALLS)
     set(COVERAGE_SRCS src/SparseMatrix.hpp src/BFS.hpp src/BFS.cpp src/Expression.hpp src/Expression.cpp)
@@ -28,15 +28,19 @@ else()
 endif()
 
 if(ENABLE_SparseMatrix)
-  target_compile_definitions(DsExp PRIVATE SparseMatrix_enabled)
+  target_compile_definitions(DsExpLib PRIVATE SparseMatrix_enabled)
 endif()
 
 if(ENABLE_BFS)
-  target_compile_definitions(DsExp PRIVATE BFS_enabled)
+  target_compile_definitions(DsExpLib PRIVATE BFS_enabled)
 endif()
 
 if(ENABLE_Expression)
-  target_compile_definitions(DsExp PRIVATE Expression_enabled)
+  target_compile_definitions(DsExpLib PRIVATE Expression_enabled)
 endif()
 
-add_test(DsExp ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DsExp)
+add_executable(DsExp main.cpp)
+
+target_link_libraries(DsExp DsExpLib)
+
+add_test(DsExpLib ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DsExp)
