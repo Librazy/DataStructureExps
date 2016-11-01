@@ -12,7 +12,7 @@ if(NOT MSVC)
   if(USE_clang)
     set(CMAKE_CXX_COMPILER             "clang++")
   endif()
-  set(CMAKE_CXX_FLAGS                  "-std=c++1z -Wall")
+  set(CMAKE_CXX_FLAGS                  "-std=c++1z -Wall  -fno-inline -fno-inline-small-functions -fno-default-inline")
 endif()
 
 if (COVERALLS)
