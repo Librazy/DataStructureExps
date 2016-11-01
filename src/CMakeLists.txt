@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.6)
 add_executable(DsExp main.cpp SparseMatrix.hpp BFS.hpp BFS.cpp Expression.hpp Expression.cpp)
- 
+
+if (COVERALLS)
+    set(COVERAGE_SRCS SparseMatrix.hpp BFS.hpp BFS.cpp Expression.hpp Expression.cpp)
+
+    # Create the coveralls target.
+    coveralls_setup(
+        "${COVERAGE_SRCS}" # The source files.
+        ON                 ) # If we should upload.
+endif()
+
 set(ENABLE_BFS true CACHE BOOL "If BFS enabled.")
 
 set(ENABLE_Expression true CACHE BOOL "If Expression enabled. ")

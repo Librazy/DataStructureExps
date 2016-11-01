@@ -1,5 +1,17 @@
 cmake_minimum_required(VERSION 3.6)
 project(DsExp)
+
+# Add project cmake modules to path.
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
+# We probably don't want this to run on every build.
+option(COVERALLS "Generate coveralls data" OFF)
+
+if (COVERALLS)
+    include(Coveralls)
+    coveralls_turn_on_coverage()
+endif()
+
 if(NOT MSVC)
   set(USE_clang false CACHE BOOL "USE clang++")
   if(USE_clang)
