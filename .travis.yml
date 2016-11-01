@@ -1,5 +1,4 @@
 language: generic
-os: osx
 matrix:
   include:
     - os: linux
@@ -10,17 +9,18 @@ matrix:
             - g++-6
             - lib32stdc++6
           sources: &sources
-            - llvm-toolchain-precise-3.9
+            - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
     - os: linux
-      env: COMPILER_NAME=clang CXX=clang++-3.9 CC=clang-3.9
+      env: COMPILER_NAME=clang CXX=clang++-3.8 CC=clang-3.8
       addons:
         apt:
           packages:
-            - clang-3.9
+            - clang-3.8
             - lib32stdc++6
           sources: *sources
 script: 
+- mkdir -p $HOME/.local
 - curl -L http://www.cmake.org/files/v3.5/cmake-3.5.2-Linux-i386.tar.gz | tar -xz -C $HOME/.local --strip-components=1
 - export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig:$PKG_CONFIG_PATH
 - mkdir build && cd build
