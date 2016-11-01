@@ -23,7 +23,6 @@ if(MSVC)
     set(ENABLE_SparseMatrix false CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support")
   endif()
 else()
-  set(CMAKE_CXX_FLAGS "-std=c++1z -Wall -g -O0 --coverage")
   set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support")
 endif()
 

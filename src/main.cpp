@@ -7,7 +7,7 @@
 #include <cmath>
 #include <cassert>
 #include <sstream>
-
+#include <stdexcept>
 int main()
 {
 	try{
