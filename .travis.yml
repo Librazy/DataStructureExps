@@ -8,7 +8,7 @@ matrix:
         apt:
           packages:
             - g++-6
-			- lib32stdc++6
+            - lib32stdc++6
           sources: &sources
             - llvm-toolchain-precise-3.9
             - ubuntu-toolchain-r-test
@@ -18,7 +18,7 @@ matrix:
         apt:
           packages:
             - clang-3.9
-			- lib32stdc++6
+            - lib32stdc++6
           sources: *sources
 script: 
 - curl -L http://www.cmake.org/files/v3.5/cmake-3.5.2-Linux-i386.tar.gz | tar -xz -C $HOME/.local --strip-components=1
