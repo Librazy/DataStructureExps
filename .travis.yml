@@ -7,25 +7,25 @@ matrix:
       env: COMPILER_NAME=gcc CXX=g++-6 CC=gcc-6
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
           packages:
             - g++-6
             - lib32stdc++6
+          sources: &sources
+            - llvm-toolchain-trusty-3.8
+            - ubuntu-toolchain-r-test
     - os: linux
-      env: COMPILER_NAME=clang CXX=clang++-3.9 CC=clang-3.9
+      env: COMPILER_NAME=clang CXX=clang++-3.8 CC=clang-3.8
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
-              key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
           packages:
             - g++-6
-            - clang-3.9
+            - clang-3.8
             - lib32stdc++6
+          sources: *sources
 install:
- - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-6 90
+ - if [[ "$COMPILER_NAME" == gcc ]] ; then
+   sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-6 90;
+   fi
 script: 
  - mkdir -p $HOME/.local
  - curl -L http://www.cmake.org/files/v3.6/cmake-3.6.2-Linux-i386.tar.gz | tar -xz -C $HOME/.local --strip-components=1
