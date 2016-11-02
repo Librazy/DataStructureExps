@@ -84,10 +84,10 @@ std::unique_ptr<Expression> GetTerm(std::stringstream& Stream)
 	} catch (Exception) {
 		if (Is(Stream, '(')) {
 			auto Result = GetExp(Stream);
-			if (Is(Stream, ')')) {
-				return Result;
+			if (!Is(Stream, ')')) {
+				throw Exception(Stream.str(), L"此处需要右括号");
 			}
-			throw Exception(Stream.str(), L"此处需要右括号");
+			return Result;
 		}
 		throw;
 	}
