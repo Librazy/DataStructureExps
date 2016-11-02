@@ -24,10 +24,12 @@ std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size
 		for (size_t u = 0; u != 4; ++u) {
 			auto nh = std::get<0>(q[front]) + d[u][0];
 			auto nw = std::get<1>(q[front]) + d[u][1];
-			if (!((nh < 0) || (nh >= h) || (nw < 0) || (nw >= w) || (map[nh][nw] == 1) || (vis[nh][nw] == 1))) {
-				if (nh == y2 && nw == x2) {
+			if ( !((nh < 0) || (static_cast<size_t>(nh) >= h)
+			    || (nw < 0) || (static_cast<size_t>(nw) >= w)
+			    || (map[nh][nw] == 1) || (vis[nh][nw] == 1))) {
+				if (static_cast<size_t>(nh) == y2 && static_cast<size_t>(nw) == x2) {
 					ans.emplace_back(std::make_tuple(y2, x2, u + 2));
-					size_t cur = front;
+					int cur = front;
 					while (cur != -1) {
 						ans.emplace_back(std::make_tuple(std::get<0>(q[cur]), std::get<1>(q[cur]), std::get<3>(q[cur])));
 						cur = std::get<2>(q[cur]);
