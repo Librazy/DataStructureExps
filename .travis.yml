@@ -22,7 +22,7 @@ matrix:
             - lib32stdc++6
           sources: *sources
 install:
- - if [[ "COMPILER_NAME" == gcc ]] ; then
+ - if [[ "$COMPILER_NAME" == gcc ]] ; then
    sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-6 90;
    fi
 script: 
