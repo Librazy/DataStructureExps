@@ -132,7 +132,7 @@ R"(
 		try{
 			auto str3 = "2-(3";
 			GetExp(str3);
-			throw std::runtime_error("");
+			throw std::runtime_error("期望：此处需要右括号");
 		}catch(Exception e){
 			assert(std::wstring(e.Error) == L"此处需要右括号");
 		}
@@ -140,10 +140,18 @@ R"(
 		try{
 			auto str3 = "2-*3";
 			GetExp(str3);
-			throw std::runtime_error("");
+			throw std::runtime_error("期望：此处需要表达式");
 		}catch(Exception e){
 			assert(std::wstring(e.Error) == L"此处需要表达式");
-		}		
+		}
+		
+		try{
+			auto brokenExp = BinaryExpression(static_cast<BinaryOperator>(1),std::make_unique<NumberExpression>(1),std::make_unique<NumberExpression>(1));
+			brokenExp.Eval();
+			throw std::runtime_error("期望：错误的操作符");
+		}catch(Exception e){
+			assert(std::wstring(e.Error) == L"错误的操作符");
+		}
 	}
 	std::wcout << L"Expression 测试完成" << std::endl;
 	//++End Expression test

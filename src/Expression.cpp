@@ -35,6 +35,7 @@ double BinaryExpression::Eval()
 		return lhs * rhs;
 	case BinaryOperator::Divide:
 		return lhs / rhs;
+	default: throw Exception("", L"错误的操作符");
 	}
 }
 
