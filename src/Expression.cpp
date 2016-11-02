@@ -25,8 +25,8 @@ double BinaryExpression::Eval()
 {
 	auto lhs = First->Eval();
 	auto rhs = Second->Eval();
+	
 	switch (Op) {
-
 	case BinaryOperator::Plus:
 		return lhs + rhs;
 	case BinaryOperator::Minus:
@@ -35,7 +35,6 @@ double BinaryExpression::Eval()
 		return lhs * rhs;
 	case BinaryOperator::Divide:
 		return lhs / rhs;
-	default: throw Exception(nullptr, nullptr);
 	}
 }
 
