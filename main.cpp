@@ -101,6 +101,14 @@ RRRRD
 )";
 		ss4 << ans;
 		assert(ss3.str() == ss4.str());
+		
+		auto map2 =
+R"(
+0 1 0 
+0 1 0 
+)";
+		auto x2 = BFS(0, 0, 2, 1, 3, 2, map2);
+		assert(x2.size() == 0);
 	}
 	std::wcout << L"BFS 测试完成" << std::endl;
 	//++End BFS test
@@ -120,6 +128,22 @@ RRRRD
 		auto str2 = "2-3*4-5/6 + 7*(8-   (9*10+1)/2 +20+2*10    ) -20 +12";
 		auto exp2 = GetExp(str2);
 		assert(fabs(exp2->Eval() - (2-3*4-5.0/6+7*(8-(9*10+1.0)/2 +20+2*10)-20+12)) < 0.01);
+		
+		try{
+			auto str3 = "2-(3";
+			GetExp(str3);
+			throw std::runtime_error("");
+		}catch(Exception e){
+			assert(std::wstring(e.Error) == L"此处需要右括号");
+		}
+
+		try{
+			auto str3 = "2-*3";
+			GetExp(str3);
+			throw std::runtime_error("");
+		}catch(Exception e){
+			assert(std::wstring(e.Error) == L"此处需要表达式");
+		}		
 	}
 	std::wcout << L"Expression 测试完成" << std::endl;
 	//++End Expression test
