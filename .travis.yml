@@ -1,4 +1,5 @@
 sudo: true
+dist: trusty
 language: generic
 matrix:
   include:
@@ -6,21 +7,23 @@ matrix:
       env: COMPILER_NAME=gcc CXX=g++-6 CC=gcc-6
       addons:
         apt:
+		    sources:
+            - ubuntu-toolchain-r-test
           packages:
             - g++-6
             - lib32stdc++6
-          sources: &sources
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
     - os: linux
-      env: COMPILER_NAME=clang CXX=clang++-3.8 CC=clang-3.8
+      env: COMPILER_NAME=clang CXX=clang++-3.9 CC=clang-3.9
       addons:
         apt:
+		   sources:
+            - ubuntu-toolchain-r-test
+	        - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
+	          key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
           packages:
             - g++-6
-            - clang-3.8
+            - clang-3.9
             - lib32stdc++6
-          sources: *sources
 install:
  - if [[ "$COMPILER_NAME" == gcc ]] ; then
    sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-6 90;
