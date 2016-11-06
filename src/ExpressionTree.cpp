@@ -1,4 +1,5 @@
 #include "ExpressionTree.hpp"
+#include "Exception.hpp"
 
 #ifdef ExpressionTree_defined
 
@@ -37,12 +38,6 @@ double BinaryExpression::Eval()
 		return lhs / rhs;
 	default: throw Exception("", L"错误的操作符");
 	}
-}
-
-Exception::Exception(std::string aStart, const wchar_t* aError)
-{
-	Start = aStart;
-	Error = aError;
 }
 
 bool Is(std::stringstream& Stream, const char Text)

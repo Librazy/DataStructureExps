@@ -1,4 +1,5 @@
 // ReSharper disable CppUnusedIncludeDirective
+#include "src/Exception.hpp"
 #include "src/ExpressionTree.hpp"
 #include "src/ExpressionStack.hpp"
 #include "src/SparseMatrix.hpp"
@@ -9,6 +10,8 @@
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
+
+
 int main()
 {
 	try {
@@ -125,7 +128,7 @@ R"(
 
 		auto str1 = "2-3*4-5/6";
 		auto ans1 = ExpressionStack::Eval(str1);
-		assert(fabs(ans1 - (2 - 3 * 4 - 5.0/6)) < 0.01);
+		assert(fabs(ans1 - (2 - 3 * 4 - 5.0 / 6)) < 0.01);
 
 		auto str2 = "(1-2)*3";
 		auto ans2 = ExpressionStack::Eval(str2);
@@ -138,13 +141,28 @@ R"(
 		auto str4 = "2-3*4-5/6+7*(8-(9*10+1)/2+20+2*10)-20+12";
 		auto ans4 = ExpressionStack::Eval(str4);
 		assert(fabs(ans4 - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
+		try {
+			ExpressionStack::Eval("3+4)4");
+			throw std::runtime_error("Exception Expected");
+		}
+		catch (Exception& e) {
+			assert(std::wstring(e.Error) == L"错误的优先级");
+		}
+
+		try {
+			ExpressionStack::Eval("*5-4");
+			throw std::runtime_error("Exception Expected");
+		}
+		catch (Exception& e) {
+			assert(std::wstring(e.Error) == L"错误的操作符");
+		}
 	}
 	std::wcout << L"ExpressionStack 测试完成" << std::endl;
 	//++End ExpressionStack test
 #endif
 
 
-#ifndef Expression_disabled
+#ifndef ExpressionTree_disabled
 	//++Start ExpressionTree test
 	{
 		auto str = "1+2+   (40*34-22)*2";

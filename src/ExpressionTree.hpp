@@ -57,17 +57,6 @@ struct BinaryExpression : Expression
 };
 
 /**
- * \brief 异常类
- */
-struct Exception
-{
-	std::string Start;
-	const wchar_t* Error;
-
-	Exception(std::string aStart, const wchar_t* aError);
-};
-
-/**
  * \brief 表达式流 @Stream 的下一个是否是 @Text
  * \param Stream 表达式流
  * \param Text 需要判断的字符
