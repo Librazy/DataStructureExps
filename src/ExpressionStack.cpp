@@ -1,8 +1,9 @@
 #include "ExpressionStack.hpp"
+#include "Exception.hpp"
 
 #ifdef ExpressionStack_defined
 
-constexpr ExpressionStack::Precede ExpressionStack::PrecedeTable[7][7]{
+const ExpressionStack::Precede ExpressionStack::PrecedeTable[7][7]{
 	{ Precede::H, Precede::H, Precede::L, Precede::L, Precede::L, Precede::H, Precede::H },
 	{ Precede::H, Precede::H, Precede::L, Precede::L, Precede::L, Precede::H, Precede::H },
 	{ Precede::H, Precede::H, Precede::H, Precede::H, Precede::L, Precede::H, Precede::H },
@@ -75,12 +76,12 @@ double ExpressionStack::Eval(std::string exp)
 				case Operator::RBracket:
 				case Operator::Sharp:
 				default:
-					throw std::runtime_error("Invaild operator");
+					break;
 				}
 
 			case Precede::F:
 			default:
-				throw std::runtime_error("Invaild precede");
+				throw Exception(ss.str(), L"错误的优先级");
 			}
 			continue;
 			CheckSharp:
