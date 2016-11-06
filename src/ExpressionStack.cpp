@@ -57,7 +57,9 @@ double ExpressionStack::Eval(std::string exp)
 			case Precede::H:
 
 				optr.pop();
-
+				if(opnd.size() <2) {
+					goto Failed;
+				}
 				a = opnd.top();
 				opnd.pop();
 				b = opnd.top();
@@ -72,11 +74,13 @@ double ExpressionStack::Eval(std::string exp)
 					goto CheckSharp;
 				case Operator::Division: opnd.push(b / a);
 					goto CheckSharp;
+
+				Failed:
 				case Operator::LBracket:
 				case Operator::RBracket:
 				case Operator::Sharp:
 				default:
-					break;
+					throw Exception(ss.str(), L"错误的操作符");
 				}
 
 			case Precede::F:

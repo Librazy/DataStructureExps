@@ -148,6 +148,14 @@ R"(
 		catch (Exception& e) {
 			assert(std::wstring(e.Error) == L"错误的优先级");
 		}
+
+		try {
+			ExpressionStack::Eval("*5-4");
+			throw std::runtime_error("Exception Expected");
+		}
+		catch (Exception& e) {
+			assert(std::wstring(e.Error) == L"错误的操作符");
+		}
 	}
 	std::wcout << L"ExpressionStack 测试完成" << std::endl;
 	//++End ExpressionStack test
