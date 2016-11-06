@@ -1,8 +1,8 @@
 #pragma once
 
-#ifndef Expression_disabled
+#ifndef ExpressionTree_disabled
 
-#ifndef Expression_defined
+#ifndef ExpressionTree_defined
 
 // ReSharper disable CppUnusedIncludeDirective
 #include<memory>
@@ -14,10 +14,10 @@
  */
 enum class BinaryOperator
 {
-	Plus = '+',
-	Minus = '-',
-	Multiply = '*',
-	Divide = '/',
+	Plus           = '+',
+	Minus          = '-',
+	Multiplication = '*',
+	Division       = '/',
 };
 
 /**
@@ -110,7 +110,7 @@ std::unique_ptr<Expression> GetExp(std::stringstream& Stream);
  */
 std::unique_ptr<Expression> GetExp(std::string Exp);
 
-#define Expression_defined
+#define ExpressionTree_defined
 
 #endif
 

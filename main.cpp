@@ -1,5 +1,6 @@
 // ReSharper disable CppUnusedIncludeDirective
-#include "src/Expression.hpp"
+#include "src/ExpressionTree.hpp"
+#include "src/ExpressionStack.hpp"
 #include "src/SparseMatrix.hpp"
 #include "src/BFS.hpp"
 
@@ -10,13 +11,14 @@
 #include <stdexcept>
 int main()
 {
-	try{
+	try {
 #ifdef _WIN32
 		std::wcout.imbue(std::locale("chs"));
 #else
 		std::wcout.imbue(std::locale("zh_CN.UTF-8"));
 #endif
-	}catch(std::runtime_error){
+	}
+	catch (std::runtime_error) {
 		setlocale(LC_ALL, "chs");
 		std::ios_base::sync_with_stdio(false);
 	}
@@ -73,7 +75,7 @@ R"(
 		auto x = BFS(0, 0, 4, 4, 5, 5, map);
 
 		auto t = BFS_pretty_text(x);
-		std::stringstream ss1,ss2;
+		std::stringstream ss1, ss2;
 		ss1 << t;
 		auto anstext =
 R"((0,0)
@@ -90,7 +92,7 @@ R"((0,0)
 		assert(ss1.str() == ss2.str());
 
 		auto w = BFS_pretty_graph(x, 5, 5, map);
-		std::stringstream ss3,ss4;
+		std::stringstream ss3, ss4;
 		ss3 << w;
 		auto ans =
 R"(FW   
@@ -101,7 +103,7 @@ RRRRD
 )";
 		ss4 << ans;
 		assert(ss3.str() == ss4.str());
-		
+
 		auto map2 =
 R"(
 0 1 0 
@@ -114,8 +116,36 @@ R"(
 	//++End BFS test
 #endif
 
+#ifndef ExpressionStack_disabled
+	//++Start ExpressionStack test
+	{
+		auto str = "1+2*3";
+		auto ans = ExpressionStack::Eval(str);
+		assert(ans == 7.0);
+
+		auto str1 = "2-3*4-5/6";
+		auto ans1 = ExpressionStack::Eval(str1);
+		assert(fabs(ans1 - (2 - 3 * 4 - 5.0/6)) < 0.01);
+
+		auto str2 = "(1-2)*3";
+		auto ans2 = ExpressionStack::Eval(str2);
+		assert(ans2 == -3.0);
+
+		auto str3 = "1+2+(40*34-22)*2";
+		auto ans3 = ExpressionStack::Eval(str3);
+		assert(ans3 == 2679.0);
+
+		auto str4 = "2-3*4-5/6+7*(8-(9*10+1)/2+20+2*10)-20+12";
+		auto ans4 = ExpressionStack::Eval(str4);
+		assert(fabs(ans4 - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
+	}
+	std::wcout << L"ExpressionStack 测试完成" << std::endl;
+	//++End ExpressionStack test
+#endif
+
+
 #ifndef Expression_disabled
-	//++Start Expression test
+	//++Start ExpressionTree test
 	{
 		auto str = "1+2+   (40*34-22)*2";
 		auto exp = GetExp(str);
@@ -123,16 +153,16 @@ R"(
 
 		auto str1 = "2-3*4-5/6";
 		auto exp1 = GetExp(str1);
-		assert(fabs(exp1->Eval() - (2-3*4-5.0/6)) < 0.01);
+		assert(fabs(exp1->Eval() - (2 - 3 * 4 - 5.0 / 6)) < 0.01);
 		
 		auto str2 = "2-3*4-5/6 + 7*(8-   (9*10+1)/2 +20+2*10    ) -20 +12";
 		auto exp2 = GetExp(str2);
-		assert(fabs(exp2->Eval() - (2-3*4-5.0/6+7*(8-(9*10+1.0)/2 +20+2*10)-20+12)) < 0.01);
+		assert(fabs(exp2->Eval() - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
 		
 		try{
 			auto str3 = "2-(3";
 			GetExp(str3);
-			throw std::runtime_error("期望：此处需要右括号");
+			throw std::runtime_error("Exception Expected");
 		}catch(Exception e){
 			assert(std::wstring(e.Error) == L"此处需要右括号");
 		}
@@ -140,7 +170,7 @@ R"(
 		try{
 			auto str3 = "2-*3";
 			GetExp(str3);
-			throw std::runtime_error("期望：此处需要表达式");
+			throw std::runtime_error("Exception Expected");
 		}catch(Exception e){
 			assert(std::wstring(e.Error) == L"此处需要表达式");
 		}
@@ -148,13 +178,13 @@ R"(
 		try{
 			auto brokenExp = BinaryExpression(static_cast<BinaryOperator>(1),std::make_unique<NumberExpression>(1),std::make_unique<NumberExpression>(1));
 			brokenExp.Eval();
-			throw std::runtime_error("期望：错误的操作符");
+			throw std::runtime_error("Exception Expected");
 		}catch(Exception e){
 			assert(std::wstring(e.Error) == L"错误的操作符");
 		}
 	}
-	std::wcout << L"Expression 测试完成" << std::endl;
-	//++End Expression test
+	std::wcout << L"ExpressionTree 测试完成" << std::endl;
+	//++End ExpressionTree test
 #endif
 	return 0;
 }

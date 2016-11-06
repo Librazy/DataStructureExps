@@ -1,6 +1,6 @@
-#include "Expression.hpp"
+#include "ExpressionTree.hpp"
 
-#ifdef Expression_defined
+#ifdef ExpressionTree_defined
 
 Expression::Expression()
 {
@@ -31,9 +31,9 @@ double BinaryExpression::Eval()
 		return lhs + rhs;
 	case BinaryOperator::Minus:
 		return lhs - rhs;
-	case BinaryOperator::Multiply:
+	case BinaryOperator::Multiplication:
 		return lhs * rhs;
-	case BinaryOperator::Divide:
+	case BinaryOperator::Division:
 		return lhs / rhs;
 	default: throw Exception("", L"错误的操作符");
 	}
@@ -98,7 +98,7 @@ std::unique_ptr<Expression> GetFactor(std::stringstream& Stream)
 	auto Result = GetTerm(Stream);
 	while (true) {
 		BinaryOperator Operator;
-		if (Is(Stream, '*')) { Operator = BinaryOperator::Multiply; } else if (Is(Stream, '/')) { Operator = BinaryOperator::Divide; } else { break; }
+		if (Is(Stream, '*')) { Operator = BinaryOperator::Multiplication; } else if (Is(Stream, '/')) { Operator = BinaryOperator::Division; } else { break; }
 		Result = std::make_unique<BinaryExpression>(Operator, move(Result), GetTerm(Stream));
 	}
 	return Result;

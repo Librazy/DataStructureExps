@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-add_library(DsExpLib BFS.cpp Expression.cpp)
+add_library(DsExpLib SparseMatrix.hpp BFS.hpp BFS.cpp ExpressionTree.hpp ExpressionTree.cpp ExpressionStack.hpp ExpressionStack.cpp)
 
 if (COVERALLS)
-    set(COVERAGE_SRCS src/SparseMatrix.hpp src/BFS.cpp src/Expression.cpp)
+    set(COVERAGE_SRCS src/SparseMatrix.hpp src/BFS.cpp src/ExpressionTree.cpp)
 
     # Create the coveralls target.
     coveralls_setup(
@@ -14,7 +14,9 @@ endif()
 
 set(ENABLE_BFS true CACHE BOOL "If BFS enabled.")
 
-set(ENABLE_Expression true CACHE BOOL "If Expression enabled. ")
+set(ENABLE_ExpressionTree true CACHE BOOL "If ExpressionTree enabled. ")
+
+set(ENABLE_ExpressionStack true CACHE BOOL "If ExpressionStack enabled. ")
 
 if(MSVC)
   if(CMAKE_GENERATOR_TOOLSET MATCHES "clang")
@@ -34,6 +36,10 @@ if(NOT ENABLE_BFS)
   target_compile_definitions(DsExpLib PRIVATE BFS_disabled)
 endif()
 
-if(NOT ENABLE_Expression)
-  target_compile_definitions(DsExpLib PRIVATE Expression_disabled)
+if(NOT ENABLE_ExpressionTree)
+  target_compile_definitions(DsExpLib PRIVATE ExpressionTree_disabled)
+endif()
+
+if(NOT ENABLE_ExpressionStack)
+  target_compile_definitions(DsExpLib PRIVATE ExpressionStack_disabled)
 endif()
