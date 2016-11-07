@@ -10,24 +10,6 @@ if (COVERALLS)
         ON                 ) # If we should upload.
 endif()
 
-
-
-set(ENABLE_BFS true CACHE BOOL "If BFS enabled.")
-
-set(ENABLE_ExpressionTree true CACHE BOOL "If ExpressionTree enabled. ")
-
-set(ENABLE_ExpressionStack true CACHE BOOL "If ExpressionStack enabled. ")
-
-if(MSVC)
-  if(CMAKE_GENERATOR_TOOLSET MATCHES "clang")
-    set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support")
-  else()
-    set(ENABLE_SparseMatrix false CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support")
-  endif()
-else()
-  set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support")
-endif()
-
 if(ENABLE_SparseMatrix)
   target_compile_definitions(DsExpLib PRIVATE SparseMatrix_enabled)
 endif()

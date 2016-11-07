@@ -10,7 +10,7 @@
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
-
+#undef NDEBUG
 
 int main()
 {
