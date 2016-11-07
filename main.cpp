@@ -52,7 +52,17 @@ int main()
 		mat5.set<0, 0>(1);
 		mat5.set<0, 1>(1);
 		mat5.set<1, 2>(2);
-
+		
+		assert((mat5.get(1, 1) == 0));
+		assert((mat5.get<1, 1>() == 0));
+		
+		try{
+			mat5.get(3, 5);
+			throw std::runtime_error("Exception Expected");
+		}catch(std::out_of_range e){
+			assert(std::string(e.what()) == "Matrix bound check failed");
+		}
+		
 		auto mat6 = mat - mat5;
 		assert((mat6.get<1, 2>() == 2));
 		std::stringstream ss;
