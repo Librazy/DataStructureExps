@@ -33,7 +33,7 @@ set(ENABLE_ExpressionTree true CACHE BOOL "If ExpressionTree enabled. ")
 
 set(ENABLE_ExpressionStack true CACHE BOOL "If ExpressionStack enabled. ")
 
-set(ENABLE_BinaryTree false CACHE BOOL "If ExpressionStack enabled. ")
+set(ENABLE_BinaryTree true CACHE BOOL "If ExpressionStack enabled. ")
 
 if(MSVC)
   if(CMAKE_GENERATOR_TOOLSET MATCHES "clang")
