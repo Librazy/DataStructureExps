@@ -1,4 +1,5 @@
 // ReSharper disable CppUnusedIncludeDirective
+#undef NDEBUG
 #include "src/Exception.hpp"
 #include "src/ExpressionTree.hpp"
 #include "src/ExpressionStack.hpp"
@@ -11,7 +12,6 @@
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
-#undef NDEBUG
 
 int main()
 {

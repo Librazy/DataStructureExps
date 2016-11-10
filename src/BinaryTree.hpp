@@ -17,8 +17,6 @@ template<typename T>
 struct BinaryTree{
 	BinaryTree(std::shared_ptr<BinaryTree<T>> l, std::shared_ptr<BinaryTree<T>> r, T&& d)
 		:data(std::forward<T>(d)), left(l), right(r) {}
-	BinaryTree(std::shared_ptr<BinaryTree<T>> l, std::shared_ptr<BinaryTree<T>> r)
-		:left(l), right(r){}
 	BinaryTree(T&& d)
 		:data(std::forward<T>(d)){}
 	T data;
@@ -75,11 +73,6 @@ typename BinaryTree<T>::fun&& f){
 template<typename T>
 std::shared_ptr<BinaryTree<T>> MakeTree(std::shared_ptr<BinaryTree<T>> a, std::shared_ptr<BinaryTree<T>> b, T&& t){
   return std::make_shared<BinaryTree<T>>(a, b, std::forward<T>(t));
-}
-
-template<typename T>
-std::shared_ptr<BinaryTree<T>> MakeTree(std::shared_ptr<BinaryTree<T>> a, std::shared_ptr<BinaryTree<T>> b){
-  return std::make_shared<BinaryTree<T>>(a, b);
 }
 
 template<typename T>
