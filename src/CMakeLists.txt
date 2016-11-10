@@ -7,7 +7,7 @@ if (COVERALLS)
     # Create the coveralls target.
     coveralls_setup(
         "${COVERAGE_SRCS}" # The source files.
-        ON                 ) # If we should upload.
+        ${COVERALLS_UP}     ) # If we should upload.
 endif()
 
 if(ENABLE_SparseMatrix)

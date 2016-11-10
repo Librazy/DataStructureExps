@@ -4,6 +4,7 @@
 #include "src/ExpressionStack.hpp"
 #include "src/SparseMatrix.hpp"
 #include "src/BFS.hpp"
+#include "src/BinaryTree.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -14,17 +15,20 @@
 
 int main()
 {
+#ifdef Use_Wcout
+
 	try {
 #ifdef _WIN32
 		std::wcout.imbue(std::locale("chs"));
-#else
+#else //_WIN32
 		std::wcout.imbue(std::locale("zh_CN.UTF-8"));
-#endif
+#endif //_WIN32
 	}
 	catch (std::runtime_error) {
 		setlocale(LC_ALL, "chs");
 		std::ios_base::sync_with_stdio(false);
 	}
+#endif //Use_Wcout
 
 #ifdef SparseMatrix_enabled
 	//++Start SparseMatrix2 test
@@ -52,17 +56,17 @@ int main()
 		mat5.set<0, 0>(1);
 		mat5.set<0, 1>(1);
 		mat5.set<1, 2>(2);
-		
+
 		assert((mat5.get(1, 1) == 0));
 		assert((mat5.get<1, 1>() == 0));
-		
+
 		try{
 			mat5.get(3, 5);
 			throw std::runtime_error("Exception Expected");
 		}catch(std::out_of_range e){
 			assert(std::string(e.what()) == "Matrix bound check failed");
 		}
-		
+
 		auto mat6 = mat - mat5;
 		assert((mat6.get<1, 2>() == 2));
 		std::stringstream ss;
@@ -70,7 +74,11 @@ int main()
 		assert(ss.str() == "1 1 0\n0 0 4\n");
 
 	}
+#ifdef Use_Wcout
 	std::wcout << L"SparseMatrix2 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "SparseMatrix2 test complete" << std::endl;
+#endif //Use_Wcout
 	//++End SparseMatrix2 test
 #endif
 
@@ -119,13 +127,17 @@ RRRRD
 
 		auto map2 =
 R"(
-0 1 0 
-0 1 0 
+0 1 0
+0 1 0
 )";
 		auto x2 = BFS(0, 0, 2, 1, 3, 2, map2);
 		assert(x2.size() == 0);
 	}
+#ifdef Use_Wcout
 	std::wcout << L"BFS 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "BFS test complete" << std::endl;
+#endif //Use_Wcout
 	//++End BFS test
 #endif
 
@@ -167,10 +179,13 @@ R"(
 			assert(std::wstring(e.Error) == L"错误的操作符");
 		}
 	}
+#ifdef Use_Wcout
 	std::wcout << L"ExpressionStack 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "ExpressionStack test complete" << std::endl;
+#endif //Use_Wcout
 	//++End ExpressionStack test
 #endif
-
 
 #ifndef ExpressionTree_disabled
 	//++Start ExpressionTree test
@@ -182,11 +197,11 @@ R"(
 		auto str1 = "2-3*4-5/6";
 		auto exp1 = GetExp(str1);
 		assert(fabs(exp1->Eval() - (2 - 3 * 4 - 5.0 / 6)) < 0.01);
-		
+
 		auto str2 = "2-3*4-5/6 + 7*(8-   (9*10+1)/2 +20+2*10    ) -20 +12";
 		auto exp2 = GetExp(str2);
 		assert(fabs(exp2->Eval() - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
-		
+
 		try{
 			auto str3 = "2-(3";
 			GetExp(str3);
@@ -202,7 +217,7 @@ R"(
 		}catch(Exception e){
 			assert(std::wstring(e.Error) == L"此处需要表达式");
 		}
-		
+
 		try{
 			auto brokenExp = BinaryExpression(static_cast<BinaryOperator>(1),std::make_unique<NumberExpression>(1),std::make_unique<NumberExpression>(1));
 			brokenExp.Eval();
@@ -211,8 +226,38 @@ R"(
 			assert(std::wstring(e.Error) == L"错误的操作符");
 		}
 	}
+#ifdef Use_Wcout
 	std::wcout << L"ExpressionTree 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "ExpressionTree test complete" << std::endl;
+#endif //Use_Wcout
 	//++End ExpressionTree test
+#endif
+
+#ifndef BinaryTree_disabled
+	//++Start BinaryTree test
+	{
+/*
+      1
+     / \
+    2   3
+   / \
+  4	  5
+
+*/
+		auto tree = MakeTree(MakeTree(MakeTree(std::make_unique<int>(4)),MakeTree(std::make_unique<int>(5)),std::make_unique<int>(2)),MakeTree(std::make_unique<int>(3)),std::make_unique<int>(1));
+		VisitTreeRecurse<Order::PreOrder>(tree, [](std::unique_ptr<int>& i){std::cout<<*i<<std::endl;});
+		std::cout<<std::endl;
+		VisitTreeRecurse<Order::InOrder>(tree, [](std::unique_ptr<int>& i){std::cout<<*i<<std::endl;});
+		std::cout<<std::endl;
+		VisitTreeRecurse<Order::PostOrder>(tree, [](std::unique_ptr<int>& i){std::cout<<*i<<std::endl;});
+	}
+#ifdef Use_Wcout
+	std::wcout << L"BinaryTree 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "BinaryTree test complete" << std::endl;
+#endif //Use_Wcout
+	//++End BinaryTree test
 #endif
 	return 0;
 }
