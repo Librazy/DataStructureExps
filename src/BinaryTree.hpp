@@ -15,15 +15,16 @@ template <typename T> struct identity
 
 template<typename T>
 struct BinaryTree{
-	BinaryTree(std::shared_ptr<BinaryTree<T>> l, std::shared_ptr<BinaryTree<T>> r, T& d)
-		:data(d), left(l), right(r) {}
+	BinaryTree(std::shared_ptr<BinaryTree<T>> l, std::shared_ptr<BinaryTree<T>> r, T&& d)
+		:data(std::forward<T>(d)), left(l), right(r) {}
 	BinaryTree(std::shared_ptr<BinaryTree<T>> l, std::shared_ptr<BinaryTree<T>> r)
 		:left(l), right(r){}
-	BinaryTree(T& d)
-		:data(d){}
-	T& data;
+	BinaryTree(T&& d)
+		:data(std::forward<T>(d)){}
+	T data;
 	std::shared_ptr<BinaryTree<T>> left;
 	std::shared_ptr<BinaryTree<T>> right;
+	using fun = typename identity<std::function<void(T&)>>::type;
 };
 
 enum class Order{
@@ -34,15 +35,15 @@ enum class Order{
 
 template<Order O,typename T>
 void VisitTreeRecurse(std::shared_ptr<BinaryTree<T>> tree,
-typename identity<std::function<void(T&)>>::type f);
+typename BinaryTree<T>::fun&& f);
 
 template<Order O,typename T, int I>
 typename std::enable_if   <(I == 0 && O == Order::PreOrder)
 						|| (I == 1 && O == Order::InOrder)
 						|| (I == 2 && O == Order::PostOrder), void>::type
 VisitTreeRecurseImpl(std::shared_ptr<BinaryTree<T>> tree,
-typename identity<std::function<void(T&)>>::type f){
-	if(tree)f(tree->data);
+typename BinaryTree<T>::fun&& f){
+	if (tree)std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), tree->data);
 }
 
 template<Order O,typename T, int I>
@@ -50,8 +51,8 @@ typename std::enable_if   <(I == 1 && O == Order::PreOrder)
 						|| (I == 0 && O == Order::InOrder)
 						|| (I == 0 && O == Order::PostOrder), void>::type
 VisitTreeRecurseImpl(std::shared_ptr<BinaryTree<T>> tree,
-typename identity<std::function<void(T&)>>::type f){
-	if(tree)VisitTreeRecurse<O>(tree->left, f);
+typename BinaryTree<T>::fun&& f){
+	if(tree)VisitTreeRecurse<O>(tree->left, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 template<Order O,typename T, int I>
@@ -59,21 +60,21 @@ typename std::enable_if   <(I == 2 && O == Order::PreOrder)
 						|| (I == 2 && O == Order::InOrder)
 						|| (I == 1 && O == Order::PostOrder), void>::type
 VisitTreeRecurseImpl(std::shared_ptr<BinaryTree<T>> tree,
-typename identity<std::function<void(T&)>>::type f){
-	if(tree)VisitTreeRecurse<O>(tree->right, f);
+typename BinaryTree<T>::fun&& f){
+	if(tree)VisitTreeRecurse<O>(tree->right, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 template<Order O,typename T>
 void VisitTreeRecurse(std::shared_ptr<BinaryTree<T>> tree,
-typename identity<std::function<void(T&)>>::type f){
-	VisitTreeRecurseImpl<O, T, 0>(tree, f);
-	VisitTreeRecurseImpl<O, T, 1>(tree, f);
-	VisitTreeRecurseImpl<O, T, 2>(tree, f);
+typename BinaryTree<T>::fun&& f){
+	VisitTreeRecurseImpl<O, T, 0>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	VisitTreeRecurseImpl<O, T, 1>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	VisitTreeRecurseImpl<O, T, 2>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 template<typename T>
 std::shared_ptr<BinaryTree<T>> MakeTree(std::shared_ptr<BinaryTree<T>> a, std::shared_ptr<BinaryTree<T>> b, T&& t){
-  return std::make_shared<BinaryTree<T>>(a, b, t);
+  return std::make_shared<BinaryTree<T>>(a, b, std::forward<T>(t));
 }
 
 template<typename T>
@@ -83,7 +84,7 @@ std::shared_ptr<BinaryTree<T>> MakeTree(std::shared_ptr<BinaryTree<T>> a, std::s
 
 template<typename T>
 std::shared_ptr<BinaryTree<T>> MakeTree(T&& t){
-  return std::make_shared<BinaryTree<T>>(t);
+  return std::make_shared<BinaryTree<T>>(std::forward<T>(t));
 }
 
 #define BinaryTree_defined

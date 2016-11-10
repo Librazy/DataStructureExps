@@ -97,9 +97,10 @@ R"(
 
 		auto t = BFS_pretty_text(x);
 		std::stringstream ss1, ss2;
-		ss1 << t;
+		ss1 << '\n' << t;
 		auto anstext =
-R"((0,0)
+R"(
+(0,0)
 (1,0)
 (2,0)
 (2,1)
@@ -114,9 +115,10 @@ R"((0,0)
 
 		auto w = BFS_pretty_graph(x, 5, 5, map);
 		std::stringstream ss3, ss4;
-		ss3 << w;
+		ss3 << '\n' << w;
 		auto ans =
-R"(FW   
+R"(
+FW   
 DW W 
 RRRRD
  WWWD
@@ -245,12 +247,33 @@ R"(
   4	  5
 
 */
-		auto tree = MakeTree(MakeTree(MakeTree(std::make_unique<int>(4)),MakeTree(std::make_unique<int>(5)),std::make_unique<int>(2)),MakeTree(std::make_unique<int>(3)),std::make_unique<int>(1));
-		VisitTreeRecurse<Order::PreOrder>(tree, [](std::unique_ptr<int>& i){std::cout<<*i<<std::endl;});
-		std::cout<<std::endl;
-		VisitTreeRecurse<Order::InOrder>(tree, [](std::unique_ptr<int>& i){std::cout<<*i<<std::endl;});
-		std::cout<<std::endl;
-		VisitTreeRecurse<Order::PostOrder>(tree, [](std::unique_ptr<int>& i){std::cout<<*i<<std::endl;});
+		auto tree = MakeTree(MakeTree(MakeTree(std::make_unique<int>(4)), MakeTree(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeTree(std::make_unique<int>(3)), std::make_unique<int>(1));
+		auto tree2 = MakeTree(MakeTree(MakeTree(4), MakeTree(5), 2), MakeTree(3), 1);
+		auto ans =
+R"(
+1 2 4 5 3 
+4 2 5 1 3 
+4 5 2 3 1 
+)";
+		std::stringstream ss2, ss1, ssa(ans);
+
+		ss1 << std::endl;
+		VisitTreeRecurse<Order::PreOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		ss1 << std::endl;
+		VisitTreeRecurse<Order::InOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		ss1 << std::endl;
+		VisitTreeRecurse<Order::PostOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		ss1 << std::endl;
+		assert(ssa.str() == ss1.str());
+
+		ss2 << std::endl;
+		VisitTreeRecurse<Order::PreOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
+		ss2 << std::endl;
+		VisitTreeRecurse<Order::InOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
+		ss2 << std::endl;
+		VisitTreeRecurse<Order::PostOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
+		ss2 << std::endl;
+		assert(ssa.str() == ss2.str());
 	}
 #ifdef Use_Wcout
 	std::wcout << L"BinaryTree 测试完成" << std::endl;
