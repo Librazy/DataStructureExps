@@ -261,7 +261,7 @@ R"(
 4 2 5 1 3 
 1 1 1 1 1 
 )";
-		std::stringstream ss2, ss1, ssa(ans), ssa2(ans2);
+		std::stringstream ss1, ss2, ss3, ssa(ans), ssa2(ans2);
 
 		ss1 << std::endl;
 		TreeTraversalRecursive<Order::PreOrder>(tree, [&ss1](auto& i) {ss1 << *i << " "; });
@@ -280,6 +280,15 @@ R"(
 		TreeTraversalRecursive<Order::PostOrder>(tree2, [&ss2](auto i) {ss2 << i << " "; });
 		ss2 << std::endl;
 		assert(ssa2.str() == ss2.str());
+		
+		ss3 << std::endl;
+		TreeTraversalIterative<Order::PreOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
+		ss3 << std::endl;
+		TreeTraversalIterative<Order::InOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
+		ss3 << std::endl;
+		TreeTraversalIterative<Order::PostOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
+		ss3 << std::endl;
+		assert(ssa.str() == ss3.str());
 	}
 #ifdef Use_Wcout
 	std::wcout << L"BinaryTree 测试完成" << std::endl;

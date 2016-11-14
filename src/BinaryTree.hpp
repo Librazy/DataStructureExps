@@ -7,6 +7,7 @@
 // ReSharper disable CppUnusedIncludeDirective
 #include <memory>
 #include <functional>
+#include <stack>
 
 template <typename T> struct identity
 {
@@ -68,6 +69,63 @@ typename BinaryTree<T>::fun&& f){
 	TreeTraversalRecursiveImpl<O, T, 0>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
 	TreeTraversalRecursiveImpl<O, T, 1>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
 	TreeTraversalRecursiveImpl<O, T, 2>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+}
+
+template<Order O,typename T>
+typename std::enable_if<O == Order::PreOrder, void>::type
+TreeTraversalIterative(std::shared_ptr<BinaryTree<T>> const& root,
+typename BinaryTree<T>::fun&& f){
+	if(!root)return;
+	std::stack<std::shared_ptr<BinaryTree<T>>> s;
+	s.emplace(root);
+	while(!s.empty()){
+		auto cur = s.top();
+		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), cur->data);
+		s.pop();
+		if(cur->right)s.emplace(cur->right);
+		if(cur->left)s.emplace(cur->left);
+	}
+}
+
+template<Order O,typename T>
+typename std::enable_if<O == Order::InOrder, void>::type
+TreeTraversalIterative(std::shared_ptr<BinaryTree<T>> const& root,
+typename BinaryTree<T>::fun&& f){
+	if(!root)return;
+	std::stack<std::shared_ptr<BinaryTree<T>>> s;
+	auto cur = root;
+	while (!s.empty() || cur) {
+		if (cur) {
+			s.push(cur);
+			cur = cur->left;
+		} else {
+			cur = s.top();
+			s.pop();
+			std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), cur->data);
+			cur = cur->right;
+		}
+	}
+}
+
+template<Order O,typename T>
+typename std::enable_if<O == Order::PostOrder, void>::type
+TreeTraversalIterative(std::shared_ptr<BinaryTree<T>> const& root,
+typename BinaryTree<T>::fun&& f){
+	if(!root)return;
+	std::stack<std::shared_ptr<BinaryTree<T>>> trv;
+	std::stack<std::shared_ptr<BinaryTree<T>>> out;
+	trv.push(root);
+	while (!trv.empty()) {
+		auto cur = trv.top();
+		trv.pop();
+		if (cur->left)trv.push(cur->left);
+		if (cur->right)trv.push(cur->right);
+		out.emplace(std::move(cur));
+	}
+	while (!out.empty()) {
+		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), out.top()->data);
+		out.pop();
+	}
 }
 
 template<typename T>
