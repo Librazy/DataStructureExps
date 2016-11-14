@@ -32,14 +32,14 @@ enum class Order{
 };
 
 template<Order O,typename T>
-void VisitTreeRecurse(std::shared_ptr<BinaryTree<T>> const& tree,
+void TreeTraversalRecursive(std::shared_ptr<BinaryTree<T>> const& tree,
 typename BinaryTree<T>::fun&& f);
 
 template<Order O,typename T, int I>
 typename std::enable_if   <(I == 0 && O == Order::PreOrder)
 						|| (I == 1 && O == Order::InOrder)
 						|| (I == 2 && O == Order::PostOrder), void>::type
-VisitTreeRecurseImpl(std::shared_ptr<BinaryTree<T>> const& tree,
+TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
 typename BinaryTree<T>::fun&& f){
 	if (tree)std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), tree->data);
 }
@@ -48,26 +48,26 @@ template<Order O,typename T, int I>
 typename std::enable_if   <(I == 1 && O == Order::PreOrder)
 						|| (I == 0 && O == Order::InOrder)
 						|| (I == 0 && O == Order::PostOrder), void>::type
-VisitTreeRecurseImpl(std::shared_ptr<BinaryTree<T>> const& tree,
+TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
 typename BinaryTree<T>::fun&& f){
-	if(tree)VisitTreeRecurse<O>(tree->left, std::forward<typename BinaryTree<T>::fun&&>(f));
+	if(tree)TreeTraversalRecursive<O>(tree->left, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 template<Order O,typename T, int I>
 typename std::enable_if   <(I == 2 && O == Order::PreOrder)
 						|| (I == 2 && O == Order::InOrder)
 						|| (I == 1 && O == Order::PostOrder), void>::type
-VisitTreeRecurseImpl(std::shared_ptr<BinaryTree<T>> const& tree,
+TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
 typename BinaryTree<T>::fun&& f){
-	if(tree)VisitTreeRecurse<O>(tree->right, std::forward<typename BinaryTree<T>::fun&&>(f));
+	if(tree)TreeTraversalRecursive<O>(tree->right, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 template<Order O,typename T>
-void VisitTreeRecurse(std::shared_ptr<BinaryTree<T>> const& tree,
+void TreeTraversalRecursive(std::shared_ptr<BinaryTree<T>> const& tree,
 typename BinaryTree<T>::fun&& f){
-	VisitTreeRecurseImpl<O, T, 0>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
-	VisitTreeRecurseImpl<O, T, 1>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
-	VisitTreeRecurseImpl<O, T, 2>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	TreeTraversalRecursiveImpl<O, T, 0>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	TreeTraversalRecursiveImpl<O, T, 1>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	TreeTraversalRecursiveImpl<O, T, 2>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 template<typename T>
