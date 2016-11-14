@@ -67,14 +67,14 @@ typename std::enable_if<O == Order::PreOrder, void>::type
 TreeTraversalIterative(std::unique_ptr<BinaryTree<T>>& root,
 	typename BinaryTree<T>::fun&& f) {
 	if (!root)return;
-	std::stack<std::unique_ptr<BinaryTree<T>>*> s;
-	s.push(&root);
+	std::stack<BinaryTree<T>*> s;
+	s.push(root.get());
 	while (!s.empty()) {
 		auto cur = s.top();
-		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), (*cur)->data);
+		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), cur->data);
 		s.pop();
-		if ((*cur)->right)s.emplace(&((*cur)->right));
-		if ((*cur)->left)s.emplace(&((*cur)->left));
+		if (cur->right)s.emplace(cur->right.get());
+		if (cur->left)s.emplace(cur->left.get());
 	}
 }
 
@@ -91,18 +91,18 @@ typename std::enable_if<O == Order::InOrder, void>::type
 TreeTraversalIterative(std::unique_ptr<BinaryTree<T>>& root,
 	typename BinaryTree<T>::fun&& f) {
 	if (!root)return;
-	std::stack<std::unique_ptr<BinaryTree<T>>*> s;
-	auto cur = &root;
-	while (!s.empty() || *cur) {
-		if (*cur) {
+	std::stack<BinaryTree<T>*> s;
+	auto cur = root.get();
+	while (!s.empty() || cur) {
+		if (cur) {
 			s.push(cur);
-			cur = &((*cur)->left);
+			cur = cur->left.get();
 		}
 		else {
 			cur = s.top();
 			s.pop();
-			std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), (*cur)->data);
-			cur = &((*cur)->right);
+			std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), cur->data);
+			cur = cur->right.get();
 		}
 	}
 }
@@ -120,18 +120,18 @@ typename std::enable_if<O == Order::PostOrder, void>::type
 TreeTraversalIterative(std::unique_ptr<BinaryTree<T>>& root,
 	typename BinaryTree<T>::fun&& f) {
 	if (!root)return;
-	std::stack<std::unique_ptr<BinaryTree<T>>*> trv;
-	std::stack<std::unique_ptr<BinaryTree<T>>*> out;
-	trv.push(&root);
+	std::stack<BinaryTree<T>*> trv;
+	std::stack<BinaryTree<T>*> out;
+	trv.push(root.get());
 	while (!trv.empty()) {
 		auto cur = trv.top();
 		trv.pop();
-		if ((*cur)->left)trv.push(&((*cur)->left));
-		if ((*cur)->right)trv.push(&((*cur)->right));
+		if (cur->left)trv.push(cur->left.get());
+		if (cur->right)trv.push(cur->right.get());
 		out.push(cur);
 	}
 	while (!out.empty()) {
-		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), (*out.top())->data);
+		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), out.top()->data);
 		out.pop();
 	}
 }
