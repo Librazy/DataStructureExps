@@ -76,14 +76,18 @@ double ExpressionStack::Eval(std::string exp)
 					goto CheckSharp;
 
 				Failed:
+				[[fallthrough]];
 				case Operator::LBracket:
+				[[fallthrough]];
 				case Operator::RBracket:
+				[[fallthrough]];
 				case Operator::Sharp:
+				[[fallthrough]];
 				default:
 					throw Exception(ss.str(), L"错误的操作符");
 				}
-
 			case Precede::F:
+			[[fallthrough]];
 			default:
 				throw Exception(ss.str(), L"错误的优先级");
 			}

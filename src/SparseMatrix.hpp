@@ -39,7 +39,7 @@ public:
 	/// @tparam A 矩阵行数
 	/// @tparam B 矩阵列数
 	template<size_t A, size_t B>
-	SparseMatrix2(const T (&Args)[A][B]);
+	explicit SparseMatrix2(const T (&Args)[A][B]);
 
 	//声明所有模版特化为友元类
 	template<typename, size_t, size_t> friend class SparseMatrix2;
@@ -109,21 +109,21 @@ public:
 	/// @tparam DimB 矩阵1的列数即矩阵2的行数
 	/// @tparam DimC 矩阵2的列数
 	template <size_t DimC>
-	SparseMatrix2<T, DimA, DimC> Mul(SparseMatrix2<T, DimB, DimC> m2) const noexcept;
+	SparseMatrix2<T, DimA, DimC> Mul(SparseMatrix2<T, DimB, DimC> const& m2) const noexcept;
 
 	/// @brief AxB的矩阵加法
 	/// @return 和
 	/// @param m2 目标矩阵
 	/// @tparam DimA 矩阵的行数
 	/// @tparam DimB 矩阵的列数
-	SparseMatrix2<T, DimA, DimB> Add(SparseMatrix2<T, DimA, DimB> m2) const noexcept;
+	SparseMatrix2<T, DimA, DimB> Add(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept;
 
 	/// @brief AxB的矩阵减法
 	/// @return 差
 	/// @param m2 目标矩阵
 	/// @tparam DimA 矩阵的行数
 	/// @tparam DimB 矩阵的列数
-	SparseMatrix2<T, DimA, DimB> Sub(SparseMatrix2<T, DimA, DimB> m2) const noexcept;
+	SparseMatrix2<T, DimA, DimB> Sub(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept;
 
 	/// @brief AxB的矩阵转置
 	/// @return 转置
@@ -182,7 +182,7 @@ constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t c
 template <typename T, size_t DimA, size_t DimB>
 T SparseMatrix2<T, DimA, DimB>::get_no_check(size_t DimAg, size_t DimBg) const
 {
-	dim_t i = std::make_tuple(DimAg, DimBg);
+	auto i = std::make_tuple(DimAg, DimBg);
 	auto x = container.find(i);
 	if (x != container.end()) {
 		return x->second;
@@ -193,7 +193,7 @@ T SparseMatrix2<T, DimA, DimB>::get_no_check(size_t DimAg, size_t DimBg) const
 template <typename T, size_t DimA, size_t DimB>
 void SparseMatrix2<T, DimA, DimB>::set(T ele, size_t DimAs, size_t DimBs)
 {
-	dim_t i = std::make_tuple(DimAs, DimBs);
+	auto i = std::make_tuple(DimAs, DimBs);
 	dim_bound_check(dim_tuple, i);
 	container.insert_or_assign(i, ele);
 }
@@ -203,14 +203,14 @@ template<size_t DimAs, size_t DimBs>
 void SparseMatrix2<T, DimA, DimB>::set(T ele) noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAs, DimBs), "Matrix bound check failed");
-	dim_t i = std::make_tuple(DimAs, DimBs);
+	auto i = std::make_tuple(DimAs, DimBs);
 	container.insert_or_assign(i, ele);
 }
 
 template <typename T, size_t DimA, size_t DimB>
 T SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
 {
-	dim_t i = std::make_tuple(DimAg, DimBg);
+	auto i = std::make_tuple(DimAg, DimBg);
 	dim_bound_check(dim_tuple, i);
 	auto x = container.find(i);
 	if (x != container.end()) {
@@ -224,7 +224,7 @@ template<size_t DimAg, size_t DimBg>
 T SparseMatrix2<T, DimA, DimB>::get() const noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAg, DimBg), "Matrix bound check failed");
-	dim_t i = std::make_tuple(DimAg, DimBg);
+	auto i = std::make_tuple(DimAg, DimBg);
 	auto x = container.find(i);
 	if (x != container.end()) {
 		return x->second;
@@ -234,7 +234,7 @@ T SparseMatrix2<T, DimA, DimB>::get() const noexcept
 
 template <typename T, size_t DimA, size_t DimB>
 template <size_t DimC>
-SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, DimB, DimC> m2) const noexcept
+SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, DimB, DimC> const& m2) const noexcept
 {
 	SparseMatrix2<T, DimA, DimC> res;
 	for (auto ele : container) {
@@ -256,7 +256,7 @@ SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, 
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, DimA, DimB> m2) const noexcept {
+SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
 	SparseMatrix2<T, DimA, DimB> res;
 	for (auto ele : container) {
 		res.set(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
@@ -268,7 +268,7 @@ SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, 
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, DimA, DimB> m2) const noexcept {
+SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
 	SparseMatrix2<T, DimA, DimB> res;
 	for (auto ele : container) {
 		res.set(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
@@ -290,25 +290,25 @@ SparseMatrix2<T, DimB, DimA> SparseMatrix2<T, DimA, DimB>::Rev() const noexcept
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> operator+(SparseMatrix2<T, DimA, DimB> a, SparseMatrix2<T, DimA, DimB> b) noexcept
+SparseMatrix2<T, DimA, DimB> operator+(SparseMatrix2<T, DimA, DimB> const& a, SparseMatrix2<T, DimA, DimB> const& b) noexcept
 {
 	return a.Add(b);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> operator-(SparseMatrix2<T, DimA, DimB> a, SparseMatrix2<T, DimA, DimB> b) noexcept
+SparseMatrix2<T, DimA, DimB> operator-(SparseMatrix2<T, DimA, DimB> const& a, SparseMatrix2<T, DimA, DimB> const& b) noexcept
 {
 	return a.Sub(b);
 }
 
 template <typename T, size_t DimA, size_t DimB, size_t DimC>
-SparseMatrix2<T, DimA, DimC> operator*(SparseMatrix2<T, DimA, DimB> a, SparseMatrix2<T, DimB, DimC> b) noexcept
+SparseMatrix2<T, DimA, DimC> operator*(SparseMatrix2<T, DimA, DimB> const& a, SparseMatrix2<T, DimB, DimC> const& b) noexcept
 {
 	return a.Mul(b);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-std::ostream& operator<< (std::ostream& out, const SparseMatrix2<T, DimA, DimB>& d) noexcept
+std::ostream& operator<< (std::ostream& out, SparseMatrix2<T, DimA, DimB> const& d) noexcept
 {
 	for (size_t i = 0; i != DimA; ++i) {
 		for (size_t j = 0; j != DimB; ++j) {

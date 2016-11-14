@@ -240,13 +240,12 @@ R"(
 	//++Start BinaryTree test
 	{
 /*
-      1
-     / \
-    2   3
-   / \
-  4	  5
-
-*/
+ *     1
+ *    / \
+ *   2   3
+ *  / \
+ * 4   5
+ */
 		auto tree = MakeTree(MakeTree(MakeTree(std::make_unique<int>(4)), MakeTree(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeTree(std::make_unique<int>(3)), std::make_unique<int>(1));
 		auto tree2 = MakeTree(MakeTree(MakeTree(4), MakeTree(5), 2), MakeTree(3), 1);
 		auto ans =
@@ -261,7 +260,13 @@ R"(
 4 2 5 1 3 
 1 1 1 1 1 
 )";
-		std::stringstream ss1, ss2, ss3, ssa(ans), ssa2(ans2);
+		auto ans3 =
+R"(
+1 2 4 5 3 
+4 2 5 1 3 
+5 6 3 4 2 
+)";
+		std::stringstream ss1, ss2, ss3, ssa(ans), ssa2(ans2), ssa3(ans3);
 
 		ss1 << std::endl;
 		TreeTraversalRecursive<Order::PreOrder>(tree, [&ss1](auto& i) {ss1 << *i << " "; });
@@ -284,11 +289,11 @@ R"(
 		ss3 << std::endl;
 		TreeTraversalIterative<Order::PreOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
-		TreeTraversalIterative<Order::InOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
+		TreeTraversalIterative<Order::InOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; *i += 1; });
 		ss3 << std::endl;
 		TreeTraversalIterative<Order::PostOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
-		assert(ssa.str() == ss3.str());
+		assert(ssa3.str() == ss3.str());
 	}
 #ifdef Use_Wcout
 	std::wcout << L"BinaryTree 测试完成" << std::endl;

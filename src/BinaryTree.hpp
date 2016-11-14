@@ -9,96 +9,96 @@
 #include <functional>
 #include <stack>
 
+/**
+ * \brief 模版推导辅助
+ * \tparam T 类型
+ */
 template <typename T> struct identity
 {
   using type = T;
 };
 
+/**
+ * \brief 二叉树的节点类型
+ * \tparam T 数据类型
+ */
 template<typename T>
 struct BinaryTree{
 	BinaryTree(std::shared_ptr<BinaryTree<T>> l, std::shared_ptr<BinaryTree<T>> r, T&& d)
 		:data(std::forward<T>(d)), left(l), right(r) {}
-	BinaryTree(T&& d)
+	explicit BinaryTree(T&& d)
 		:data(std::forward<T>(d)){}
+
 	T data;
 	std::shared_ptr<BinaryTree<T>> left;
 	std::shared_ptr<BinaryTree<T>> right;
 	using fun = typename identity<std::function<void(T&)>>::type;
 };
 
+/**
+ * \brief 遍历方式
+ */
 enum class Order{
 	PreOrder,
 	InOrder,
 	PostOrder,
 };
 
+/**
+ * \brief 二叉树递归遍历
+ * \tparam O 遍历方式
+ * \tparam T 数据类型
+ * \param tree 二叉树
+ * \param f 操作函数
+ */
 template<Order O,typename T>
-void TreeTraversalRecursive(std::shared_ptr<BinaryTree<T>> const& tree,
-typename BinaryTree<T>::fun&& f);
+void TreeTraversalRecursive(std::shared_ptr<BinaryTree<T>> const& tree, typename BinaryTree<T>::fun&& f);
 
-template<Order O,typename T, int I>
-typename std::enable_if   <(I == 0 && O == Order::PreOrder)
-						|| (I == 1 && O == Order::InOrder)
-						|| (I == 2 && O == Order::PostOrder), void>::type
-TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
-typename BinaryTree<T>::fun&& f){
-	if (tree)std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), tree->data);
-}
-
-template<Order O,typename T, int I>
-typename std::enable_if   <(I == 1 && O == Order::PreOrder)
-						|| (I == 0 && O == Order::InOrder)
-						|| (I == 0 && O == Order::PostOrder), void>::type
-TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
-typename BinaryTree<T>::fun&& f){
-	if(tree)TreeTraversalRecursive<O>(tree->left, std::forward<typename BinaryTree<T>::fun&&>(f));
-}
-
-template<Order O,typename T, int I>
-typename std::enable_if   <(I == 2 && O == Order::PreOrder)
-						|| (I == 2 && O == Order::InOrder)
-						|| (I == 1 && O == Order::PostOrder), void>::type
-TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
-typename BinaryTree<T>::fun&& f){
-	if(tree)TreeTraversalRecursive<O>(tree->right, std::forward<typename BinaryTree<T>::fun&&>(f));
-}
-
-template<Order O,typename T>
-void TreeTraversalRecursive(std::shared_ptr<BinaryTree<T>> const& tree,
-typename BinaryTree<T>::fun&& f){
-	TreeTraversalRecursiveImpl<O, T, 0>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
-	TreeTraversalRecursiveImpl<O, T, 1>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
-	TreeTraversalRecursiveImpl<O, T, 2>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
-}
-
-template<Order O,typename T>
+/**
+ * \brief 二叉树先序遍历
+ * \tparam O == Order::PreOrder
+ * \tparam T 数据类型
+ * \param root 二叉树节点
+ * \param f 操作函数
+ * \return void
+ */
+template<Order O, typename T>
 typename std::enable_if<O == Order::PreOrder, void>::type
 TreeTraversalIterative(std::shared_ptr<BinaryTree<T>> const& root,
-typename BinaryTree<T>::fun&& f){
-	if(!root)return;
+	typename BinaryTree<T>::fun&& f) {
+	if (!root)return;
 	std::stack<std::shared_ptr<BinaryTree<T>>> s;
 	s.emplace(root);
-	while(!s.empty()){
+	while (!s.empty()) {
 		auto cur = s.top();
 		std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), cur->data);
 		s.pop();
-		if(cur->right)s.emplace(cur->right);
-		if(cur->left)s.emplace(cur->left);
+		if (cur->right)s.emplace(cur->right);
+		if (cur->left)s.emplace(cur->left);
 	}
 }
 
-template<Order O,typename T>
+/**
+ * \brief 二叉树中序遍历
+ * \tparam O == Order::InOrder
+ * \tparam T 数据类型
+ * \param root 二叉树节点
+ * \param f 操作函数
+ * \return void
+ */
+template<Order O, typename T>
 typename std::enable_if<O == Order::InOrder, void>::type
 TreeTraversalIterative(std::shared_ptr<BinaryTree<T>> const& root,
-typename BinaryTree<T>::fun&& f){
-	if(!root)return;
+	typename BinaryTree<T>::fun&& f) {
+	if (!root)return;
 	std::stack<std::shared_ptr<BinaryTree<T>>> s;
 	auto cur = root;
 	while (!s.empty() || cur) {
 		if (cur) {
 			s.push(cur);
 			cur = cur->left;
-		} else {
+		}
+		else {
 			cur = s.top();
 			s.pop();
 			std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), cur->data);
@@ -107,11 +107,19 @@ typename BinaryTree<T>::fun&& f){
 	}
 }
 
-template<Order O,typename T>
+/**
+ * \brief 二叉树后序遍历
+ * \tparam O == Order::PostOrder
+ * \tparam T 数据类型
+ * \param root 二叉树节点
+ * \param f 操作函数
+ * \return void
+ */
+template<Order O, typename T>
 typename std::enable_if<O == Order::PostOrder, void>::type
 TreeTraversalIterative(std::shared_ptr<BinaryTree<T>> const& root,
-typename BinaryTree<T>::fun&& f){
-	if(!root)return;
+	typename BinaryTree<T>::fun&& f) {
+	if (!root)return;
 	std::stack<std::shared_ptr<BinaryTree<T>>> trv;
 	std::stack<std::shared_ptr<BinaryTree<T>>> out;
 	trv.push(root);
@@ -128,14 +136,64 @@ typename BinaryTree<T>::fun&& f){
 	}
 }
 
+/**
+ * \brief 构造二叉树内节点
+ * \tparam T 数据类型
+ * \param left 左子树
+ * \param right 右子树
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<typename T>
-std::shared_ptr<BinaryTree<T>> MakeTree(std::shared_ptr<BinaryTree<T>> a, std::shared_ptr<BinaryTree<T>> b, T&& t){
-  return std::make_shared<BinaryTree<T>>(a, b, std::forward<T>(t));
+std::shared_ptr<BinaryTree<T>> MakeTree(std::shared_ptr<BinaryTree<T>> left, std::shared_ptr<BinaryTree<T>> right, T&& t) {
+	return std::make_shared<BinaryTree<T>>(left, right, std::forward<T>(t));
 }
 
+/**
+ * \brief 构造二叉树叶子节点
+ * \tparam T 数据类型
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<typename T>
-std::shared_ptr<BinaryTree<T>> MakeTree(T&& t){
-  return std::make_shared<BinaryTree<T>>(std::forward<T>(t));
+std::shared_ptr<BinaryTree<T>> MakeTree(T&& t) {
+	return std::make_shared<BinaryTree<T>>(std::forward<T>(t));
+}
+
+template<Order O, int I, typename T>
+typename std::enable_if   <(I == 0 && O == Order::PreOrder)
+						|| (I == 1 && O == Order::InOrder)
+						|| (I == 2 && O == Order::PostOrder), void>::type
+TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
+typename BinaryTree<T>::fun&& f){
+	std::invoke(std::forward<typename BinaryTree<T>::fun&&>(f), tree->data);
+}
+
+template<Order O, int I, typename T>
+typename std::enable_if   <(I == 1 && O == Order::PreOrder)
+						|| (I == 0 && O == Order::InOrder)
+						|| (I == 0 && O == Order::PostOrder), void>::type
+TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
+typename BinaryTree<T>::fun&& f){
+	TreeTraversalRecursive<O>(tree->left, std::forward<typename BinaryTree<T>::fun&&>(f));
+}
+
+template<Order O, int I, typename T>
+typename std::enable_if   <(I == 2 && O == Order::PreOrder)
+						|| (I == 2 && O == Order::InOrder)
+						|| (I == 1 && O == Order::PostOrder), void>::type
+TreeTraversalRecursiveImpl(std::shared_ptr<BinaryTree<T>> const& tree,
+typename BinaryTree<T>::fun&& f){
+	TreeTraversalRecursive<O>(tree->right, std::forward<typename BinaryTree<T>::fun&&>(f));
+}
+
+template<Order O,typename T>
+void TreeTraversalRecursive(std::shared_ptr<BinaryTree<T>> const& tree,
+typename BinaryTree<T>::fun&& f){
+	if (!tree)return;
+	TreeTraversalRecursiveImpl<O, 0>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	TreeTraversalRecursiveImpl<O, 1>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
+	TreeTraversalRecursiveImpl<O, 2>(tree, std::forward<typename BinaryTree<T>::fun&&>(f));
 }
 
 #define BinaryTree_defined
