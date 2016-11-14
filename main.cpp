@@ -264,20 +264,20 @@ R"(
 		std::stringstream ss2, ss1, ssa(ans), ssa2(ans2);
 
 		ss1 << std::endl;
-		VisitTreeRecurse<Order::PreOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		VisitTreeRecurse<Order::PreOrder>(tree, [&ss1](auto& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
 		VisitTreeRecurse<Order::InOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
-		VisitTreeRecurse<Order::PostOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		VisitTreeRecurse<Order::PostOrder>(tree, [&ss1](auto& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
 		assert(ssa.str() == ss1.str());
 
 		ss2 << std::endl;
 		VisitTreeRecurse<Order::PreOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
 		ss2 << std::endl;
-		VisitTreeRecurse<Order::InOrder>(tree2, [&ss2](int& i) {ss2 << i << " "; i = 1;});
+		VisitTreeRecurse<Order::InOrder>(tree2, [&ss2](auto& i) {ss2 << i << " "; i = 1;});
 		ss2 << std::endl;
-		VisitTreeRecurse<Order::PostOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
+		VisitTreeRecurse<Order::PostOrder>(tree2, [&ss2](auto i) {ss2 << i << " "; });
 		ss2 << std::endl;
 		assert(ssa2.str() == ss2.str());
 	}
