@@ -255,7 +255,13 @@ R"(
 4 2 5 1 3 
 4 5 2 3 1 
 )";
-		std::stringstream ss2, ss1, ssa(ans);
+		auto ans2 =
+R"(
+1 2 4 5 3 
+4 2 5 1 3 
+1 1 1 1 1 
+)";
+		std::stringstream ss2, ss1, ssa(ans), ssa2(ans2);
 
 		ss1 << std::endl;
 		VisitTreeRecurse<Order::PreOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
@@ -269,11 +275,11 @@ R"(
 		ss2 << std::endl;
 		VisitTreeRecurse<Order::PreOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
 		ss2 << std::endl;
-		VisitTreeRecurse<Order::InOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
+		VisitTreeRecurse<Order::InOrder>(tree2, [&ss2](int& i) {ss2 << i << " "; i = 1;});
 		ss2 << std::endl;
 		VisitTreeRecurse<Order::PostOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
 		ss2 << std::endl;
-		assert(ssa.str() == ss2.str());
+		assert(ssa2.str() == ss2.str());
 	}
 #ifdef Use_Wcout
 	std::wcout << L"BinaryTree 测试完成" << std::endl;
