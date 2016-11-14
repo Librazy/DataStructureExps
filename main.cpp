@@ -298,6 +298,27 @@ R"(
 		ss3 << std::endl;
 		assert(ssa3.str() == ss3.str());
 		assert(*p4 == 5);
+
+		struct func
+		{
+			func(){}
+			func(const func&) = delete;
+			func(func&&) = delete;
+			func& operator= (const func&) = delete;
+			func& operator= (func&&) = delete;
+
+			int sum = 0;
+			void operator()(std::unique_ptr<int>& i){
+				sum += *i;
+			}
+			void operator()(int& i) {
+				sum += i;
+			}
+		};
+		func f;
+		TreeTraversalRecursive<Order::PostOrder>(tree, f);
+		TreeTraversalRecursive<Order::InOrder>(tree2, f);
+		assert(f.sum == 5 + 6 + 3 + 4 + 2 + 5);
 	}
 #ifdef Use_Wcout
 	std::wcout << L"BinaryTree 测试完成" << std::endl;
