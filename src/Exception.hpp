@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
+
 /**
  * \brief 异常类
  */
-
 struct Exception
 {
 	std::string Start;

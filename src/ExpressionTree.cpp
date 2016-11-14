@@ -76,7 +76,7 @@ std::unique_ptr<Expression> GetTerm(std::stringstream& Stream)
 {
 	try {
 		return GetNumber(Stream);
-	} catch (Exception) {
+	} catch (Exception&) {
 		if (Is(Stream, '(')) {
 			auto Result = GetExp(Stream);
 			if (!Is(Stream, ')')) {

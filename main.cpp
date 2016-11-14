@@ -208,7 +208,7 @@ R"(
 			auto str3 = "2-(3";
 			GetExp(str3);
 			throw std::runtime_error("Exception Expected");
-		}catch(Exception e){
+		}catch(Exception& e){
 			assert(std::wstring(e.Error) == L"此处需要右括号");
 		}
 
@@ -216,7 +216,7 @@ R"(
 			auto str3 = "2-*3";
 			GetExp(str3);
 			throw std::runtime_error("Exception Expected");
-		}catch(Exception e){
+		}catch(Exception& e){
 			assert(std::wstring(e.Error) == L"此处需要表达式");
 		}
 
@@ -224,7 +224,7 @@ R"(
 			auto brokenExp = BinaryExpression(static_cast<BinaryOperator>(1),std::make_unique<NumberExpression>(1),std::make_unique<NumberExpression>(1));
 			brokenExp.Eval();
 			throw std::runtime_error("Exception Expected");
-		}catch(Exception e){
+		}catch(Exception& e){
 			assert(std::wstring(e.Error) == L"错误的操作符");
 		}
 	}
@@ -240,14 +240,16 @@ R"(
 	//++Start BinaryTree test
 	{
 /*
- *     1
- *    / \
- *   2   3
- *  / \
- * 4   5
+ *      1
+ *     / \
+ *    2   3
+ *   / \
+ *  4   5
  */
-		auto tree = MakeTree(MakeTree(MakeTree(std::make_unique<int>(4)), MakeTree(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeTree(std::make_unique<int>(3)), std::make_unique<int>(1));
-		auto tree2 = MakeTree(MakeTree(MakeTree(4), MakeTree(5), 2), MakeTree(3), 1);
+
+		auto *p4 = new int(4), t4 = 4, t5 = 5, t2 = 2, t3 = 3, t1 = 1;
+		auto tree = MakeTree(MakeTree(MakeTree(std::unique_ptr<int>(p4)), MakeTree(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeTree(std::make_unique<int>(3)), std::make_unique<int>(1));
+		auto tree2 = MakeTree(MakeTree(MakeTree(t4), MakeTree(t5), t2), MakeTree(t3), t1);
 		auto ans =
 R"(
 1 2 4 5 3 
@@ -285,7 +287,8 @@ R"(
 		TreeTraversalRecursive<Order::PostOrder>(tree2, [&ss2](auto i) {ss2 << i << " "; });
 		ss2 << std::endl;
 		assert(ssa2.str() == ss2.str());
-		
+		assert((t4|t5|t2|t3|t1) == 1);
+
 		ss3 << std::endl;
 		TreeTraversalIterative<Order::PreOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
@@ -294,6 +297,7 @@ R"(
 		TreeTraversalIterative<Order::PostOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
 		assert(ssa3.str() == ss3.str());
+		assert(*p4 == 5);
 	}
 #ifdef Use_Wcout
 	std::wcout << L"BinaryTree 测试完成" << std::endl;
