@@ -10,15 +10,6 @@
 #include <stack>
 
 /**
- * \brief 模版推导辅助
- * \tparam T 类型
- */
-template <typename T> struct identity
-{
-  using type = T;
-};
-
-/**
  * \brief 二叉树的节点类型
  * \tparam T 数据类型
  */
@@ -32,7 +23,7 @@ struct BinaryTree{
 	T data;
 	std::unique_ptr<BinaryTree<T>> left;
 	std::unique_ptr<BinaryTree<T>> right;
-	using fun = typename identity<std::function<void(T&)>>::type;
+	using fun = std::function<void(T&)>;
 };
 
 /**
