@@ -271,30 +271,30 @@ R"(
 		std::stringstream ss1, ss2, ss3, ssa(ans), ssa2(ans2), ssa3(ans3);
 
 		ss1 << std::endl;
-		TreeTraversalRecursive<Order::PreOrder>(tree, [&ss1](auto& i) {ss1 << *i << " "; });
+		tree->TreeTraversalRecursive<Order::PreOrder>([&ss1](auto& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
-		TreeTraversalRecursive<Order::InOrder>(tree, [&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		tree->TreeTraversalRecursive<Order::InOrder>([&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
-		TreeTraversalRecursive<Order::PostOrder>(tree, [&ss1](auto& i) {ss1 << *i << " "; });
+		tree->TreeTraversalRecursive<Order::PostOrder>([&ss1](auto& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
 		assert(ssa.str() == ss1.str());
 
 		ss2 << std::endl;
-		TreeTraversalRecursive<Order::PreOrder>(tree2, [&ss2](int i) {ss2 << i << " "; });
+		tree2->TreeTraversalRecursive<Order::PreOrder>([&ss2](int i) {ss2 << i << " "; });
 		ss2 << std::endl;
-		TreeTraversalRecursive<Order::InOrder>(tree2, [&ss2](auto& i) {ss2 << i << " "; i = 1;});
+		tree2->TreeTraversalRecursive<Order::InOrder>([&ss2](auto& i) {ss2 << i << " "; i = 1;});
 		ss2 << std::endl;
-		TreeTraversalRecursive<Order::PostOrder>(tree2, [&ss2](auto i) {ss2 << i << " "; });
+		tree2->TreeTraversalRecursive<Order::PostOrder>([&ss2](auto i) {ss2 << i << " "; });
 		ss2 << std::endl;
 		assert(ssa2.str() == ss2.str());
 		assert((t4|t5|t2|t3|t1) == 1);
 
 		ss3 << std::endl;
-		TreeTraversalIterative<Order::PreOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
+		tree->TreeTraversalIterative<Order::PreOrder>([&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
-		TreeTraversalIterative<Order::InOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; *i += 1; });
+		tree->TreeTraversalIterative<Order::InOrder>([&ss3](auto& i) {ss3 << *i << " "; *i += 1; });
 		ss3 << std::endl;
-		TreeTraversalIterative<Order::PostOrder>(tree, [&ss3](auto& i) {ss3 << *i << " "; });
+		tree->TreeTraversalIterative<Order::PostOrder>([&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
 		assert(ssa3.str() == ss3.str());
 		assert(*p4 == 5);
@@ -316,8 +316,8 @@ R"(
 			}
 		};
 		func f;
-		TreeTraversalRecursive<Order::PostOrder>(tree, f);
-		TreeTraversalRecursive<Order::InOrder>(tree2, f);
+		tree->TreeTraversalRecursive<Order::PostOrder>(f);
+		tree2->TreeTraversalRecursive<Order::InOrder>(f);
 		assert(f.sum == 5 + 6 + 3 + 4 + 2 + 5);
 	}
 #ifdef Use_Wcout
