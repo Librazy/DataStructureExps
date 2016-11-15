@@ -248,8 +248,8 @@ R"(
  */
 
 		auto *p4 = new int(4), t4 = 4, t5 = 5, t2 = 2, t3 = 3, t1 = 1;
-		auto tree = MakeTree(MakeTree(MakeTree(std::unique_ptr<int>(p4)), MakeTree(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeTree(std::make_unique<int>(3)), std::make_unique<int>(1));
-		auto tree2 = MakeTree(MakeTree(MakeTree(t4), MakeTree(t5), t2), MakeTree(t3), t1);
+		auto tree = MakeUniTree(MakeUniTree(MakeUniTree(std::unique_ptr<int>(p4)), MakeUniTree(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeUniTree(std::make_unique<int>(3)), std::make_unique<int>(1));
+		auto tree2 = MakeSrdTree(MakeSrdTree(MakeSrdTree(t4), MakeSrdTree(t5), t2), MakeSrdTree(t3), t1);
 		auto ans =
 R"(
 1 2 4 5 3 

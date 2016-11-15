@@ -9,6 +9,10 @@
 #include <functional>
 #include <stack>
 
+namespace lib {
+	template <typename T> using unidef_ptr = std::unique_ptr<T, std::default_delete<T>>;
+}
+
 /**
  * \brief 遍历方式
  */
@@ -22,16 +26,16 @@ enum class Order{
  * \brief 二叉树的节点类型
  * \tparam T 数据类型
  */
-template<typename T>
+template<typename T, template<class> class P>
 struct BinaryTree{
-	BinaryTree(std::unique_ptr<BinaryTree<T>>&& l, std::unique_ptr<BinaryTree<T>>&& r, T&& d)
-		:data(std::forward<T>(d)), left(std::forward<std::unique_ptr<BinaryTree<T>>>(l)), right(std::forward<std::unique_ptr<BinaryTree<T>>>(r)) {}
+	BinaryTree(P<BinaryTree<T, P>>&& l, P<BinaryTree<T, P>>&& r, T&& d)
+		:data(std::forward<T>(d)), left(std::forward<P<BinaryTree<T, P>>>(l)), right(std::forward<P<BinaryTree<T, P>>>(r)) {}
 	explicit BinaryTree(T&& d)
 		:data(std::forward<T>(d)){}
 
 	T data;
-	std::unique_ptr<BinaryTree<T>> left;
-	std::unique_ptr<BinaryTree<T>> right;
+	P<BinaryTree<T, P>> left;
+	P<BinaryTree<T, P>> right;
 
 	/**
 	 * \brief 二叉树递归遍历
@@ -52,7 +56,7 @@ struct BinaryTree{
 	template<Order O, typename F>
 	typename std::enable_if<O == Order::PreOrder, void>::type
 	TreeTraversalIterative(F&& f){
-		std::stack<BinaryTree<T>*> s;
+		std::stack<BinaryTree<T, P>*> s;
 		s.push(this);
 		while (!s.empty()) {
 			auto cur = s.top();
@@ -73,7 +77,7 @@ struct BinaryTree{
 	template<Order O, typename F>
 	typename std::enable_if<O == Order::InOrder, void>::type
 	TreeTraversalIterative(F&& f){
-		std::stack<BinaryTree<T>*> s;
+		std::stack<BinaryTree<T, P>*> s;
 		auto cur = this;
 		while (!s.empty() || cur) {
 			if (cur) {
@@ -99,8 +103,8 @@ struct BinaryTree{
 	template<Order O, typename F>
 	typename std::enable_if<O == Order::PostOrder, void>::type
 	TreeTraversalIterative(F&& f){
-		std::stack<BinaryTree<T>*> trv;
-		std::stack<BinaryTree<T>*> out;
+		std::stack<BinaryTree<T, P>*> trv;
+		std::stack<BinaryTree<T, P>*> out;
 		trv.push(this);
 		while (!trv.empty()) {
 			auto cur = trv.top();
@@ -140,9 +144,9 @@ struct BinaryTree{
 	}
 };
 
-template<typename T>
+template<typename T, template<class> class P>
 template<Order O, typename F>
-void BinaryTree<T>::TreeTraversalRecursive(F&& f){
+void BinaryTree<T, P>::TreeTraversalRecursive(F&& f){
 	TreeTraversalRecursiveImpl<O, 0>(std::forward<F&&>(f));
 	TreeTraversalRecursiveImpl<O, 1>(std::forward<F&&>(f));
 	TreeTraversalRecursiveImpl<O, 2>(std::forward<F&&>(f));
@@ -157,8 +161,8 @@ void BinaryTree<T>::TreeTraversalRecursive(F&& f){
 * \return 构造完成的树
 */
 template<typename T>
-std::unique_ptr<BinaryTree<T>> MakeTree(std::unique_ptr<BinaryTree<T>>&& left, std::unique_ptr<BinaryTree<T>>&& right, T&& t) {
-	return std::make_unique<BinaryTree<T>>(std::forward<std::unique_ptr<BinaryTree<T>>>(left), std::forward<std::unique_ptr<BinaryTree<T>>>(right), std::forward<T>(t));
+lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>> MakeUniTree(lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>&& left, lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>&& right, T&& t) {
+	return std::make_unique<BinaryTree<T, lib::unidef_ptr>>(std::forward<lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>>(left), std::forward<lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>>(right), std::forward<T>(t));
 }
 
 /**
@@ -168,8 +172,32 @@ std::unique_ptr<BinaryTree<T>> MakeTree(std::unique_ptr<BinaryTree<T>>&& left, s
 * \return 构造完成的树
 */
 template<typename T>
-std::unique_ptr<BinaryTree<T>> MakeTree(T&& t) {
-	return std::make_unique<BinaryTree<T>>(std::forward<T>(t));
+lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>> MakeUniTree(T&& t) {
+	return std::make_unique<BinaryTree<T, lib::unidef_ptr>>(std::forward<T>(t));
+}
+
+/**
+* \brief 构造二叉树内节点
+* \tparam T 数据类型
+* \param left 左子树
+* \param right 右子树
+* \param t 数据
+* \return 构造完成的树
+*/
+template<typename T>
+std::shared_ptr<BinaryTree<T, std::shared_ptr>> MakeSrdTree(std::shared_ptr<BinaryTree<T, std::shared_ptr>>&& left, std::shared_ptr<BinaryTree<T, std::shared_ptr>>&& right, T&& t) {
+	return std::make_shared<BinaryTree<T, std::shared_ptr>>(std::forward<std::shared_ptr<BinaryTree<T, std::shared_ptr>>>(left), std::forward<std::shared_ptr<BinaryTree<T, std::shared_ptr>>>(right), std::forward<T>(t));
+}
+
+/**
+* \brief 构造二叉树叶子节点
+* \tparam T 数据类型
+* \param t 数据
+* \return 构造完成的树
+*/
+template<typename T>
+std::shared_ptr<BinaryTree<T, std::shared_ptr>> MakeSrdTree(T&& t) {
+	return std::make_shared<BinaryTree<T, std::shared_ptr>>(std::forward<T>(t));
 }
 
 #define BinaryTree_defined
