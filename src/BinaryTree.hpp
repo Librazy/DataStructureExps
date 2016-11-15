@@ -9,10 +9,6 @@
 #include <functional>
 #include <stack>
 
-namespace lib {
-	template <typename T> using unidef_ptr = std::unique_ptr<T, std::default_delete<T>>;
-}
-
 /**
  * \brief 遍历方式
  */
@@ -26,7 +22,7 @@ enum class Order{
  * \brief 二叉树的节点类型
  * \tparam T 数据类型
  */
-template<typename T, template<class> class P>
+template<typename T, template<class...> class P>
 struct BinaryTree{
 	BinaryTree(P<BinaryTree<T, P>>&& l, P<BinaryTree<T, P>>&& r, T&& d)
 		:data(std::forward<T>(d)), left(std::forward<P<BinaryTree<T, P>>>(l)), right(std::forward<P<BinaryTree<T, P>>>(r)) {}
@@ -144,7 +140,7 @@ struct BinaryTree{
 	}
 };
 
-template<typename T, template<class> class P>
+template<typename T, template<class...> class P>
 template<Order O, typename F>
 void BinaryTree<T, P>::TreeTraversalRecursive(F&& f){
 	TreeTraversalRecursiveImpl<O, 0>(std::forward<F&&>(f));
@@ -161,8 +157,8 @@ void BinaryTree<T, P>::TreeTraversalRecursive(F&& f){
 * \return 构造完成的树
 */
 template<typename T>
-lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>> MakeUniTree(lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>&& left, lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>&& right, T&& t) {
-	return std::make_unique<BinaryTree<T, lib::unidef_ptr>>(std::forward<lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>>(left), std::forward<lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>>>(right), std::forward<T>(t));
+std::unique_ptr<BinaryTree<T, std::unique_ptr>> MakeUniTree(std::unique_ptr<BinaryTree<T, std::unique_ptr>>&& left, std::unique_ptr<BinaryTree<T, std::unique_ptr>>&& right, T&& t) {
+	return std::make_unique<BinaryTree<T, std::unique_ptr>>(std::forward<std::unique_ptr<BinaryTree<T, std::unique_ptr>>>(left), std::forward<std::unique_ptr<BinaryTree<T, std::unique_ptr>>>(right), std::forward<T>(t));
 }
 
 /**
@@ -172,8 +168,8 @@ lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>> MakeUniTree(lib::unidef_ptr<Bina
 * \return 构造完成的树
 */
 template<typename T>
-lib::unidef_ptr<BinaryTree<T, lib::unidef_ptr>> MakeUniTree(T&& t) {
-	return std::make_unique<BinaryTree<T, lib::unidef_ptr>>(std::forward<T>(t));
+std::unique_ptr<BinaryTree<T, std::unique_ptr>> MakeUniTree(T&& t) {
+	return std::make_unique<BinaryTree<T, std::unique_ptr>>(std::forward<T>(t));
 }
 
 /**
