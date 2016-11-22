@@ -21,6 +21,7 @@ enum class Order{
 /**
  * \brief 二叉树的节点类型
  * \tparam T 数据类型
+ * \tparam P 节点指针类型
  */
 template<typename T, template<class...> class P>
 class BinaryTree{
