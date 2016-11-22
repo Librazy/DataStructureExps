@@ -39,7 +39,7 @@ struct BinaryTree{
 	 * \tparam F 操作函数类型
 	 * \param f 操作函数
 	 */
-	template<Order O,typename F>
+	template<Order O, typename F>
 	void TreeTraversalRecursive(F&& f);
 
 	/**
@@ -167,7 +167,7 @@ P<BinaryTree<T, P>> MakeTree(P<BinaryTree<T, P>>&& left, P<BinaryTree<T, P>>&& r
 template<template<class...> class P, typename T>
 auto MakeTree(T&& t) ->
 typename std::enable_if<
-	!std::is_same<P<int>, std::unique_ptr<int>>::value && !std::is_same<P<int>, P<int>>::value
+	!std::is_same<P<int>, std::unique_ptr<int>>::value && !std::is_same<P<int>, std::shared_ptr<int>>::value
 	, P<BinaryTree<T, P>>
 >::type
 {
@@ -177,7 +177,7 @@ typename std::enable_if<
 template<template<class...> class P, typename T>
 auto MakeTree(T&& t) ->
 typename std::enable_if<
-	std::is_same<P<T>,std::unique_ptr<T>>::value
+	std::is_same<P<T>, std::unique_ptr<T>>::value
 	, P<BinaryTree<T, P>>
 >::type 
 {
