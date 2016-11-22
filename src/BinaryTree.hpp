@@ -23,7 +23,8 @@ enum class Order{
  * \tparam T 数据类型
  */
 template<typename T, template<class...> class P>
-struct BinaryTree{
+class BinaryTree{
+public:
 	BinaryTree(P<BinaryTree<T, P>>&& l, P<BinaryTree<T, P>>&& r, T&& d)
 		:data(std::forward<T>(d)), left(std::forward<P<BinaryTree<T, P>>>(l)), right(std::forward<P<BinaryTree<T, P>>>(r)) {}
 	explicit BinaryTree(T&& d)
@@ -115,6 +116,7 @@ struct BinaryTree{
 		}
 	}
 
+private:
 	template<Order O, int I, typename F>
 	typename std::enable_if   <(I == 0 && O == Order::PreOrder)
 							|| (I == 1 && O == Order::InOrder)
