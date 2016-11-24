@@ -1,5 +1,5 @@
-#include "ExpressionStack.hpp"
-#include "Exception.hpp"
+#include "ExpressionStack.h"
+#include "Exception.h"
 
 #ifdef ExpressionStack_defined
 

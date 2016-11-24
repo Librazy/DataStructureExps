@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-add_library(DsExpLib Exception.hpp Exception.cpp SparseMatrix.hpp BFS.hpp BFS.cpp ExpressionTree.hpp ExpressionTree.cpp ExpressionStack.hpp ExpressionStack.cpp BinaryTree.hpp)
+add_library(DsExpLib Exception.h Exception.cpp SparseMatrix.hpp BFS.h BFS.cpp ExpressionTree.h ExpressionTree.cpp ExpressionStack.h ExpressionStack.cpp BinaryTree.hpp Dijkstra.h Dijkstra.cpp)
 
 if (COVERALLS)
-    set(COVERAGE_SRCS src/Exception.cpp src/SparseMatrix.hpp src/BFS.cpp src/ExpressionTree.cpp src/ExpressionStack.cpp src/BinaryTree.hpp)
+    set(COVERAGE_SRCS src/Exception.cpp src/SparseMatrix.hpp src/BFS.cpp src/ExpressionTree.cpp src/ExpressionStack.cpp src/BinaryTree.hpp src/Dijkstra.cpp)
 
     # Create the coveralls target.
     coveralls_setup(
@@ -10,8 +10,16 @@ if (COVERALLS)
         ${COVERALLS_UP}     ) # If we should upload.
 endif()
 
-if(ENABLE_SparseMatrix)
-  target_compile_definitions(DsExpLib PRIVATE SparseMatrix_enabled)
+if(USE_FOLDEXP)
+  target_compile_definitions(DsExpLib PRIVATE Use_FoldExp)
+endif()
+
+if(USE_WCOUT)
+  target_compile_definitions(DsExpLib PRIVATE Use_Wcout)
+endif()
+
+if(NOT ENABLE_SparseMatrix)
+  target_compile_definitions(DsExpLib PRIVATE SparseMatrix_disabled)
 endif()
 
 if(NOT ENABLE_BFS)

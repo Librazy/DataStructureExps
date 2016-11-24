@@ -1,10 +1,10 @@
 // ReSharper disable CppUnusedIncludeDirective
 #undef NDEBUG
-#include "src/Exception.hpp"
-#include "src/ExpressionTree.hpp"
-#include "src/ExpressionStack.hpp"
+#include "src/Exception.h"
+#include "src/ExpressionTree.h"
+#include "src/ExpressionStack.h"
 #include "src/SparseMatrix.hpp"
-#include "src/BFS.hpp"
+#include "src/BFS.h"
 #include "src/BinaryTree.hpp"
 
 #include <iostream>
@@ -30,23 +30,24 @@ int main()
 	}
 #endif //Use_Wcout
 
-#ifdef SparseMatrix_enabled
+#ifndef SparseMatrix_disabled
 	//++Start SparseMatrix2 test
 	{
 		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
 
-		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{0,0,4 } });
+		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } });
 
 		auto mat2 = SparseMatrix2<int, 3, 1>();
 		mat2.set<0, 0>(4);
 		mat2.set<1, 0>(1);
 		mat2.set<2, 0>(2);
 
-
 		auto mat3 = mat * mat2;
 		auto mat4 = mat3.Rev();
 
-		assert((mat3.get<0, 0>() == 14));
+		int out;
+		auto have = mat3.have<0, 0>(out);
+		assert(have && out == 14);
 		assert((mat3.get<1, 0>() == 28));
 		assert((mat4.get<0, 0>() == 14));
 		assert((mat4.get<0, 1>() == 28));
@@ -57,8 +58,25 @@ int main()
 		mat5.set<0, 1>(1);
 		mat5.set<1, 2>(2);
 
-		assert((mat5.get(1, 1) == 0));
-		assert((mat5.get<1, 1>() == 0));
+		have = mat5.have(1, 1, out);
+		assert(!have && out == 0);
+		assert(mat5.get(1, 1) == 0);
+
+		auto m5r0 = mat5.row(0);
+		assert(m5r0.size() == 2);
+		assert(m5r0[1].second == 1);
+
+		auto m5r1 = mat5.row<1>();
+		assert(m5r1.size() == 1);
+		assert(m5r1[0].second == 2);
+
+		try {
+			mat5.row(4);
+			throw std::runtime_error("Exception Expected");
+		}
+		catch (std::out_of_range e) {
+			assert(std::string(e.what()) == "Matrix bound check failed");
+		}
 
 		try{
 			mat5.get(3, 5);
