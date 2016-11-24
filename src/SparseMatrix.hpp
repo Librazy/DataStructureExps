@@ -63,7 +63,7 @@ public:
 private:
 
 	/// 矩阵的维度信息
-	static const dim_t dim_tuple;
+	static constexpr dim_t dim_tuple = std::make_tuple(DimA, DimB);
 
 	/// 矩阵内部存储
 	container_t container;
@@ -178,9 +178,6 @@ public:
 	/// @tparam DimB 矩阵的列数
 	friend std::ostream& operator<< <>(std::ostream& out, const SparseMatrix2<T, DimA, DimB>& d) noexcept;
 };
-
-template <typename T, size_t DimA, size_t DimB>
-const typename SparseMatrix2<T, DimA, DimB>::dim_t SparseMatrix2<T, DimA, DimB>::dim_tuple  = std::make_tuple(DimA, DimB);
 
 template <typename T, size_t DimA, size_t DimB>
 constexpr SparseMatrix2<T, DimA, DimB>::SparseMatrix2(){}
