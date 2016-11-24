@@ -180,6 +180,9 @@ public:
 };
 
 template <typename T, size_t DimA, size_t DimB>
+const typename SparseMatrix2<T, DimA, DimB>::dim_t SparseMatrix2<T, DimA, DimB>::dim_tuple;
+
+template <typename T, size_t DimA, size_t DimB>
 constexpr SparseMatrix2<T, DimA, DimB>::SparseMatrix2(){}
 
 template <typename T, size_t DimA, size_t DimB>
