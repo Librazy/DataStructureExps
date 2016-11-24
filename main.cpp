@@ -50,9 +50,7 @@ int main()
 		auto mat3 = mat * mat2;
 		auto mat4 = mat3.Rev();
 
-		
-		auto have = mat3.have<0, 0>(out);
-		assert(have && out == 14);
+		assert((mat3.have<0, 0>(out) && out == 14));
 		assert((mat3.get<1, 0>() == 28));
 		assert((mat4.get<0, 0>() == 14));
 		assert((mat4.get<0, 1>() == 28));
@@ -63,8 +61,7 @@ int main()
 		mat5.set<0, 1>(1);
 		mat5.set<1, 2>(2);
 
-		have = mat5.have(1, 1, out);
-		assert(!have && out == 0);
+		assert(!mat5.have(1, 1, out) && out == 0);
 		assert(mat5.get(1, 1) == 0);
 
 		auto m5r0 = mat5.row(0);
