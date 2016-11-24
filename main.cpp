@@ -57,7 +57,7 @@ int main()
 		//assert((mat4.get<0, 2>() == 28)); //将会触发编译器报错：Matrix bound check failed
 
 		auto mat5 = SparseMatrix2<int, 2, 3>();
-		mat5.set<0, 0>(1);
+		mat5.set(1, 0, 0);
 		mat5.set<0, 1>(1);
 		mat5.set<1, 2>(2);
 

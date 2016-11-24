@@ -365,7 +365,7 @@ SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, 
 				}
 			}
 			if ((a = res.get_no_check(Da, i) + a) != 0) {
-				res.set(a, Da, i);
+				res.set_no_check(a, Da, i);
 			}
 		}
 	}
@@ -376,10 +376,10 @@ template <typename T, size_t DimA, size_t DimB>
 SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
 	SparseMatrix2<T, DimA, DimB> res;
 	for (auto ele : container) {
-		res.set(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_no_check(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	for (auto ele : m2.container) {
-		res.set(res.get_no_check(std::get<0>(ele.first), std::get<1>(ele.first)) + ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_no_check(res.get_no_check(std::get<0>(ele.first), std::get<1>(ele.first)) + ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	return res;
 }
@@ -388,10 +388,10 @@ template <typename T, size_t DimA, size_t DimB>
 SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
 	SparseMatrix2<T, DimA, DimB> res;
 	for (auto ele : container) {
-		res.set(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_no_check(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	for (auto ele : m2.container) {
-		res.set(res.get_no_check(std::get<0>(ele.first), std::get<1>(ele.first)) - ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_no_check(res.get_no_check(std::get<0>(ele.first), std::get<1>(ele.first)) - ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	return res;
 }
@@ -401,7 +401,7 @@ SparseMatrix2<T, DimB, DimA> SparseMatrix2<T, DimA, DimB>::Rev() const noexcept
 {
 	SparseMatrix2<T, DimB, DimA> res;
 	for (auto ele : container) {
-		res.set(ele.second, std::get<1>(ele.first), std::get<0>(ele.first));
+		res.set_no_check(ele.second, std::get<1>(ele.first), std::get<0>(ele.first));
 	}
 	return res;
 }
