@@ -1,3 +1,4 @@
+#include <climits>
 #include <queue>
 #include <functional>
 #include "Dijkstra.h"
