@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 add_library(DsExpLib Exception.h Exception.cpp SparseMatrix.hpp BFS.h BFS.cpp ExpressionTree.h ExpressionTree.cpp ExpressionStack.h ExpressionStack.cpp BinaryTree.hpp Dijkstra.h Dijkstra.cpp)
 
 if (COVERALLS)
-    set(COVERAGE_SRCS src/Exception.cpp src/SparseMatrix.hpp src/BFS.cpp src/ExpressionTree.cpp src/ExpressionStack.cpp src/BinaryTree.hpp src/Dijkstra.cpp)
+    set(COVERAGE_SRCS src/Exception.cpp src/SparseMatrix.hpp src/BFS.cpp src/ExpressionTree.cpp src/ExpressionStack.cpp src/BinaryTree.hpp src/Dijkstra.h src/Dijkstra.cpp)
 
     # Create the coveralls target.
     coveralls_setup(
