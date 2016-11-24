@@ -6,6 +6,7 @@
 #include "src/SparseMatrix.hpp"
 #include "src/BFS.h"
 #include "src/BinaryTree.hpp"
+#include "src/Dijkstra.h"
 
 #include <iostream>
 #include <cmath>
@@ -349,6 +350,29 @@ R"(
 	std::cout << "BinaryTree test complete" << std::endl;
 #endif //Use_Wcout
 	//++End BinaryTree test
+#endif
+
+#ifndef Dijkstra_disabled
+	//++Start Dijkstra test
+	{
+		auto map = SparseMatrix2<int, 6, 6>({
+			{ 0, 2, 3, 0, 0, 0 },
+			{ 2, 0, 0, 4, 2, 0 },
+			{ 3, 0, 0, 2, 2, 7 },
+			{ 0, 4, 2, 0, 0, 3 },
+			{ 0, 2, 2, 0, 0, 4 },
+			{ 0, 0, 7, 3, 4, 0 },
+		});
+		auto ret = Dijkstra(map, 0);
+		auto ans = std::array<int, 6>{ 0, 2, 3, 5, 4, 8 };
+		assert(ret == ans);
+	}
+#ifdef Use_Wcout
+	std::wcout << L"Dijkstra 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "Dijkstra test complete" << std::endl;
+#endif //Use_Wcout
+	//++End Dijkstra test
 #endif
 	return 0;
 }
