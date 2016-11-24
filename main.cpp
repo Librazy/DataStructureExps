@@ -34,8 +34,13 @@ int main()
 	//++Start SparseMatrix2 test
 	{
 		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
+		int out;
 
 		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } });
+		assert((mat.get<0, 2>() == 0));
+		assert(mat.get(0, 2) == 0);
+		assert(mat.have(0, 0, out));
+		assert((!mat.have<0, 2>(out)));
 
 		auto mat2 = SparseMatrix2<int, 3, 1>();
 		mat2.set<0, 0>(4);
@@ -45,7 +50,7 @@ int main()
 		auto mat3 = mat * mat2;
 		auto mat4 = mat3.Rev();
 
-		int out;
+		
 		auto have = mat3.have<0, 0>(out);
 		assert(have && out == 14);
 		assert((mat3.get<1, 0>() == 28));
@@ -91,6 +96,9 @@ int main()
 		ss << mat;
 		assert(ss.str() == "1 1 0\n0 0 4\n");
 
+		auto mat7 = SparseMatrix2<int, 2, 3>({ { 0,0,0 },{ 0,0,0 } });
+		assert(mat7.row(0).size() == 0);
+		assert((mat7.row<1>().size() == 0));
 	}
 #ifdef Use_Wcout
 	std::wcout << L"SparseMatrix2 测试完成" << std::endl;
