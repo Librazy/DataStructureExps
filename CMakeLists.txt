@@ -25,6 +25,8 @@ if (COVERALLS)
     coveralls_turn_on_coverage()
 endif()
 
+set(USE_FOLDEXP false CACHE BOOL "If fold expression enabled.")
+
 set(USE_WCOUT false CACHE BOOL "If wcout enabled.")
 
 set(ENABLE_BFS true CACHE BOOL "If BFS enabled.")
@@ -52,6 +54,10 @@ add_subdirectory(src)
 enable_testing()
 
 add_executable(DsExp main.cpp)
+
+if(USE_FOLDEXP)
+  target_compile_definitions(DsExp PRIVATE Use_FoldExp)
+endif()
 
 if(USE_WCOUT)
   target_compile_definitions(DsExp PRIVATE Use_Wcout)

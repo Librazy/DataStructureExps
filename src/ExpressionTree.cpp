@@ -1,5 +1,5 @@
-#include "ExpressionTree.hpp"
-#include "Exception.hpp"
+#include "ExpressionTree.h"
+#include "Exception.h"
 
 #ifdef ExpressionTree_defined
 

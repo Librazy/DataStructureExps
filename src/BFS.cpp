@@ -1,4 +1,4 @@
-#include "BFS.hpp"
+#include "BFS.h"
 
 #ifdef BFS_defined
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef SparseMatrix_enabled
+#ifndef SparseMatrix_disabled
 
 #ifndef SparseMatrix_defined
 // ReSharper disable CppUnusedIncludeDirective
@@ -10,10 +10,17 @@
 #include <utility>
 #include <vector>
 
+#ifdef Use_FoldExp
 template <size_t ...Dims>
 constexpr bool dim_bound_check_static(decltype(Dims)... args) {
 	return (true && ... && (args < Dims));
 }
+#else
+template <size_t DimA, size_t DimB>
+constexpr bool dim_bound_check_static(size_t arga, size_t argb) {
+	return DimA > arga && DimB > argb;
+}
+#endif
 
 template <typename T, size_t DimA, size_t DimB>
 class SparseMatrix2;
@@ -50,21 +57,21 @@ public:
 	/// 矩阵三元组类型
 	using item_t = std::tuple<T, const dim_t>;
 
+	/// 矩阵内部存储类型
+	using container_t = std::map<const dim_t, T>;
+
 private:
 
 	/// 矩阵的维度信息
 	static const dim_t dim_tuple;
 
 	/// 矩阵内部存储
-	std::map<const dim_t, T> container;
+	container_t container;
 
 	/// 动态边界检查
-	template<size_t I = 0>
-	typename std::enable_if<I == std::tuple_size<dim_t>::value, void>::type
-		static constexpr dim_bound_check(dim_t const&, dim_t const&) noexcept;
-	template<size_t I = 0>
-	typename std::enable_if < I < std::tuple_size<dim_t>::value, void>::type
-		static constexpr dim_bound_check(dim_t const& t1, dim_t const& t2);
+	void static constexpr dim_bound_check(dim_t const& t1, dim_t const& t2);
+
+	void check_row_min_max(size_t row, size_t cur);
 
 protected:
 
@@ -73,6 +80,18 @@ protected:
 	/// @param DimAg 行坐标
 	/// @param DimBg 列坐标
 	T get_no_check(size_t DimAg, size_t DimBg) const;
+
+	/// @brief 不带边界检查的设置
+	/// @param ele 值
+	/// @param DimAs 行坐标
+	/// @param DimBs 列坐标
+	void set_no_check(T ele, size_t DimAs, size_t DimBs);
+
+	///行最小列下标
+	std::map<size_t, size_t> row_min;
+
+	///行最大列下标
+	std::map<size_t, size_t> row_max;
 
 public:
 
@@ -101,6 +120,26 @@ public:
 	/// @tparam DimBg 列坐标
 	template<size_t DimAg, size_t DimBg>
 	T get() const noexcept;
+
+	/// @brief 动态边界检查的查找
+	/// @return 是否存在
+	/// @param DimAg 行坐标
+	/// @param DimBg 列坐标
+	/// @param out 返回值
+	bool have(size_t DimAg, size_t DimBg, T& out) const;
+
+	/// @brief 静态边界检查的查找
+	/// @return 是否存在
+	/// @tparam DimAg 行坐标
+	/// @tparam DimBg 列坐标
+	/// @param out 返回值
+	template<size_t DimAg, size_t DimBg>
+	bool have(T& out) const noexcept;
+
+	std::vector<std::pair<size_t, T>> row(size_t r) const;
+
+	template<size_t R>
+	std::vector<std::pair<size_t, T>> row() const noexcept;
 
 	/// @brief AxB与BxC的矩阵乘积
 	/// @return 乘积
@@ -141,7 +180,7 @@ public:
 };
 
 template <typename T, size_t DimA, size_t DimB>
-constexpr typename SparseMatrix2<T, DimA, DimB>::dim_t SparseMatrix2<T, DimA, DimB>::dim_tuple = std::make_tuple(DimA, DimB);
+const typename SparseMatrix2<T, DimA, DimB>::dim_t SparseMatrix2<T, DimA, DimB>::dim_tuple = std::make_tuple(DimA, DimB);
 
 template <typename T, size_t DimA, size_t DimB>
 constexpr SparseMatrix2<T, DimA, DimB>::SparseMatrix2(){}
@@ -154,29 +193,37 @@ SparseMatrix2<T, DimA, DimB>::SparseMatrix2(const T (&Args)[A][B])
 	static_assert(B == DimB, "Col size doesn't match");
 	for (size_t i = 0; i != DimA; ++i) {
 		for (size_t j = 0; j != DimB; ++j) {
-			dim_t t = std::make_tuple(i, j);
-			container.insert_or_assign(t, Args[i][j]);
+			if(Args[i][j])set_no_check(Args[i][j], i, j);
 		}
 	}
 }
 
 template <typename T, size_t DimA, size_t DimB>
-template<size_t I>
-typename std::enable_if<I == std::tuple_size<typename SparseMatrix2<T, DimA, DimB>::dim_t>::value, void>::type
-constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const&, dim_t const&) noexcept
-{ }
+void SparseMatrix2<T, DimA, DimB>::check_row_min_max(size_t row, size_t cur)
+{
+	auto it = row_max.find(row);
+	if(!(it!=row_max.end() && it->second >= cur)) {
+		row_max.insert_or_assign(row, cur);
+	}
+	it = row_min.find(row);
+	if (!(it != row_min.end() && it->second <= cur)) {
+		row_min.insert_or_assign(row, cur);
+	}
+}
 
 template <typename T, size_t DimA, size_t DimB>
-template<size_t I>
-typename std::enable_if < I < std::tuple_size<typename SparseMatrix2<T, DimA, DimB>::dim_t>::value, void>::type
-constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t const& t2)
+void constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t const& t2)
 {
-	auto x = std::get<I>(t1);
-	auto y = std::get<I>(t2);
-	if (x < y) {
+	if (std::get<0>(t1) < std::get<0>(t2) || std::get<1>(t1) < std::get<1>(t2)) {
 		throw std::out_of_range("Matrix bound check failed");
 	}
-	dim_bound_check<I + 1>(t1, t2);
+}
+
+template <typename T, size_t DimA, size_t DimB>
+void SparseMatrix2<T, DimA, DimB>::set_no_check(T ele, size_t DimAs, size_t DimBs)
+{
+	container.insert_or_assign(std::make_tuple(DimAs, DimBs), ele);
+	check_row_min_max(DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -196,6 +243,7 @@ void SparseMatrix2<T, DimA, DimB>::set(T ele, size_t DimAs, size_t DimBs)
 	auto i = std::make_tuple(DimAs, DimBs);
 	dim_bound_check(dim_tuple, i);
 	container.insert_or_assign(i, ele);
+	check_row_min_max(DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -205,6 +253,7 @@ void SparseMatrix2<T, DimA, DimB>::set(T ele) noexcept
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAs, DimBs), "Matrix bound check failed");
 	auto i = std::make_tuple(DimAs, DimBs);
 	container.insert_or_assign(i, ele);
+	check_row_min_max(DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -230,6 +279,74 @@ T SparseMatrix2<T, DimA, DimB>::get() const noexcept
 		return x->second;
 	}
 	return T();
+}
+
+template <typename T, size_t DimA, size_t DimB>
+bool SparseMatrix2<T, DimA, DimB>::have(size_t DimAg, size_t DimBg, T& out) const
+{
+	auto i = std::make_tuple(DimAg, DimBg);
+	dim_bound_check(dim_tuple, i);
+	auto x = container.find(i);
+	if (x != container.end()) {
+		out = x->second;
+		return true;
+	}
+	out = T();
+	return false;
+}
+
+template <typename T, size_t DimA, size_t DimB>
+template<size_t DimAg, size_t DimBg>
+bool SparseMatrix2<T, DimA, DimB>::have(T& out) const noexcept
+{
+	static_assert(dim_bound_check_static<DimA, DimB>(DimAg, DimBg), "Matrix bound check failed");
+	auto i = std::make_tuple(DimAg, DimBg);
+	auto x = container.find(i);
+	if (x != container.end()) {
+		out = x->second;
+		return true;
+	}
+	out = T();
+	return false;
+}
+
+template <typename T, size_t DimA, size_t DimB>
+template<size_t R>
+std::vector<std::pair<size_t, T>> SparseMatrix2<T, DimA, DimB>::row() const noexcept
+{
+	static_assert(R < DimA, "Matrix bound check failed");
+	auto ret = std::vector<std::pair<size_t, T>>();
+	auto it = row_min.find(R);
+	if(it == row_min.end()) {
+		return ret;
+	}
+	auto min = container.find(std::make_tuple(R, it->second));
+	auto max = ++container.find(std::make_tuple(R, row_max.at(R)));
+
+	for(; min!=max; ++min) {
+		ret.emplace_back(std::get<1>(min->first), min->second);
+	}
+	return ret;
+}
+
+template <typename T, size_t DimA, size_t DimB>
+std::vector<std::pair<size_t, T>> SparseMatrix2<T, DimA, DimB>::row(size_t r) const
+{
+	if (DimA <= r) {
+		throw std::out_of_range("Matrix bound check failed");
+	}
+	auto ret = std::vector<std::pair<size_t, T>>();
+	auto it = row_min.find(r);
+	if (it == row_min.end()) {
+		return ret;
+	}
+	auto min = container.find(std::make_tuple(r, it->second));
+	auto max = ++container.find(std::make_tuple(r, row_max.at(r)));
+
+	for (; min != max; ++min) {
+		ret.emplace_back(std::get<1>(min->first), min->second);
+	}
+	return ret;
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -319,6 +436,7 @@ std::ostream& operator<< (std::ostream& out, SparseMatrix2<T, DimA, DimB> const&
 	return out;
 }
 
+#ifdef Use_FoldExp
 template <typename T, size_t ...Dims>
 class SparseMatrix
 {
@@ -414,6 +532,7 @@ T SparseMatrix< T, Dims...>::get() const noexcept
 	}
 	return T();
 }
+#endif
 
 #define SparseMatrix_defined
 
