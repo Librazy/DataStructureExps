@@ -16,6 +16,7 @@
 #include <stdexcept>
 #include <set>
 #include <numeric>
+#include <algorithm>
 
 int main()
 {
