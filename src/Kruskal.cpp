@@ -1,5 +1,6 @@
 #include <numeric>
 #include <functional>
+#include <algorithm>
 #include "Kruskal.h"
 
 
