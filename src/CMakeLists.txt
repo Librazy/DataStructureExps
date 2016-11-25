@@ -1,8 +1,26 @@
 cmake_minimum_required(VERSION 3.5)
-add_library(DsExpLib Exception.h Exception.cpp SparseMatrix.hpp BFS.h BFS.cpp ExpressionTree.h ExpressionTree.cpp ExpressionStack.h ExpressionStack.cpp BinaryTree.hpp Dijkstra.h Dijkstra.cpp)
+add_library(DsExpLib 
+Exception.h Exception.cpp
+SparseMatrix.hpp
+BFS.h BFS.cpp
+ExpressionTree.h ExpressionTree.cpp
+ExpressionStack.h ExpressionStack.cpp
+BinaryTree.hpp
+Dijkstra.h Dijkstra.cpp
+Kruskal.h Kruskal.cpp
+)
 
 if (COVERALLS)
-    set(COVERAGE_SRCS src/Exception.cpp src/SparseMatrix.hpp src/BFS.cpp src/ExpressionTree.cpp src/ExpressionStack.cpp src/BinaryTree.hpp src/Dijkstra.h src/Dijkstra.cpp)
+    set(COVERAGE_SRCS
+		src/Exception.cpp
+		src/SparseMatrix.hpp
+		src/BFS.cpp
+		src/ExpressionTree.cpp
+		src/ExpressionStack.cpp
+		src/BinaryTree.hpp
+		src/Dijkstra.h src/Dijkstra.cpp
+		src/Kruskal.h src/Kruskal.cpp
+	)
 
     # Create the coveralls target.
     coveralls_setup(
@@ -32,4 +50,16 @@ endif()
 
 if(NOT ENABLE_ExpressionStack)
   target_compile_definitions(DsExpLib PRIVATE ExpressionStack_disabled)
+endif()
+
+if(NOT ENABLE_Dijkstra)
+  target_compile_definitions(DsExpLib PRIVATE Dijkstra_disabled)
+endif()
+
+if(NOT ENABLE_BinaryTree)
+  target_compile_definitions(DsExpLib PRIVATE BinaryTree_disabled)
+endif()
+
+if(NOT ENABLE_Kruskal)
+  target_compile_definitions(DsExpLib PRIVATE Kruskal_disabled)
 endif()

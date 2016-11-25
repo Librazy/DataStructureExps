@@ -7,12 +7,15 @@
 #include "src/BFS.h"
 #include "src/BinaryTree.hpp"
 #include "src/Dijkstra.h"
+#include "src/Kruskal.h"
 
 #include <iostream>
 #include <cmath>
 #include <cassert>
 #include <sstream>
 #include <stdexcept>
+#include <set>
+#include <numeric>
 
 int main()
 {
@@ -373,6 +376,38 @@ R"(
 	std::cout << "Dijkstra test complete" << std::endl;
 #endif //Use_Wcout
 	//++End Dijkstra test
+#endif
+
+#ifndef Kruskal_disabled
+//++Start Kruskal test
+	{
+		auto map = SparseMatrix2<int, 6, 6>({
+			{ 0, 2, 3, 0, 0, 0 },
+			{ 2, 0, 0, 4, 2, 0 },
+			{ 3, 0, 0, 2, 2, 7 },
+			{ 0, 4, 2, 0, 0, 3 },
+			{ 0, 2, 2, 0, 0, 4 },
+			{ 0, 0, 7, 3, 4, 0 },
+		});
+		auto ret = Kruskal(map);
+		assert(ret.size() == 5);
+		auto total = std::accumulate(ret.begin(), ret.end(), 0, [](auto i, auto j) { return i + std::get<0>(j); });
+		assert(total == 2 + 2 + 2 + 2 + 3);
+		auto s = std::set<size_t>();
+		std::for_each(ret.begin(), ret.end(), [&s](auto i)
+		{
+
+			s.insert(std::get<1>(i));
+			s.insert(std::get<2>(i));
+		});
+		assert(s.size() == 6);
+	}
+#ifdef Use_Wcout
+	std::wcout << L"Kruskal 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "Kruskal test complete" << std::endl;
+#endif //Use_Wcout
+	//++End Kruskal test
 #endif
 	return 0;
 }
