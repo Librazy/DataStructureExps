@@ -16,6 +16,12 @@
 #include <stdexcept>
 #include <set>
 #include <numeric>
+#include <algorithm>
+
+constexpr size_t one = 1;
+constexpr size_t two = 2;
+constexpr size_t three = 3;
+constexpr size_t four = 4;
 
 int main()
 {
@@ -37,6 +43,21 @@ int main()
 #ifndef SparseMatrix_disabled
 	//++Start SparseMatrix2 test
 	{
+#ifdef Use_FoldExp
+		static_assert(!dim_bound_check_static_checker<1, 2, 4, 8>::check<1, 2, 3, 9>(), "static_assert failed to detect error");
+		static_assert(!dim_bound_check_static_checker<4, 8>::check<3, 9>(), "static_assert failed to detect error");
+		static_assert(!dim_bound_check_static_checker<8, 8, 8>::check<3, 8, 7>(), "static_assert failed to detect error");
+		static_assert(dim_bound_check_static_checker<1, 2, 4, 8>::check<0, 0, 3, 7>(), "static_assert false alarm");
+		static_assert(dim_bound_check_static_checker<1, 500, 8>::check<0, 0, 3>(), "static_assert false alarm");
+		static_assert(dim_bound_check_static_checker<1>::check<0>(), "static_assert false alarm");
+#else
+		dim_bound_check_static<1, 2>(one, two);
+		static_assert(!dim_bound_check_static_checker<4, 8>::check<3, 9>(), "static_assert failed to detect error");
+		static_assert(dim_bound_check_static_checker<1, 1>::check<0, 0>(), "static_assert false alarm");
+		static_assert(dim_bound_check_static_checker<4, 2>::check<3, 0>(), "static_assert false alarm");
+		static_assert(dim_bound_check_static_checker<4, 7>::check<0, 6>(), "static_assert false alarm");
+#endif
+
 		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
 		int out;
 
@@ -367,7 +388,7 @@ R"(
 			{ 0, 0, 7, 3, 4, 0 },
 		});
 		auto ret = Dijkstra(map, 0);
-		auto ans = std::array<int, 6>{ 0, 2, 3, 5, 4, 8 };
+		auto ans = std::array<int, 6>{ {0, 2, 3, 5, 4, 8} };
 		assert(ret == ans);
 	}
 #ifdef Use_Wcout
