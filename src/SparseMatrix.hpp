@@ -13,7 +13,7 @@
 #ifdef Use_FoldExp
 template <size_t ...Dims>
 constexpr bool dim_bound_check_static(decltype(Dims)... args) {
-	return (true && ... && (args < Dims)); ci test
+	return (true && ... && (args < Dims));
 }
 #else
 template <size_t DimA, size_t DimB>
