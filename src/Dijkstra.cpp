@@ -15,7 +15,7 @@ std::vector<int> Dijkstra(std::vector<std::vector<std::pair<size_t, int>>> m, si
 		auto c = q.top(); q.pop();
 		auto current_step = c.second;
 		if (c.first != d[current_step]) { continue; }
-		for (auto i = 0; i < m[current_step].size(); i++)
+		for (size_t i = 0; i < m[current_step].size(); i++)
 		{
 			auto next_step = m[current_step][i].first;
 			auto next_length = m[current_step][i].second;
