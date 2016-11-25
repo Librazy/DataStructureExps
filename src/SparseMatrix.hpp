@@ -22,28 +22,6 @@ constexpr bool dim_bound_check_static(size_t arga, size_t argb) {
 }
 #endif
 
-#ifdef Use_FoldExp
-template<size_t ...Dims>
-struct dim_bound_check_static_checker
-{
-	template<size_t ...I>
-	static constexpr bool check()
-	{
-		return dim_bound_check_static<Dims...>(I...);
-	}
-};
-#else
-template<size_t DimA, size_t DimB>
-struct dim_bound_check_static_checker
-{
-	template<size_t I, size_t J>
-	static constexpr bool check()
-	{
-		return dim_bound_check_static<DimA, DimB>(I, J);
-	}
-};
-#endif
-
 template <typename T, size_t DimA, size_t DimB>
 class SparseMatrix2;
 
