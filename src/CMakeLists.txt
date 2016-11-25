@@ -38,6 +38,8 @@ endif()
 
 if(NOT ENABLE_SparseMatrix)
   target_compile_definitions(DsExpLib PRIVATE SparseMatrix_disabled)
+  set(ENABLE_Dijkstra false CACHE BOOL "If Dijkstra  enabled. " FORCE)
+  set(ENABLE_Kruskal false CACHE BOOL "If Kruskal enabled. " FORCE)
 endif()
 
 if(NOT ENABLE_BFS)

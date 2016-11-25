@@ -31,17 +31,17 @@ set(USE_WCOUT false CACHE BOOL "If wcout enabled.")
 
 set(ENABLE_BFS true CACHE BOOL "If BFS enabled.")
 
-set(ENABLE_ExpressionTree true CACHE BOOL "If ExpressionTree enabled. ")
+set(ENABLE_ExpressionTree true CACHE BOOL "If ExpressionTree enabled.")
 
-set(ENABLE_ExpressionStack true CACHE BOOL "If ExpressionStack enabled. ")
+set(ENABLE_ExpressionStack true CACHE BOOL "If ExpressionStack enabled.")
 
-set(ENABLE_BinaryTree true CACHE BOOL "If ExpressionStack enabled. ")
+set(ENABLE_BinaryTree true CACHE BOOL "If ExpressionStack enabled.")
 
-set(ENABLE_Dijkstra true CACHE BOOL "If ExpressionStack enabled. ")
+set(ENABLE_Dijkstra true CACHE BOOL "If Dijkstra enabled. Dependent on SparseMatrix.")
 
-set(ENABLE_Kruskal true CACHE BOOL "If ExpressionStack enabled. ")
+set(ENABLE_Kruskal true CACHE BOOL "If Kruskal enabled. Dependent on SparseMatrix.")
 
-set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support")
+set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support.")
 
 include_directories(${DsExp_SOURCE_DIR}/src)
 
@@ -59,8 +59,10 @@ if(USE_WCOUT)
   target_compile_definitions(DsExp PRIVATE Use_Wcout)
 endif()
 
-if(ENABLE_SparseMatrix)
-  target_compile_definitions(DsExp PRIVATE SparseMatrix_enabled)
+if(NOT ENABLE_SparseMatrix)
+  target_compile_definitions(DsExp PRIVATE SparseMatrix_disabled)
+  set(ENABLE_Dijkstra false CACHE BOOL "If Dijkstra  enabled. Dependent on SparseMatrix" FORCE)
+  set(ENABLE_Kruskal false CACHE BOOL "If Kruskal enabled. Dependent on SparseMatrix" FORCE)
 endif()
 
 if(NOT ENABLE_BFS)
