@@ -6,7 +6,7 @@
 
 #ifdef Kruskal_defined
 
-std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std::pair<size_t, int>>> m)
+std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std::pair<size_t, int>>> const& m)
 {
 	auto s = m.size();
 	auto d = std::vector<std::tuple<int, size_t, size_t>>();

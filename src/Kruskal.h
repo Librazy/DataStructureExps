@@ -8,10 +8,10 @@
 #include <vector>
 #include <SparseMatrix.hpp>
 
-std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std::pair<size_t, int>>> m);
+std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std::pair<size_t, int>>> const& m);
 
 template<size_t N>
-std::array<std::tuple<int, size_t, size_t>, N - 1> Kruskal(SparseMatrix2<int, N, N> map)
+std::array<std::tuple<int, size_t, size_t>, N - 1> Kruskal(SparseMatrix2<int, N, N> const& map)
 {
 	auto m = std::vector<std::vector<std::pair<size_t, int>>>();
 	for(auto i = 0; i != N ;++i) {

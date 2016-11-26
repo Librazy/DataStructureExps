@@ -8,10 +8,10 @@
 #include <vector>
 #include <SparseMatrix.hpp>
 
-std::vector<int> Dijkstra(std::vector<std::vector<std::pair<size_t, int>>> m, size_t s);
+std::vector<int> Dijkstra(std::vector<std::vector<std::pair<size_t, int>>> const& m, size_t s);
 
 template<size_t N>
-std::array<int, N> Dijkstra(SparseMatrix2<int, N, N> map, size_t s)
+std::array<int, N> Dijkstra(SparseMatrix2<int, N, N> const& map, size_t s)
 {
 	auto m = std::vector<std::vector<std::pair<size_t, int>>>();
 	for(auto i = 0; i != N ;++i) {

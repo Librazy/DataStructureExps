@@ -5,7 +5,7 @@
 
 #ifdef Dijkstra_defined
 
-std::vector<int> Dijkstra(std::vector<std::vector<std::pair<size_t, int>>> m, size_t s)
+std::vector<int> Dijkstra(std::vector<std::vector<std::pair<size_t, int>>> const& m, size_t s)
 {
 	auto q = std::priority_queue<std::pair<int, size_t>, std::vector<std::pair<int, size_t>>, std::greater<>>();
 	auto d = std::vector<int>(m.size(), std::numeric_limits<int>::max());
