@@ -79,13 +79,13 @@ protected:
 	/// @return 值
 	/// @param DimAg 行坐标
 	/// @param DimBg 列坐标
-	T get_no_check(size_t DimAg, size_t DimBg) const;
+	T get_unchecked(size_t DimAg, size_t DimBg) const;
 
 	/// @brief 不带边界检查的设置
 	/// @param ele 值
 	/// @param DimAs 行坐标
 	/// @param DimBs 列坐标
-	void set_no_check(T ele, size_t DimAs, size_t DimBs);
+	void set_unchecked(T ele, size_t DimAs, size_t DimBs);
 
 	///行最小列下标
 	std::map<size_t, size_t> row_min;
@@ -193,7 +193,7 @@ SparseMatrix2<T, DimA, DimB>::SparseMatrix2(const T (&Args)[A][B])
 	static_assert(B == DimB, "Col size doesn't match");
 	for (size_t i = 0; i != DimA; ++i) {
 		for (size_t j = 0; j != DimB; ++j) {
-			if(Args[i][j])set_no_check(Args[i][j], i, j);
+			if(Args[i][j])set_unchecked(Args[i][j], i, j);
 		}
 	}
 }
@@ -220,14 +220,14 @@ void constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, di
 }
 
 template <typename T, size_t DimA, size_t DimB>
-void SparseMatrix2<T, DimA, DimB>::set_no_check(T ele, size_t DimAs, size_t DimBs)
+void SparseMatrix2<T, DimA, DimB>::set_unchecked(T ele, size_t DimAs, size_t DimBs)
 {
 	container.insert_or_assign(std::make_tuple(DimAs, DimBs), ele);
 	check_row_min_max(DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-T SparseMatrix2<T, DimA, DimB>::get_no_check(size_t DimAg, size_t DimBg) const
+T SparseMatrix2<T, DimA, DimB>::get_unchecked(size_t DimAg, size_t DimBg) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	auto x = container.find(i);
@@ -360,12 +360,12 @@ SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, 
 			T a = T();
 			for (size_t j = 0; j != DimB; ++j) {
 				T val;
-				if ((val = m2.get_no_check(j, i)) != 0) {
+				if ((val = m2.get_unchecked(j, i)) != 0) {
 					a += ele.second*val;
 				}
 			}
-			if ((a = res.get_no_check(Da, i) + a) != 0) {
-				res.set_no_check(a, Da, i);
+			if ((a = res.get_unchecked(Da, i) + a) != 0) {
+				res.set_unchecked(a, Da, i);
 			}
 		}
 	}
@@ -376,10 +376,10 @@ template <typename T, size_t DimA, size_t DimB>
 SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
 	SparseMatrix2<T, DimA, DimB> res;
 	for (auto ele : container) {
-		res.set_no_check(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_unchecked(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	for (auto ele : m2.container) {
-		res.set_no_check(res.get_no_check(std::get<0>(ele.first), std::get<1>(ele.first)) + ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_unchecked(res.get_unchecked(std::get<0>(ele.first), std::get<1>(ele.first)) + ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	return res;
 }
@@ -388,10 +388,10 @@ template <typename T, size_t DimA, size_t DimB>
 SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
 	SparseMatrix2<T, DimA, DimB> res;
 	for (auto ele : container) {
-		res.set_no_check(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_unchecked(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	for (auto ele : m2.container) {
-		res.set_no_check(res.get_no_check(std::get<0>(ele.first), std::get<1>(ele.first)) - ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_unchecked(res.get_unchecked(std::get<0>(ele.first), std::get<1>(ele.first)) - ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	return res;
 }
@@ -401,7 +401,7 @@ SparseMatrix2<T, DimB, DimA> SparseMatrix2<T, DimA, DimB>::Rev() const noexcept
 {
 	SparseMatrix2<T, DimB, DimA> res;
 	for (auto ele : container) {
-		res.set_no_check(ele.second, std::get<1>(ele.first), std::get<0>(ele.first));
+		res.set_unchecked(ele.second, std::get<1>(ele.first), std::get<0>(ele.first));
 	}
 	return res;
 }
