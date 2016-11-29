@@ -6,7 +6,7 @@
 
 #include <array>
 #include <vector>
-#include <SparseMatrix.hpp>
+#include "SparseMatrix.hpp"
 
 std::vector<int> Dijkstra(std::vector<std::vector<std::pair<size_t, int>>> const& m, size_t s);
 
