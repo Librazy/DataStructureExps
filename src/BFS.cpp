@@ -19,7 +19,7 @@ std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size
 	}
 
 	size_t front = 0;
-	q.emplace_back(std::make_tuple(static_cast<int>(y1), static_cast<int>(x1), -1, -1));
+	q.emplace_back(static_cast<int>(y1), static_cast<int>(x1), -1, -1);
 	while (front < q.size()) {
 		for (size_t u = 0; u != 4; ++u) {
 			auto nh = std::get<0>(q[front]) + d[u][0];
@@ -28,16 +28,16 @@ std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size
 			    || (nw < 0) || (static_cast<size_t>(nw) >= w)
 			    || (map[nh][nw] == 1) || (vis[nh][nw] == 1))) {
 				if (static_cast<size_t>(nh) == y2 && static_cast<size_t>(nw) == x2) {
-					ans.emplace_back(std::make_tuple(static_cast<int>(y2), static_cast<int>(x2), static_cast<int>(u + 2)));
+					ans.emplace_back(static_cast<int>(y2), static_cast<int>(x2), static_cast<int>(u + 2));
 					auto cur = static_cast<int>(front);
 					while (cur != -1) {
-						ans.emplace_back(std::make_tuple(std::get<0>(q[cur]), std::get<1>(q[cur]), std::get<3>(q[cur])));
+						ans.emplace_back(std::get<0>(q[cur]), std::get<1>(q[cur]), std::get<3>(q[cur]));
 						cur = std::get<2>(q[cur]);
 					}
 					return ans;
 				}
 				vis[nh][nw] = 1;
-				q.emplace_back(std::make_tuple(nh, nw, static_cast<int>(front), static_cast<int>(u + 2)));
+				q.emplace_back(nh, nw, static_cast<int>(front), static_cast<int>(u + 2));
 			}
 		}
 		++front;

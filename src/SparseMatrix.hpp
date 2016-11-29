@@ -242,8 +242,7 @@ void SparseMatrix2<T, DimA, DimB>::set(T ele, size_t DimAs, size_t DimBs)
 {
 	auto i = std::make_tuple(DimAs, DimBs);
 	dim_bound_check(dim_tuple, i);
-	container.insert_or_assign(i, ele);
-	check_row_min_max(DimAs, DimBs);
+	set_unchecked(ele, DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -251,9 +250,7 @@ template<size_t DimAs, size_t DimBs>
 void SparseMatrix2<T, DimA, DimB>::set(T ele) noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAs, DimBs), "Matrix bound check failed");
-	auto i = std::make_tuple(DimAs, DimBs);
-	container.insert_or_assign(i, ele);
-	check_row_min_max(DimAs, DimBs);
+	set_unchecked(ele, DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -261,11 +258,7 @@ T SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	dim_bound_check(dim_tuple, i);
-	auto x = container.find(i);
-	if (x != container.end()) {
-		return x->second;
-	}
-	return T();
+	return get_unchecked(DimAg, DimBg);
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -273,12 +266,7 @@ template<size_t DimAg, size_t DimBg>
 T SparseMatrix2<T, DimA, DimB>::get() const noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAg, DimBg), "Matrix bound check failed");
-	auto i = std::make_tuple(DimAg, DimBg);
-	auto x = container.find(i);
-	if (x != container.end()) {
-		return x->second;
-	}
-	return T();
+	return get_unchecked(DimAg, DimBg);
 }
 
 template <typename T, size_t DimA, size_t DimB>

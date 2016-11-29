@@ -6,7 +6,7 @@
 
 #include <array>
 #include <vector>
-#include <SparseMatrix.hpp>
+#include "SparseMatrix.hpp"
 
 std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std::pair<size_t, int>>> const& m);
 

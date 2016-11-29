@@ -151,22 +151,54 @@ void BinaryTree<T, P>::TreeTraversalRecursive(F&& f){
 	TreeTraversalRecursiveImpl<O, 2>(std::forward<F&&>(f));
 }
 
+/**
+ * \brief 构造二叉树内节点（以shared_ptr包装）
+ * \tparam T 数据类型
+ * \param left 左子树
+ * \param right 右子树
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<typename T>
 std::shared_ptr<BinaryTree<T, std::shared_ptr>> MakeTree(std::shared_ptr<BinaryTree<T, std::shared_ptr>>&& left, std::shared_ptr<BinaryTree<T, std::shared_ptr>>&& right, T&& t) {
 	return std::make_shared<BinaryTree<T, std::shared_ptr>>(std::forward<std::shared_ptr<BinaryTree<T, std::shared_ptr>>>(left), std::forward<std::shared_ptr<BinaryTree<T, std::shared_ptr>>>(right), std::forward<T>(t));
 }
 
+/**
+ * \brief 构造二叉树内节点（以unique_ptr包装）
+ * \tparam T 数据类型
+ * \param left 左子树
+ * \param right 右子树
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<typename T>
 std::unique_ptr<BinaryTree<T, std::unique_ptr>> MakeTree(std::unique_ptr<BinaryTree<T, std::unique_ptr>>&& left, std::unique_ptr<BinaryTree<T, std::unique_ptr>>&& right, T&& t) {
 	return std::make_unique<BinaryTree<T, std::unique_ptr>>(std::forward<std::unique_ptr<BinaryTree<T, std::unique_ptr>>>(left), std::forward<std::unique_ptr<BinaryTree<T, std::unique_ptr>>>(right), std::forward<T>(t));
 }
 
+/**
+ * \brief 构造二叉树内节点
+ * \tparam P 包装指针类型
+ * \tparam T 数据类型
+ * \param left 左子树
+ * \param right 右子树
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<template<class...> class P, typename T>
 P<BinaryTree<T, P>> MakeTree(P<BinaryTree<T, P>>&& left, P<BinaryTree<T, P>>&& right, T&& t)
 {
 	return P<BinaryTree<T, P>>(new BinaryTree<T, P>(std::forward<P<BinaryTree<T, P>>>(left), std::forward<P<BinaryTree<T, P>>>(right), std::forward<T>(t)));
 }
 
+/**
+ * \brief 构造二叉树叶子节点
+ * \tparam P 包装指针类型
+ * \tparam T 数据类型
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<template<class...> class P, typename T>
 auto MakeTree(T&& t) ->
 typename std::enable_if<
@@ -177,6 +209,13 @@ typename std::enable_if<
 	return P<BinaryTree<T, P>>(new BinaryTree<T, P>(std::forward<T>(t)));
 }
 
+/**
+ * \brief 构造二叉树叶子节点（以unique_ptr包装）
+ * \tparam P = unique_ptr 包装指针类型
+ * \tparam T 数据类型
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<template<class...> class P, typename T>
 auto MakeTree(T&& t) ->
 typename std::enable_if<
@@ -187,6 +226,13 @@ typename std::enable_if<
 	return std::make_unique<BinaryTree<T, P>>(std::forward<T>(t));
 }
 
+/**
+ * \brief 构造二叉树叶子节点（以shared_ptr包装）
+ * \tparam P = shared_ptr 包装指针类型
+ * \tparam T 数据类型
+ * \param t 数据
+ * \return 构造完成的树
+ */
 template<template<class...> class P = std::shared_ptr, typename T>
 auto MakeTree(T&& t) ->
 typename std::enable_if<

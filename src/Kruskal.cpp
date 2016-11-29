@@ -13,7 +13,7 @@ std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std
 	auto ans = std::vector<std::tuple<int, size_t, size_t>>();
 	for(size_t i = 0; i != s; ++i) {
 		for (auto p : m[i]) {
-			d.emplace_back(std::make_tuple(std::get<1>(p), i, std::get<0>(p)));
+			d.emplace_back(std::get<1>(p), i, std::get<0>(p));
 		}
 	}
 	auto f = std::vector<size_t>(s);
