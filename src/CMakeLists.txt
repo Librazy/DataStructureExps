@@ -28,6 +28,8 @@ if (COVERALLS)
         ${COVERALLS_UP}     ) # If we should upload.
 endif()
 
+include_directories(${DsExp_SOURCE_DIR}/include)
+
 if(USE_FOLDEXP)
   target_compile_definitions(DsExpLib PRIVATE Use_FoldExp)
 endif()

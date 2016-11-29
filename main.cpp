@@ -57,8 +57,8 @@ int main()
 		int out;
 
 		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } });
-		assert((mat.get<0, 2>() == 0));
-		assert(mat.get(0, 2) == 0);
+		assert((mat.get<0, 2>().value_or(0) == 0));
+		assert(mat.get(0, 2).value_or(0) == 0);
 		assert(mat.have(0, 0, out));
 		assert((!mat.have<0, 2>(out)));
 
@@ -71,9 +71,9 @@ int main()
 		auto mat4 = mat3.Rev();
 
 		assert((mat3.have<0, 0>(out) && out == 14));
-		assert((mat3.get<1, 0>() == 28));
-		assert((mat4.get<0, 0>() == 14));
-		assert((mat4.get<0, 1>() == 28));
+		assert((mat3.get<1, 0>().value() == 28));
+		assert((mat4.get<0, 0>().value() == 14));
+		assert((mat4.get<0, 1>().value() == 28));
 		//assert((mat4.get<0, 2>() == 28)); //将会触发编译器报错：Matrix bound check failed
 
 		auto mat5 = SparseMatrix2<int, 2, 3>();
@@ -82,7 +82,7 @@ int main()
 		mat5.set<1, 2>(2);
 
 		assert(!mat5.have(1, 1, out) && out == 0);
-		assert(mat5.get(1, 1) == 0);
+		assert(mat5.get(1, 1).value_or(0) == 0);
 
 		auto m5r0 = mat5.row(0);
 		assert(m5r0.size() == 2);
@@ -108,7 +108,7 @@ int main()
 		}
 
 		auto mat6 = mat - mat5;
-		assert((mat6.get<1, 2>() == 2));
+		assert((mat6.get<1, 2>().value() == 2));
 		std::stringstream ss;
 		ss << mat;
 		assert(ss.str() == "1 1 0\n0 0 4\n");

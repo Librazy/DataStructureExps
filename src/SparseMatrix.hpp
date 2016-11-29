@@ -9,6 +9,7 @@
 #include <tuple>
 #include <utility>
 #include <vector>
+#include <optional.hpp>
 
 #ifdef Use_FoldExp
 template <size_t ...Dims>
@@ -79,7 +80,7 @@ protected:
 	/// @return 值
 	/// @param DimAg 行坐标
 	/// @param DimBg 列坐标
-	T get_unchecked(size_t DimAg, size_t DimBg) const;
+	stx::optional<T> get_unchecked(size_t DimAg, size_t DimBg) const;
 
 	/// @brief 不带边界检查的设置
 	/// @param ele 值
@@ -112,14 +113,14 @@ public:
 	/// @return 值
 	/// @param DimAg 行坐标
 	/// @param DimBg 列坐标
-	T get(size_t DimAg, size_t DimBg) const;
+	stx::optional<T> get(size_t DimAg, size_t DimBg) const;
 
 	/// @brief 静态边界检查的获取
 	/// @return 值
 	/// @tparam DimAg 行坐标
 	/// @tparam DimBg 列坐标
 	template<size_t DimAg, size_t DimBg>
-	T get() const noexcept;
+	stx::optional<T> get() const noexcept;
 
 	/// @brief 动态边界检查的查找
 	/// @return 是否存在
@@ -227,14 +228,14 @@ void SparseMatrix2<T, DimA, DimB>::set_unchecked(T ele, size_t DimAs, size_t Dim
 }
 
 template <typename T, size_t DimA, size_t DimB>
-T SparseMatrix2<T, DimA, DimB>::get_unchecked(size_t DimAg, size_t DimBg) const
+stx::optional<T> SparseMatrix2<T, DimA, DimB>::get_unchecked(size_t DimAg, size_t DimBg) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	auto x = container.find(i);
 	if (x != container.end()) {
 		return x->second;
 	}
-	return T();
+	return {};
 }
 
 template <typename T, size_t DimA, size_t DimB>
@@ -254,7 +255,7 @@ void SparseMatrix2<T, DimA, DimB>::set(T ele) noexcept
 }
 
 template <typename T, size_t DimA, size_t DimB>
-T SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
+stx::optional<T> SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	dim_bound_check(dim_tuple, i);
@@ -263,7 +264,7 @@ T SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t DimAg, size_t DimBg>
-T SparseMatrix2<T, DimA, DimB>::get() const noexcept
+stx::optional<T> SparseMatrix2<T, DimA, DimB>::get() const noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAg, DimBg), "Matrix bound check failed");
 	return get_unchecked(DimAg, DimBg);
@@ -348,11 +349,11 @@ SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, 
 			T a = T();
 			for (size_t j = 0; j != DimB; ++j) {
 				T val;
-				if ((val = m2.get_unchecked(j, i)) != 0) {
+				if ((val = m2.get_unchecked(j, i).value_or(0)) != 0) {
 					a += ele.second*val;
 				}
 			}
-			if ((a = res.get_unchecked(Da, i) + a) != 0) {
+			if ((a = res.get_unchecked(Da, i).value_or(0) + a) != 0) {
 				res.set_unchecked(a, Da, i);
 			}
 		}
@@ -367,7 +368,7 @@ SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, 
 		res.set_unchecked(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	for (auto ele : m2.container) {
-		res.set_unchecked(res.get_unchecked(std::get<0>(ele.first), std::get<1>(ele.first)) + ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_unchecked(res.get_unchecked(std::get<0>(ele.first), std::get<1>(ele.first)).value_or(0) + ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	return res;
 }
@@ -379,7 +380,7 @@ SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, 
 		res.set_unchecked(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	for (auto ele : m2.container) {
-		res.set_unchecked(res.get_unchecked(std::get<0>(ele.first), std::get<1>(ele.first)) - ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
+		res.set_unchecked(res.get_unchecked(std::get<0>(ele.first), std::get<1>(ele.first)).value_or(0) - ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
 	return res;
 }
@@ -417,7 +418,7 @@ std::ostream& operator<< (std::ostream& out, SparseMatrix2<T, DimA, DimB> const&
 {
 	for (size_t i = 0; i != DimA; ++i) {
 		for (size_t j = 0; j != DimB; ++j) {
-			out << (j ? " " : "") << d.get(i, j);
+			out << (j ? " " : "") << d.get(i, j).value_or(T());
 		}
 		out << std::endl;
 	}

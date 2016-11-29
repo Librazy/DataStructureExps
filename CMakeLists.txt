@@ -43,7 +43,7 @@ set(ENABLE_Kruskal true CACHE BOOL "If Kruskal enabled. Dependent on SparseMatri
 
 set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support.")
 
-include_directories(${DsExp_SOURCE_DIR}/src)
+include_directories(${DsExp_SOURCE_DIR}/include)
 
 add_subdirectory(src)
 
