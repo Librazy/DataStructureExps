@@ -1,7 +1,7 @@
 #include <numeric>
 #include <functional>
 #include <algorithm>
-#include "kruskal.h"
+#include "Kruskal.h"
 
 
 #ifdef Kruskal_defined

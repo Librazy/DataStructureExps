@@ -1,7 +1,7 @@
 #include <limits>
 #include <queue>
 #include <functional>
-#include "dijkstra.h"
+#include "Dijkstra.h"
 
 #ifdef Dijkstra_defined
 
