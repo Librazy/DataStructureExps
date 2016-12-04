@@ -1,34 +1,34 @@
 #include "ExpressionStack.h"
-#include "Exception.h"
+#include "StrException.h"
 
 #ifdef ExpressionStack_defined
 
-const ExpressionStack::Precede ExpressionStack::PrecedeTable[7][7]{
-	{ Precede::H, Precede::H, Precede::L, Precede::L, Precede::L, Precede::H, Precede::H },
-	{ Precede::H, Precede::H, Precede::L, Precede::L, Precede::L, Precede::H, Precede::H },
-	{ Precede::H, Precede::H, Precede::H, Precede::H, Precede::L, Precede::H, Precede::H },
-	{ Precede::H, Precede::H, Precede::H, Precede::H, Precede::L, Precede::H, Precede::H },
-	{ Precede::L, Precede::L, Precede::L, Precede::L, Precede::L, Precede::E, Precede::F },
-	{ Precede::H, Precede::H, Precede::H, Precede::H, Precede::F, Precede::H, Precede::H },
-	{ Precede::L, Precede::L, Precede::L, Precede::L, Precede::L, Precede::F, Precede::E },
+const expression_stack::precede expression_stack::precede_table[7][7]{
+	{ precede::H, precede::H, precede::L, precede::L, precede::L, precede::H, precede::H },
+	{ precede::H, precede::H, precede::L, precede::L, precede::L, precede::H, precede::H },
+	{ precede::H, precede::H, precede::H, precede::H, precede::L, precede::H, precede::H },
+	{ precede::H, precede::H, precede::H, precede::H, precede::L, precede::H, precede::H },
+	{ precede::L, precede::L, precede::L, precede::L, precede::L, precede::E, precede::F },
+	{ precede::H, precede::H, precede::H, precede::H, precede::F, precede::H, precede::H },
+	{ precede::L, precede::L, precede::L, precede::L, precede::L, precede::F, precede::E },
 };
 
-const std::map<char, ExpressionStack::Operator> ExpressionStack::OperatorMap{
-	{ '+',Operator::Plus },
-	{ '-',Operator::Minus },
-	{ '*',Operator::Multiplication },
-	{ '/',Operator::Division },
-	{ '(',Operator::LBracket },
-	{ ')',Operator::RBracket },
-	{ '#',Operator::Sharp },
+const std::map<char, expression_stack::op> expression_stack::operator_map{
+	{ '+',op::Plus },
+	{ '-',op::Minus },
+	{ '*',op::Multiplication },
+	{ '/',op::Division },
+	{ '(',op::LBracket },
+	{ ')',op::RBracket },
+	{ '#',op::Sharp },
 };
 
-double ExpressionStack::Eval(std::string exp)
+double expression_stack::eval(std::string exp)
 {
-	auto optr = std::stack<Operator>();
+	auto optr = std::stack<op>();
 	auto opnd = std::stack<double>();
 
-	optr.push(Operator::Sharp);
+	optr.push(op::Sharp);
 
 	auto ss = std::stringstream(exp + "#");
 	do {
@@ -38,23 +38,23 @@ double ExpressionStack::Eval(std::string exp)
 			opnd.push(n);
 		}
 		else {
-			auto n = OperatorMap.at(ss.peek());
+			auto n = operator_map.at(ss.peek());
 
 		CheckPrecede:
 
 			auto op = optr.top();
 			double a, b;
-			switch (PrecedeTable[static_cast<size_t>(optr.top())][static_cast<size_t>(n)]) {
+			switch (precede_table[static_cast<size_t>(optr.top())][static_cast<size_t>(n)]) {
 
-			case Precede::L:
+			case precede::L:
 				optr.push(n); ss.get();
 				break;
 
-			case Precede::E:
+			case precede::E:
 				optr.pop(); ss.get();
 				break;
 
-			case Precede::H:
+			case precede::H:
 
 				optr.pop();
 				if(opnd.size() <2) {
@@ -66,33 +66,33 @@ double ExpressionStack::Eval(std::string exp)
 				opnd.pop();
 
 				switch (op) {
-				case Operator::Plus: opnd.push(b + a);
+				case op::Plus: opnd.push(b + a);
 					goto CheckSharp;
-				case Operator::Minus: opnd.push(b - a);
+				case op::Minus: opnd.push(b - a);
 					goto CheckSharp;
-				case Operator::Multiplication: opnd.push(b * a);
+				case op::Multiplication: opnd.push(b * a);
 					goto CheckSharp;
-				case Operator::Division: opnd.push(b / a);
+				case op::Division: opnd.push(b / a);
 					goto CheckSharp;
 
 				Failed:
-				case Operator::LBracket:
-				case Operator::RBracket:
-				case Operator::Sharp:
+				case op::LBracket:
+				case op::RBracket:
+				case op::Sharp:
 				default:
-					throw Exception(ss.str(), L"错误的操作符");
+					throw str_exception(ss.str(), L"错误的操作符");
 				}
-			case Precede::F:
+			case precede::F:
 			default:
-				throw Exception(ss.str(), L"错误的优先级");
+				throw str_exception(ss.str(), L"错误的优先级");
 			}
 			continue;
 			CheckSharp:
-			if (optr.top() != Operator::Sharp) {
+			if (optr.top() != op::Sharp) {
 				goto CheckPrecede;
 			}
 		}
-	} while (ss.peek() != '#' || optr.top() != Operator::Sharp);
+	} while (ss.peek() != '#' || optr.top() != op::Sharp);
 
 	return opnd.top();
 }

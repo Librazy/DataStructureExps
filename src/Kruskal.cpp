@@ -1,12 +1,12 @@
 #include <numeric>
 #include <functional>
 #include <algorithm>
-#include "Kruskal.h"
+#include "kruskal.h"
 
 
 #ifdef Kruskal_defined
 
-std::vector<std::tuple<int, size_t, size_t>> Kruskal(std::vector<std::vector<std::pair<size_t, int>>> const& m)
+std::vector<std::tuple<int, size_t, size_t>> kruskal(std::vector<std::vector<std::pair<size_t, int>>> const& m)
 {
 	auto s = m.size();
 	auto d = std::vector<std::tuple<int, size_t, size_t>>();

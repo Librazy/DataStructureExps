@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 add_library(DsExpLib 
-Exception.h Exception.cpp
+StrException.h StrException.cpp
 SparseMatrix.hpp
 BFS.h BFS.cpp
 ExpressionTree.h ExpressionTree.cpp
@@ -12,7 +12,7 @@ Kruskal.h Kruskal.cpp
 
 if (COVERALLS)
     set(COVERAGE_SRCS
-		src/Exception.cpp
+		src/StrException.cpp
 		src/SparseMatrix.hpp
 		src/BFS.cpp
 		src/ExpressionTree.cpp

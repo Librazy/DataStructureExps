@@ -1,8 +1,8 @@
-#include "BFS.h"
+#include "bfs.h"
 
 #ifdef BFS_defined
 
-std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size_t y2, size_t w, size_t h, std::string m)
+std::vector<std::tuple<int, int, int>> bfs(size_t x1, size_t y1, size_t x2, size_t y2, size_t w, size_t h, std::string m)
 {
 	std::vector<std::vector<int>> map(h, std::vector<int>(w));
 	std::vector<std::vector<int>> vis(h, std::vector<int>(w));
@@ -45,7 +45,7 @@ std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size
 	return ans;
 }
 
-std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans)
+std::string bfs_pretty_text(std::vector<std::tuple<int, int, int>> ans)
 {
 	std::stringstream res;
 	for (auto it = ans.rbegin(); it != ans.rend(); ++it) {
@@ -54,7 +54,7 @@ std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans)
 	return res.str();
 }
 
-std::string BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m)
+std::string bfs_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m)
 {
 	std::stringstream res;
 	std::vector<std::vector<int>> map(h, std::vector<int>(w));

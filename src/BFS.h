@@ -22,14 +22,14 @@
  * \param m 迷宫地图
  * \return 
  */
-std::vector<std::tuple<int, int, int>> BFS(size_t x1, size_t y1, size_t x2, size_t y2, size_t w, size_t h, std::string m);
+std::vector<std::tuple<int, int, int>> bfs(size_t x1, size_t y1, size_t x2, size_t y2, size_t w, size_t h, std::string m);
 
 /**
  * \brief 
  * \param ans 
  * \return 
  */
-std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans);
+std::string bfs_pretty_text(std::vector<std::tuple<int, int, int>> ans);
 
 /**
  * \brief 
@@ -39,7 +39,7 @@ std::string BFS_pretty_text(std::vector<std::tuple<int, int, int>> ans);
  * \param m 
  * \return 
  */
-std::string BFS_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m);
+std::string bfs_pretty_graph(std::vector<std::tuple<int, int, int>> ans, size_t w, size_t h, std::string m);
 
 #define BFS_defined
 

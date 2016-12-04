@@ -1,6 +1,6 @@
 // ReSharper disable CppUnusedIncludeDirective
 #undef NDEBUG
-#include "src/Exception.h"
+#include "src/StrException.h"
 #include "src/ExpressionTree.h"
 #include "src/ExpressionStack.h"
 #include "src/SparseMatrix.hpp"
@@ -53,16 +53,16 @@ int main()
 		static_assert(dim_bound_check_static<4, 7>(0, 6), "static_assert false alarm");
 #endif
 
-		//auto mat0 = SparseMatrix2<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
+		//auto mat0 = sparse_matrix2d<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
 		int out;
 
-		auto mat = SparseMatrix2<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } });
+		auto mat = sparse_matrix2d<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } });
 		assert((mat.get<0, 2>() == 0));
 		assert(mat.get(0, 2) == 0);
 		assert(mat.have(0, 0, out));
 		assert((!mat.have<0, 2>(out)));
 
-		auto mat2 = SparseMatrix2<int, 3, 1>();
+		auto mat2 = sparse_matrix2d<int, 3, 1>();
 		mat2.set<0, 0>(4);
 		mat2.set<1, 0>(1);
 		mat2.set<2, 0>(2);
@@ -76,7 +76,7 @@ int main()
 		assert((mat4.get<0, 1>() == 28));
 		//assert((mat4.get<0, 2>() == 28)); //将会触发编译器报错：Matrix bound check failed
 
-		auto mat5 = SparseMatrix2<int, 2, 3>();
+		auto mat5 = sparse_matrix2d<int, 2, 3>();
 		mat5.set(1, 0, 0);
 		mat5.set<0, 1>(1);
 		mat5.set<1, 2>(2);
@@ -94,7 +94,7 @@ int main()
 
 		try {
 			mat5.row(4);
-			throw std::runtime_error("Exception Expected");
+			throw std::runtime_error("std::out_of_range expected");
 		}
 		catch (std::out_of_range e) {
 			assert(std::string(e.what()) == "Matrix bound check failed");
@@ -102,7 +102,7 @@ int main()
 
 		try{
 			mat5.get(3, 5);
-			throw std::runtime_error("Exception Expected");
+			throw std::runtime_error("std::out_of_range expected");
 		}catch(std::out_of_range e){
 			assert(std::string(e.what()) == "Matrix bound check failed");
 		}
@@ -113,7 +113,7 @@ int main()
 		ss << mat;
 		assert(ss.str() == "1 1 0\n0 0 4\n");
 
-		auto mat7 = SparseMatrix2<int, 2, 3>({ { 0,0,0 },{ 0,0,0 } });
+		auto mat7 = sparse_matrix2d<int, 2, 3>({ { 0,0,0 },{ 0,0,0 } });
 		assert(mat7.row(0).size() == 0);
 		assert((mat7.row<1>().size() == 0));
 	}
@@ -136,9 +136,9 @@ R"(
 0 1 1 1 0
 0 0 0 1 0
 )";
-		auto x = BFS(0, 0, 4, 4, 5, 5, map);
+		auto x = bfs(0, 0, 4, 4, 5, 5, map);
 
-		auto t = BFS_pretty_text(x);
+		auto t = bfs_pretty_text(x);
 		std::stringstream ss1, ss2;
 		ss1 << '\n' << t;
 		auto anstext =
@@ -156,7 +156,7 @@ R"(
 		ss2 << anstext;
 		assert(ss1.str() == ss2.str());
 
-		auto w = BFS_pretty_graph(x, 5, 5, map);
+		auto w = bfs_pretty_graph(x, 5, 5, map);
 		std::stringstream ss3, ss4;
 		ss3 << '\n' << w;
 		auto ans =
@@ -175,7 +175,7 @@ R"(
 0 1 0
 0 1 0
 )";
-		auto x2 = BFS(0, 0, 2, 1, 3, 2, map2);
+		auto x2 = bfs(0, 0, 2, 1, 3, 2, map2);
 		assert(x2.size() == 0);
 	}
 #ifdef Use_Wcout
@@ -190,38 +190,38 @@ R"(
 	//++Start ExpressionStack test
 	{
 		auto str = "1+2*3";
-		auto ans = ExpressionStack::Eval(str);
+		auto ans = expression_stack::eval(str);
 		assert(ans == 7.0);
 
 		auto str1 = "2-3*4-5/6";
-		auto ans1 = ExpressionStack::Eval(str1);
+		auto ans1 = expression_stack::eval(str1);
 		assert(fabs(ans1 - (2 - 3 * 4 - 5.0 / 6)) < 0.01);
 
 		auto str2 = "(1-2)*3";
-		auto ans2 = ExpressionStack::Eval(str2);
+		auto ans2 = expression_stack::eval(str2);
 		assert(ans2 == -3.0);
 
 		auto str3 = "1+2+(40*34-22)*2";
-		auto ans3 = ExpressionStack::Eval(str3);
+		auto ans3 = expression_stack::eval(str3);
 		assert(ans3 == 2679.0);
 
 		auto str4 = "2-3*4-5/6+7*(8-(9*10+1)/2+20+2*10)-20+12";
-		auto ans4 = ExpressionStack::Eval(str4);
+		auto ans4 = expression_stack::eval(str4);
 		assert(fabs(ans4 - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
 		try {
-			ExpressionStack::Eval("3+4)4");
-			throw std::runtime_error("Exception Expected");
+			expression_stack::eval("3+4)4");
+			throw std::runtime_error("str_exception expected");
 		}
-		catch (Exception& e) {
-			assert(std::wstring(e.Error) == L"错误的优先级");
+		catch (str_exception& e) {
+			assert(std::wstring(e.error) == L"错误的优先级");
 		}
 
 		try {
-			ExpressionStack::Eval("*5-4");
-			throw std::runtime_error("Exception Expected");
+			expression_stack::eval("*5-4");
+			throw std::runtime_error("str_exception expected");
 		}
-		catch (Exception& e) {
-			assert(std::wstring(e.Error) == L"错误的操作符");
+		catch (str_exception& e) {
+			assert(std::wstring(e.error) == L"错误的操作符");
 		}
 	}
 #ifdef Use_Wcout
@@ -236,39 +236,39 @@ R"(
 	//++Start ExpressionTree test
 	{
 		auto str = "1+2+   (40*34-22)*2";
-		auto exp = GetExp(str);
-		assert(exp->Eval() == 2679.0);
+		auto exp = get_exp(str);
+		assert(exp->eval() == 2679.0);
 
 		auto str1 = "2-3*4-5/6";
-		auto exp1 = GetExp(str1);
-		assert(fabs(exp1->Eval() - (2 - 3 * 4 - 5.0 / 6)) < 0.01);
+		auto exp1 = get_exp(str1);
+		assert(fabs(exp1->eval() - (2 - 3 * 4 - 5.0 / 6)) < 0.01);
 
 		auto str2 = "2-3*4-5/6 + 7*(8-   (9*10+1)/2 +20+2*10    ) -20 +12";
-		auto exp2 = GetExp(str2);
-		assert(fabs(exp2->Eval() - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
+		auto exp2 = get_exp(str2);
+		assert(fabs(exp2->eval() - (2 - 3 * 4 - 5.0 / 6 + 7 * (8 - (9 * 10 + 1.0) / 2 + 20 + 2 * 10) - 20 + 12)) < 0.01);
 
 		try{
 			auto str3 = "2-(3";
-			GetExp(str3);
-			throw std::runtime_error("Exception Expected");
-		}catch(Exception& e){
-			assert(std::wstring(e.Error) == L"此处需要右括号");
+			get_exp(str3);
+			throw std::runtime_error("str_exception expected");
+		}catch(str_exception& e){
+			assert(std::wstring(e.error) == L"此处需要右括号");
 		}
 
 		try{
 			auto str3 = "2-*3";
-			GetExp(str3);
-			throw std::runtime_error("Exception Expected");
-		}catch(Exception& e){
-			assert(std::wstring(e.Error) == L"此处需要表达式");
+			get_exp(str3);
+			throw std::runtime_error("str_exception expected");
+		}catch(str_exception& e){
+			assert(std::wstring(e.error) == L"此处需要表达式");
 		}
 
 		try{
-			auto brokenExp = BinaryExpression(static_cast<BinaryOperator>(1),std::make_unique<NumberExpression>(1),std::make_unique<NumberExpression>(1));
-			brokenExp.Eval();
-			throw std::runtime_error("Exception Expected");
-		}catch(Exception& e){
-			assert(std::wstring(e.Error) == L"错误的操作符");
+			auto brokenExp = binary_expression(static_cast<bin_op>(1),std::make_unique<number_expression>(1),std::make_unique<number_expression>(1));
+			brokenExp.eval();
+			throw std::runtime_error("str_exception expected");
+		}catch(str_exception& e){
+			assert(std::wstring(e.error) == L"错误的操作符");
 		}
 	}
 #ifdef Use_Wcout
@@ -291,8 +291,8 @@ R"(
  */
 
 		auto *p4 = new int(4), t4 = 4, t5 = 5, t2 = 2, t3 = 3, t1 = 1;
-		auto tree = MakeTree(MakeTree(MakeTree<std::unique_ptr>(std::unique_ptr<int>(p4)), MakeTree<std::unique_ptr>(std::make_unique<int>(5)), std::make_unique<int>(2)), MakeTree<std::unique_ptr>(std::make_unique<int>(3)), std::make_unique<int>(1));
-		auto tree2 = MakeTree(MakeTree(MakeTree(t4), MakeTree(t5), t2), MakeTree(t3), t1);
+		auto tree = make_tree(make_tree(make_tree<std::unique_ptr>(std::unique_ptr<int>(p4)), make_tree<std::unique_ptr>(std::make_unique<int>(5)), std::make_unique<int>(2)), make_tree<std::unique_ptr>(std::make_unique<int>(3)), std::make_unique<int>(1));
+		auto tree2 = make_tree(make_tree(make_tree(t4), make_tree(t5), t2), make_tree(t3), t1);
 		auto ans =
 R"(
 1 2 4 5 3 
@@ -314,30 +314,30 @@ R"(
 		std::stringstream ss1, ss2, ss3, ssa(ans), ssa2(ans2), ssa3(ans3);
 
 		ss1 << std::endl;
-		tree->TreeTraversalRecursive<Order::PreOrder>([&ss1](auto& i) {ss1 << *i << " "; });
+		tree->traversal_recursive<Order::PreOrder>([&ss1](auto& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
-		tree->TreeTraversalRecursive<Order::InOrder>([&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
+		tree->traversal_recursive<Order::InOrder>([&ss1](std::unique_ptr<int>& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
-		tree->TreeTraversalRecursive<Order::PostOrder>([&ss1](auto& i) {ss1 << *i << " "; });
+		tree->traversal_recursive<Order::PostOrder>([&ss1](auto& i) {ss1 << *i << " "; });
 		ss1 << std::endl;
 		assert(ssa.str() == ss1.str());
 
 		ss2 << std::endl;
-		tree2->TreeTraversalRecursive<Order::PreOrder>([&ss2](int i) {ss2 << i << " "; });
+		tree2->traversal_recursive<Order::PreOrder>([&ss2](int i) {ss2 << i << " "; });
 		ss2 << std::endl;
-		tree2->TreeTraversalRecursive<Order::InOrder>([&ss2](auto& i) {ss2 << i << " "; i = 1;});
+		tree2->traversal_recursive<Order::InOrder>([&ss2](auto& i) {ss2 << i << " "; i = 1;});
 		ss2 << std::endl;
-		tree2->TreeTraversalRecursive<Order::PostOrder>([&ss2](auto i) {ss2 << i << " "; });
+		tree2->traversal_recursive<Order::PostOrder>([&ss2](auto i) {ss2 << i << " "; });
 		ss2 << std::endl;
 		assert(ssa2.str() == ss2.str());
 		assert((t4|t5|t2|t3|t1) == 1);
 
 		ss3 << std::endl;
-		tree->TreeTraversalIterative<Order::PreOrder>([&ss3](auto& i) {ss3 << *i << " "; });
+		tree->traversal_iterative<Order::PreOrder>([&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
-		tree->TreeTraversalIterative<Order::InOrder>([&ss3](auto& i) {ss3 << *i << " "; *i += 1; });
+		tree->traversal_iterative<Order::InOrder>([&ss3](auto& i) {ss3 << *i << " "; *i += 1; });
 		ss3 << std::endl;
-		tree->TreeTraversalIterative<Order::PostOrder>([&ss3](auto& i) {ss3 << *i << " "; });
+		tree->traversal_iterative<Order::PostOrder>([&ss3](auto& i) {ss3 << *i << " "; });
 		ss3 << std::endl;
 		assert(ssa3.str() == ss3.str());
 		assert(*p4 == 5);
@@ -359,8 +359,8 @@ R"(
 			}
 		};
 		func f;
-		tree->TreeTraversalRecursive<Order::PostOrder>(f);
-		tree2->TreeTraversalRecursive<Order::InOrder>(f);
+		tree->traversal_recursive<Order::PostOrder>(f);
+		tree2->traversal_recursive<Order::InOrder>(f);
 		assert(f.sum == 5 + 6 + 3 + 4 + 2 + 5);
 	}
 #ifdef Use_Wcout
@@ -374,7 +374,7 @@ R"(
 #ifndef Dijkstra_disabled
 	//++Start Dijkstra test
 	{
-		auto map = SparseMatrix2<int, 6, 6>({
+		auto map = sparse_matrix2d<int, 6, 6>({
 			{ 0, 2, 3, 0, 0, 0 },
 			{ 2, 0, 0, 4, 2, 0 },
 			{ 3, 0, 0, 2, 2, 7 },
@@ -382,7 +382,7 @@ R"(
 			{ 0, 2, 2, 0, 0, 4 },
 			{ 0, 0, 7, 3, 4, 0 },
 		});
-		auto ret = Dijkstra(map, 0);
+		auto ret = dijkstra(map, 0);
 		auto ans = std::array<int, 6>{ {0, 2, 3, 5, 4, 8} };
 		assert(ret == ans);
 	}
@@ -397,7 +397,7 @@ R"(
 #ifndef Kruskal_disabled
 //++Start Kruskal test
 	{
-		auto map = SparseMatrix2<int, 6, 6>({
+		auto map = sparse_matrix2d<int, 6, 6>({
 			{ 0, 2, 3, 0, 0, 0 },
 			{ 2, 0, 0, 4, 2, 0 },
 			{ 3, 0, 0, 2, 2, 7 },
@@ -405,7 +405,7 @@ R"(
 			{ 0, 2, 2, 0, 0, 4 },
 			{ 0, 0, 7, 3, 4, 0 },
 		});
-		auto ret = Kruskal(map);
+		auto ret = kruskal(map);
 		assert(ret.size() == 5);
 		auto total = std::accumulate(ret.begin(), ret.end(), 0, [](auto i, auto j) { return i + std::get<0>(j); });
 		assert(total == 2 + 2 + 2 + 2 + 3);

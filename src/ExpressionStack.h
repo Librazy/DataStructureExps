@@ -12,8 +12,8 @@
 #include <map>
 
 
-struct ExpressionStack{
-	enum class Precede
+struct expression_stack{
+	enum class precede
 	{
 		L = -1,
 		E = 0,
@@ -21,7 +21,7 @@ struct ExpressionStack{
 		F = 2,
 
 	};
-	enum class Operator{
+	enum class op{
 		Plus           = 0,
 		Minus          = 1,
 		Multiplication = 2,
@@ -31,11 +31,11 @@ struct ExpressionStack{
 		Sharp          = 6,
 	};
 	
-	static const std::map<char, Operator> OperatorMap;
+	static const std::map<char, op> operator_map;
 
-	static const Precede PrecedeTable[7][7];
+	static const precede precede_table[7][7];
 
-	static double Eval(std::string exp);
+	static double eval(std::string exp);
 };
 
 

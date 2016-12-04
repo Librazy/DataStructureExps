@@ -1,8 +1,8 @@
 #pragma once
 
-#ifndef SparseMatrix_disabled
+#ifndef sparse_matrix_disabled
 
-#ifndef SparseMatrix_defined
+#ifndef sparse_matrix_defined
 // ReSharper disable CppUnusedIncludeDirective
 #include <iostream>
 #include <map>
@@ -23,10 +23,10 @@ constexpr bool dim_bound_check_static(size_t arga, size_t argb) {
 #endif
 
 template <typename T, size_t DimA, size_t DimB>
-class SparseMatrix2;
+class sparse_matrix2d;
 
 template <typename T, size_t DimA, size_t DimB>
-std::ostream& operator<< (std::ostream& out, const SparseMatrix2<T, DimA, DimB>& d) noexcept;
+std::ostream& operator<< (std::ostream& out, const sparse_matrix2d<T, DimA, DimB>& d) noexcept;
 
 /// @brief 二维稀疏矩阵
 /// @details
@@ -35,21 +35,21 @@ std::ostream& operator<< (std::ostream& out, const SparseMatrix2<T, DimA, DimB>&
 /// @tparam DimA 矩阵行数
 /// @tparam DimB 矩阵列数
 template <typename T, size_t DimA, size_t DimB>
-class SparseMatrix2
+class sparse_matrix2d
 {
 public:
 	/// 默认构造函数
-	constexpr SparseMatrix2();
+	constexpr sparse_matrix2d();
 
 	/// @brief 以二维数组为参数的构造函数
 	/// @param Args 输入的二维矩阵
 	/// @tparam A 矩阵行数
 	/// @tparam B 矩阵列数
 	template<size_t A, size_t B>
-	explicit SparseMatrix2(const T (&Args)[A][B]);
+	explicit sparse_matrix2d(const T (&Args)[A][B]);
 
 	//声明所有模版特化为友元类
-	template<typename, size_t, size_t> friend class SparseMatrix2;
+	template<typename, size_t, size_t> friend class sparse_matrix2d;
 
 	/// 矩阵坐标类型
 	using dim_t = std::tuple<size_t, size_t>;
@@ -136,8 +136,14 @@ public:
 	template<size_t DimAg, size_t DimBg>
 	bool have(T& out) const noexcept;
 
+	/// @brief 动态边界检查获取指定行
+	/// @return 指定行
+	/// @param r 行号
 	std::vector<std::pair<size_t, T>> row(size_t r) const;
 
+	/// @brief 静态边界检查获取指定行
+	/// @return 指定行
+	/// @tparam R 行号
 	template<size_t R>
 	std::vector<std::pair<size_t, T>> row() const noexcept;
 
@@ -148,27 +154,27 @@ public:
 	/// @tparam DimB 矩阵1的列数即矩阵2的行数
 	/// @tparam DimC 矩阵2的列数
 	template <size_t DimC>
-	SparseMatrix2<T, DimA, DimC> Mul(SparseMatrix2<T, DimB, DimC> const& m2) const noexcept;
+	sparse_matrix2d<T, DimA, DimC> Mul(sparse_matrix2d<T, DimB, DimC> const& m2) const noexcept;
 
 	/// @brief AxB的矩阵加法
 	/// @return 和
 	/// @param m2 目标矩阵
 	/// @tparam DimA 矩阵的行数
 	/// @tparam DimB 矩阵的列数
-	SparseMatrix2<T, DimA, DimB> Add(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept;
+	sparse_matrix2d<T, DimA, DimB> Add(sparse_matrix2d<T, DimA, DimB> const& m2) const noexcept;
 
 	/// @brief AxB的矩阵减法
 	/// @return 差
 	/// @param m2 目标矩阵
 	/// @tparam DimA 矩阵的行数
 	/// @tparam DimB 矩阵的列数
-	SparseMatrix2<T, DimA, DimB> Sub(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept;
+	sparse_matrix2d<T, DimA, DimB> Sub(sparse_matrix2d<T, DimA, DimB> const& m2) const noexcept;
 
 	/// @brief AxB的矩阵转置
 	/// @return 转置
 	/// @tparam DimA 矩阵的行数
 	/// @tparam DimB 矩阵的列数
-	SparseMatrix2<T, DimB, DimA> Rev() const noexcept;
+	sparse_matrix2d<T, DimB, DimA> Rev() const noexcept;
 
 	/// @brief AxB的矩阵输出
 	/// @return 原输出流
@@ -176,18 +182,18 @@ public:
 	/// @param d 输出的矩阵
 	/// @tparam DimA 矩阵的行数
 	/// @tparam DimB 矩阵的列数
-	friend std::ostream& operator<< <>(std::ostream& out, const SparseMatrix2<T, DimA, DimB>& d) noexcept;
+	friend std::ostream& operator<< <>(std::ostream& out, const sparse_matrix2d<T, DimA, DimB>& d) noexcept;
 };
 
 template <typename T, size_t DimA, size_t DimB>
-const typename SparseMatrix2<T, DimA, DimB>::dim_t SparseMatrix2<T, DimA, DimB>::dim_tuple = std::make_tuple(DimA, DimB);
+const typename sparse_matrix2d<T, DimA, DimB>::dim_t sparse_matrix2d<T, DimA, DimB>::dim_tuple = std::make_tuple(DimA, DimB);
 
 template <typename T, size_t DimA, size_t DimB>
-constexpr SparseMatrix2<T, DimA, DimB>::SparseMatrix2(){}
+constexpr sparse_matrix2d<T, DimA, DimB>::sparse_matrix2d(){}
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t A, size_t B>
-SparseMatrix2<T, DimA, DimB>::SparseMatrix2(const T (&Args)[A][B])
+sparse_matrix2d<T, DimA, DimB>::sparse_matrix2d(const T (&Args)[A][B])
 {
 	static_assert(A == DimA, "Row size doesn't match");
 	static_assert(B == DimB, "Col size doesn't match");
@@ -199,7 +205,7 @@ SparseMatrix2<T, DimA, DimB>::SparseMatrix2(const T (&Args)[A][B])
 }
 
 template <typename T, size_t DimA, size_t DimB>
-void SparseMatrix2<T, DimA, DimB>::check_row_min_max(size_t row, size_t cur)
+void sparse_matrix2d<T, DimA, DimB>::check_row_min_max(size_t row, size_t cur)
 {
 	auto it = row_max.find(row);
 	if(!(it!=row_max.end() && it->second >= cur)) {
@@ -212,7 +218,7 @@ void SparseMatrix2<T, DimA, DimB>::check_row_min_max(size_t row, size_t cur)
 }
 
 template <typename T, size_t DimA, size_t DimB>
-void constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t const& t2)
+void constexpr sparse_matrix2d<T, DimA, DimB>::dim_bound_check(dim_t const& t1, dim_t const& t2)
 {
 	if (std::get<0>(t1) < std::get<0>(t2) || std::get<1>(t1) < std::get<1>(t2)) {
 		throw std::out_of_range("Matrix bound check failed");
@@ -220,14 +226,14 @@ void constexpr SparseMatrix2<T, DimA, DimB>::dim_bound_check(dim_t const& t1, di
 }
 
 template <typename T, size_t DimA, size_t DimB>
-void SparseMatrix2<T, DimA, DimB>::set_unchecked(T ele, size_t DimAs, size_t DimBs)
+void sparse_matrix2d<T, DimA, DimB>::set_unchecked(T ele, size_t DimAs, size_t DimBs)
 {
 	container.insert_or_assign(std::make_tuple(DimAs, DimBs), ele);
 	check_row_min_max(DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-T SparseMatrix2<T, DimA, DimB>::get_unchecked(size_t DimAg, size_t DimBg) const
+T sparse_matrix2d<T, DimA, DimB>::get_unchecked(size_t DimAg, size_t DimBg) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	auto x = container.find(i);
@@ -238,7 +244,7 @@ T SparseMatrix2<T, DimA, DimB>::get_unchecked(size_t DimAg, size_t DimBg) const
 }
 
 template <typename T, size_t DimA, size_t DimB>
-void SparseMatrix2<T, DimA, DimB>::set(T ele, size_t DimAs, size_t DimBs)
+void sparse_matrix2d<T, DimA, DimB>::set(T ele, size_t DimAs, size_t DimBs)
 {
 	auto i = std::make_tuple(DimAs, DimBs);
 	dim_bound_check(dim_tuple, i);
@@ -247,14 +253,14 @@ void SparseMatrix2<T, DimA, DimB>::set(T ele, size_t DimAs, size_t DimBs)
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t DimAs, size_t DimBs>
-void SparseMatrix2<T, DimA, DimB>::set(T ele) noexcept
+void sparse_matrix2d<T, DimA, DimB>::set(T ele) noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAs, DimBs), "Matrix bound check failed");
 	set_unchecked(ele, DimAs, DimBs);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-T SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
+T sparse_matrix2d<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	dim_bound_check(dim_tuple, i);
@@ -263,14 +269,14 @@ T SparseMatrix2<T, DimA, DimB>::get(size_t DimAg, size_t DimBg) const
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t DimAg, size_t DimBg>
-T SparseMatrix2<T, DimA, DimB>::get() const noexcept
+T sparse_matrix2d<T, DimA, DimB>::get() const noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAg, DimBg), "Matrix bound check failed");
 	return get_unchecked(DimAg, DimBg);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-bool SparseMatrix2<T, DimA, DimB>::have(size_t DimAg, size_t DimBg, T& out) const
+bool sparse_matrix2d<T, DimA, DimB>::have(size_t DimAg, size_t DimBg, T& out) const
 {
 	auto i = std::make_tuple(DimAg, DimBg);
 	dim_bound_check(dim_tuple, i);
@@ -285,7 +291,7 @@ bool SparseMatrix2<T, DimA, DimB>::have(size_t DimAg, size_t DimBg, T& out) cons
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t DimAg, size_t DimBg>
-bool SparseMatrix2<T, DimA, DimB>::have(T& out) const noexcept
+bool sparse_matrix2d<T, DimA, DimB>::have(T& out) const noexcept
 {
 	static_assert(dim_bound_check_static<DimA, DimB>(DimAg, DimBg), "Matrix bound check failed");
 	auto i = std::make_tuple(DimAg, DimBg);
@@ -300,7 +306,7 @@ bool SparseMatrix2<T, DimA, DimB>::have(T& out) const noexcept
 
 template <typename T, size_t DimA, size_t DimB>
 template<size_t R>
-std::vector<std::pair<size_t, T>> SparseMatrix2<T, DimA, DimB>::row() const noexcept
+std::vector<std::pair<size_t, T>> sparse_matrix2d<T, DimA, DimB>::row() const noexcept
 {
 	static_assert(R < DimA, "Matrix bound check failed");
 	auto ret = std::vector<std::pair<size_t, T>>();
@@ -318,7 +324,7 @@ std::vector<std::pair<size_t, T>> SparseMatrix2<T, DimA, DimB>::row() const noex
 }
 
 template <typename T, size_t DimA, size_t DimB>
-std::vector<std::pair<size_t, T>> SparseMatrix2<T, DimA, DimB>::row(size_t r) const
+std::vector<std::pair<size_t, T>> sparse_matrix2d<T, DimA, DimB>::row(size_t r) const
 {
 	if (DimA <= r) {
 		throw std::out_of_range("Matrix bound check failed");
@@ -339,9 +345,9 @@ std::vector<std::pair<size_t, T>> SparseMatrix2<T, DimA, DimB>::row(size_t r) co
 
 template <typename T, size_t DimA, size_t DimB>
 template <size_t DimC>
-SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, DimB, DimC> const& m2) const noexcept
+sparse_matrix2d<T, DimA, DimC> sparse_matrix2d<T, DimA, DimB>::Mul(sparse_matrix2d<T, DimB, DimC> const& m2) const noexcept
 {
-	SparseMatrix2<T, DimA, DimC> res;
+	sparse_matrix2d<T, DimA, DimC> res;
 	for (auto ele : container) {
 		size_t Da = std::get<0>(ele.first);
 		for (size_t i = 0; i != DimC; ++i) {
@@ -361,8 +367,8 @@ SparseMatrix2<T, DimA, DimC> SparseMatrix2<T, DimA, DimB>::Mul(SparseMatrix2<T, 
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
-	SparseMatrix2<T, DimA, DimB> res;
+sparse_matrix2d<T, DimA, DimB> sparse_matrix2d<T, DimA, DimB>::Add(sparse_matrix2d<T, DimA, DimB> const& m2) const noexcept {
+	sparse_matrix2d<T, DimA, DimB> res;
 	for (auto ele : container) {
 		res.set_unchecked(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
@@ -373,8 +379,8 @@ SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Add(SparseMatrix2<T, 
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, DimA, DimB> const& m2) const noexcept {
-	SparseMatrix2<T, DimA, DimB> res;
+sparse_matrix2d<T, DimA, DimB> sparse_matrix2d<T, DimA, DimB>::Sub(sparse_matrix2d<T, DimA, DimB> const& m2) const noexcept {
+	sparse_matrix2d<T, DimA, DimB> res;
 	for (auto ele : container) {
 		res.set_unchecked(ele.second, std::get<0>(ele.first), std::get<1>(ele.first));
 	}
@@ -385,9 +391,9 @@ SparseMatrix2<T, DimA, DimB> SparseMatrix2<T, DimA, DimB>::Sub(SparseMatrix2<T, 
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimB, DimA> SparseMatrix2<T, DimA, DimB>::Rev() const noexcept
+sparse_matrix2d<T, DimB, DimA> sparse_matrix2d<T, DimA, DimB>::Rev() const noexcept
 {
-	SparseMatrix2<T, DimB, DimA> res;
+	sparse_matrix2d<T, DimB, DimA> res;
 	for (auto ele : container) {
 		res.set_unchecked(ele.second, std::get<1>(ele.first), std::get<0>(ele.first));
 	}
@@ -395,25 +401,25 @@ SparseMatrix2<T, DimB, DimA> SparseMatrix2<T, DimA, DimB>::Rev() const noexcept
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> operator+(SparseMatrix2<T, DimA, DimB> const& a, SparseMatrix2<T, DimA, DimB> const& b) noexcept
+sparse_matrix2d<T, DimA, DimB> operator+(sparse_matrix2d<T, DimA, DimB> const& a, sparse_matrix2d<T, DimA, DimB> const& b) noexcept
 {
 	return a.Add(b);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-SparseMatrix2<T, DimA, DimB> operator-(SparseMatrix2<T, DimA, DimB> const& a, SparseMatrix2<T, DimA, DimB> const& b) noexcept
+sparse_matrix2d<T, DimA, DimB> operator-(sparse_matrix2d<T, DimA, DimB> const& a, sparse_matrix2d<T, DimA, DimB> const& b) noexcept
 {
 	return a.Sub(b);
 }
 
 template <typename T, size_t DimA, size_t DimB, size_t DimC>
-SparseMatrix2<T, DimA, DimC> operator*(SparseMatrix2<T, DimA, DimB> const& a, SparseMatrix2<T, DimB, DimC> const& b) noexcept
+sparse_matrix2d<T, DimA, DimC> operator*(sparse_matrix2d<T, DimA, DimB> const& a, sparse_matrix2d<T, DimB, DimC> const& b) noexcept
 {
 	return a.Mul(b);
 }
 
 template <typename T, size_t DimA, size_t DimB>
-std::ostream& operator<< (std::ostream& out, SparseMatrix2<T, DimA, DimB> const& d) noexcept
+std::ostream& operator<< (std::ostream& out, sparse_matrix2d<T, DimA, DimB> const& d) noexcept
 {
 	for (size_t i = 0; i != DimA; ++i) {
 		for (size_t j = 0; j != DimB; ++j) {
@@ -426,10 +432,10 @@ std::ostream& operator<< (std::ostream& out, SparseMatrix2<T, DimA, DimB> const&
 
 #ifdef Use_FoldExp
 template <typename T, size_t ...Dims>
-class SparseMatrix
+class sparse_matrix
 {
 public:
-	template<typename, size_t ...> friend class SparseMatrix;
+	template<typename, size_t ...> friend class sparse_matrix;
 	using dim_t = std::tuple<decltype(Dims)...>;
 	using item_t = std::tuple<T, const dim_t>;
 
@@ -458,18 +464,18 @@ public:
 };
 
 template <typename T, size_t ...Dims>
-constexpr typename SparseMatrix<T, Dims... >::dim_t SparseMatrix<T, Dims... >::dim_tuple = std::make_tuple(Dims...);
+constexpr typename sparse_matrix<T, Dims... >::dim_t sparse_matrix<T, Dims... >::dim_tuple = std::make_tuple(Dims...);
 
 template <typename T, size_t ...Dims>
 template<size_t I>
-typename std::enable_if<I == std::tuple_size<typename SparseMatrix< T, Dims...>::dim_t>::value, void>::type
-constexpr SparseMatrix< T, Dims...>::dim_bound_check(dim_t const&, dim_t const&) noexcept
+typename std::enable_if<I == std::tuple_size<typename sparse_matrix< T, Dims...>::dim_t>::value, void>::type
+constexpr sparse_matrix< T, Dims...>::dim_bound_check(dim_t const&, dim_t const&) noexcept
 { }
 
 template <typename T, size_t ...Dims>
 template<size_t I>
-typename std::enable_if < I < std::tuple_size<typename  SparseMatrix< T, Dims...>::dim_t>::value, void>::type
-	constexpr SparseMatrix< T, Dims...>::dim_bound_check(dim_t const& t1, dim_t const& t2)
+typename std::enable_if < I < std::tuple_size<typename  sparse_matrix< T, Dims...>::dim_t>::value, void>::type
+	constexpr sparse_matrix< T, Dims...>::dim_bound_check(dim_t const& t1, dim_t const& t2)
 {
 	auto x = std::get<I>(t1);
 	auto y = std::get<I>(t2);
@@ -480,7 +486,7 @@ typename std::enable_if < I < std::tuple_size<typename  SparseMatrix< T, Dims...
 }
 
 template <typename T, size_t ...Dims>
-void SparseMatrix< T, Dims...>::set(T ele, decltype(Dims)... args)
+void sparse_matrix< T, Dims...>::set(T ele, decltype(Dims)... args)
 {
 	dim_t i = std::make_tuple(args...);
 	dim_bound_check(dim_tuple, i);
@@ -489,7 +495,7 @@ void SparseMatrix< T, Dims...>::set(T ele, decltype(Dims)... args)
 
 template <typename T, size_t ...Dims>
 template<decltype(Dims)... Args>
-void SparseMatrix< T, Dims...>::set(T ele)
+void sparse_matrix< T, Dims...>::set(T ele)
 {
 	static_assert(dim_bound_check_static<Dims...>(Args...), "Matrix bound check failed");
 	dim_t i = std::make_tuple(Args...);
@@ -497,7 +503,7 @@ void SparseMatrix< T, Dims...>::set(T ele)
 }
 
 template <typename T, size_t ...Dims>
-T SparseMatrix< T, Dims...>::get(decltype(Dims)... args) const
+T sparse_matrix< T, Dims...>::get(decltype(Dims)... args) const
 {
 	dim_t i = std::make_tuple(args...);
 	dim_bound_check(dim_tuple, i);
@@ -510,7 +516,7 @@ T SparseMatrix< T, Dims...>::get(decltype(Dims)... args) const
 
 template <typename T, size_t ...Dims>
 template<decltype(Dims)... Args>
-T SparseMatrix< T, Dims...>::get() const noexcept
+T sparse_matrix< T, Dims...>::get() const noexcept
 {
 	static_assert(dim_bound_check_static<Dims...>(Args...), "Matrix bound check failed");
 	dim_t i = std::make_tuple(Args...);
@@ -522,7 +528,7 @@ T SparseMatrix< T, Dims...>::get() const noexcept
 }
 #endif
 
-#define SparseMatrix_defined
+#define sparse_matrix_defined
 
 #endif
 

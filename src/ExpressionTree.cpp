@@ -1,118 +1,118 @@
 #include "ExpressionTree.h"
-#include "Exception.h"
+#include "StrException.h"
 
 #ifdef ExpressionTree_defined
 
-Expression::Expression()
+expression::expression()
 {
-	IsLeft = false;
+	is_left = false;
 }
 
-NumberExpression::NumberExpression(int number)
+number_expression::number_expression(int number)
 {
-	Value = number;
+	value = number;
 }
 
-double NumberExpression::Eval()
+double number_expression::eval()
 {
-	return Value;
+	return value;
 }
 
-BinaryExpression::BinaryExpression(BinaryOperator Op, std::unique_ptr<Expression>&& First, std::unique_ptr<Expression>&& Second) :
-	First(move(First)), Second(move(Second)), Op(Op)
+binary_expression::binary_expression(bin_op op, std::unique_ptr<expression>&& first, std::unique_ptr<expression>&& second) :
+	first(move(first)), second(move(second)), op(op)
 { }
 
-double BinaryExpression::Eval()
+double binary_expression::eval()
 {
-	auto lhs = First->Eval();
-	auto rhs = Second->Eval();
+	auto lhs = first->eval();
+	auto rhs = second->eval();
 	
-	switch (Op) {
-	case BinaryOperator::Plus:
+	switch (op) {
+	case bin_op::Plus:
 		return lhs + rhs;
-	case BinaryOperator::Minus:
+	case bin_op::Minus:
 		return lhs - rhs;
-	case BinaryOperator::Multiplication:
+	case bin_op::Multiplication:
 		return lhs * rhs;
-	case BinaryOperator::Division:
+	case bin_op::Division:
 		return lhs / rhs;
-	default: throw Exception("", L"错误的操作符");
+	default: throw str_exception("", L"错误的操作符");
 	}
 }
 
-bool Is(std::stringstream& Stream, const char Text)
+bool is(std::stringstream& stream, const char text)
 {
-	auto Read = Stream.tellg();
-	while (Stream.peek() == ' ')Stream.get();
+	auto read = stream.tellg();
+	while (stream.peek() == ' ')stream.get();
 	
-	if (Stream.peek() == Text) {
-		Stream.get();
+	if (stream.peek() == text) {
+		stream.get();
 		return true;
 	}
-	Stream.seekg(Read);
+	stream.seekg(read);
 	return false;
 }
 
-std::unique_ptr<NumberExpression> GetNumber(std::stringstream& Stream)
+std::unique_ptr<number_expression> get_number(std::stringstream& stream)
 {
-	auto Result = 0;
-	auto GotNumber = false;
-	while (Stream.peek() == ' ')Stream.get();
+	auto result = 0;
+	auto got_number = false;
+	while (stream.peek() == ' ')stream.get();
 	while (true) {
-		auto c = Stream.peek();
+		auto c = stream.peek();
 		if ('0' <= c && c <= '9') {
-			Result = Result * 10 + (c - '0');
-			GotNumber = true;
-			Stream.get();
+			result = result * 10 + (c - '0');
+			got_number = true;
+			stream.get();
 		} else { break; }
 	}
-	if (GotNumber) {
-		return std::make_unique<NumberExpression>(Result);
+	if (got_number) {
+		return std::make_unique<number_expression>(result);
 	}
-	throw Exception(Stream.str(), L"此处需要表达式");
+	throw str_exception(stream.str(), L"此处需要表达式");
 }
 
-std::unique_ptr<Expression> GetTerm(std::stringstream& Stream)
+std::unique_ptr<expression> get_term(std::stringstream& stream)
 {
 	try {
-		return GetNumber(Stream);
-	} catch (Exception&) {
-		if (Is(Stream, '(')) {
-			auto Result = GetExp(Stream);
-			if (!Is(Stream, ')')) {
-				throw Exception(Stream.str(), L"此处需要右括号");
+		return get_number(stream);
+	} catch (str_exception&) {
+		if (is(stream, '(')) {
+			auto result = get_exp(stream);
+			if (!is(stream, ')')) {
+				throw str_exception(stream.str(), L"此处需要右括号");
 			}
-			return Result;
+			return result;
 		}
 		throw;
 	}
 }
 
-std::unique_ptr<Expression> GetFactor(std::stringstream& Stream)
+std::unique_ptr<expression> get_factor(std::stringstream& stream)
 {
-	auto Result = GetTerm(Stream);
+	auto result = get_term(stream);
 	while (true) {
-		BinaryOperator Operator;
-		if (Is(Stream, '*')) { Operator = BinaryOperator::Multiplication; } else if (Is(Stream, '/')) { Operator = BinaryOperator::Division; } else { break; }
-		Result = std::make_unique<BinaryExpression>(Operator, move(Result), GetTerm(Stream));
+		bin_op op;
+		if (is(stream, '*')) { op = bin_op::Multiplication; } else if (is(stream, '/')) { op = bin_op::Division; } else { break; }
+		result = std::make_unique<binary_expression>(op, move(result), get_term(stream));
 	}
-	return Result;
+	return result;
 }
 
-std::unique_ptr<Expression> GetExp(std::stringstream& Stream)
+std::unique_ptr<expression> get_exp(std::stringstream& stream)
 {
-	auto Result = GetFactor(Stream);
+	auto Result = get_factor(stream);
 	while (true) {
-		BinaryOperator Operator;
-		if (Is(Stream, '+')) { Operator = BinaryOperator::Plus; } else if (Is(Stream, '-')) { Operator = BinaryOperator::Minus; } else { break; }
-		Result = std::make_unique<BinaryExpression>(Operator, move(Result), GetFactor(Stream));
+		bin_op op;
+		if (is(stream, '+')) { op = bin_op::Plus; } else if (is(stream, '-')) { op = bin_op::Minus; } else { break; }
+		Result = std::make_unique<binary_expression>(op, move(Result), get_factor(stream));
 	}
 	return Result;
 }
 			                
-std::unique_ptr<Expression> GetExp(std::string Exp){
-	std::stringstream ss(Exp);
-	return GetExp(ss);
+std::unique_ptr<expression> get_exp(std::string exp){
+	std::stringstream ss(exp);
+	return get_exp(ss);
 }
 
 #endif
