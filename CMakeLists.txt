@@ -45,13 +45,11 @@ set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compil
 
 set(ENABLE_AVL true CACHE BOOL "If AVL enabled.")
 
-include_directories(${DsExp_SOURCE_DIR}/src)
-
 add_subdirectory(src)
 
 enable_testing()
 
-add_executable(DsExp main.cpp)
+add_executable(DsExp main.cpp main.h)
 
 if(USE_FOLDEXP)
   target_compile_definitions(DsExp PRIVATE Use_FoldExp)

@@ -21,6 +21,7 @@ if (COVERALLS)
 		src/BinaryTree.hpp
 		src/Dijkstra.h src/Dijkstra.cpp
 		src/Kruskal.h src/Kruskal.cpp
+		src/AVL.hpp
 	)
 
     # Create the coveralls target.

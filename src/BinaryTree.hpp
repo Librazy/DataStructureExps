@@ -26,6 +26,8 @@ enum class Order{
 template<typename T, template<class...> class P>
 class binary_tree{
 public:
+	virtual ~binary_tree() {}
+
 	binary_tree(P<binary_tree<T, P>>&& l, P<binary_tree<T, P>>&& r, T&& d)
 		:data(std::forward<T>(d)), left(std::forward<P<binary_tree<T, P>>>(l)), right(std::forward<P<binary_tree<T, P>>>(r)) {}
 	explicit binary_tree(T&& d)
@@ -34,6 +36,10 @@ public:
 	T data;
 	P<binary_tree<T, P>> left;
 	P<binary_tree<T, P>> right;
+
+	virtual std::remove_reference_t<T>* operator->(){
+		return &data;
+	}
 
 	/**
 	 * \brief 二叉树递归遍历
