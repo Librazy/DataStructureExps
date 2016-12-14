@@ -8,6 +8,7 @@
 #include "src/BinaryTree.hpp"
 #include "src/Dijkstra.h"
 #include "src/Kruskal.h"
+#include "src/AVL.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -425,5 +426,37 @@ R"(
 #endif //Use_Wcout
 	//++End Kruskal test
 #endif
+
+#ifndef AVL_disabled
+//++Start AVL test
+	{
+		auto tree = avl_tree<int>(0);
+		auto tree2 = avl_tree<int>();
+		tree2.insert(3);
+		tree2.insert(4);
+		tree2.insert(5);
+		tree2.insert(6);
+		tree2.insert(2);
+		tree2.insert(1);
+		tree2.insert(0);
+		tree2.insert(-1);
+		tree2.traversal_recursive<Order::PreOrder>([](auto& a)
+		{
+			std::cout << a << " ";
+		});
+		std::cout << std::endl;
+		tree2.traversal_recursive<Order::InOrder>([](auto& a)
+		{
+			std::cout << a << " ";
+		});
+	}
+#ifdef Use_Wcout
+	std::wcout << L"AVL 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "AVL test complete" << std::endl;
+#endif //Use_Wcout
+	//++End AVL test
+#endif
+
 	return 0;
 }
