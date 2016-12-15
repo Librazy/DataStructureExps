@@ -8,6 +8,7 @@ ExpressionStack.h ExpressionStack.cpp
 BinaryTree.hpp
 Dijkstra.h Dijkstra.cpp
 Kruskal.h Kruskal.cpp
+AVL.hpp
 )
 
 if (COVERALLS)
@@ -20,6 +21,7 @@ if (COVERALLS)
 		src/BinaryTree.hpp
 		src/Dijkstra.h src/Dijkstra.cpp
 		src/Kruskal.h src/Kruskal.cpp
+		src/AVL.hpp
 	)
 
     # Create the coveralls target.
@@ -60,8 +62,13 @@ endif()
 
 if(NOT ENABLE_BinaryTree)
   target_compile_definitions(DsExpLib PRIVATE BinaryTree_disabled)
+  set(ENABLE_AVL false CACHE BOOL "If AVL enabled." FORCE)
 endif()
 
 if(NOT ENABLE_Kruskal)
   target_compile_definitions(DsExpLib PRIVATE Kruskal_disabled)
+endif()
+
+if(NOT ENABLE_AVL)
+  target_compile_definitions(DsExpLib PRIVATE AVL_disabled)
 endif()

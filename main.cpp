@@ -8,6 +8,8 @@
 #include "src/BinaryTree.hpp"
 #include "src/Dijkstra.h"
 #include "src/Kruskal.h"
+#include "src/AVL.hpp"
+#include "main.h"
 
 #include <iostream>
 #include <cmath>
@@ -17,6 +19,7 @@
 #include <set>
 #include <numeric>
 #include <algorithm>
+#include <random>
 
 int main()
 {
@@ -412,7 +415,6 @@ R"(
 		auto s = std::set<size_t>();
 		std::for_each(ret.begin(), ret.end(), [&s](auto i)
 		{
-
 			s.insert(std::get<1>(i));
 			s.insert(std::get<2>(i));
 		});
@@ -425,5 +427,306 @@ R"(
 #endif //Use_Wcout
 	//++End Kruskal test
 #endif
+
+#ifndef AVL_disabled
+//++Start AVL test
+	{
+		std::stringstream ss1, ss2, ss3, ss4;
+
+		auto ans =
+			R"(
+4 2 0 -1 1 3 5 6 
+-1 0 1 2 3 4 5 6 
+)";
+
+		auto tree = avl_tree<int>();
+		tree.insert(3);
+		tree.insert(4);
+		tree.insert(5);
+		tree.insert(6);
+		tree.insert(2);
+		tree.insert(1);
+		tree.insert(0);
+		tree.insert(-1);
+
+		ss1 << std::endl;
+		tree.traversal_recursive<Order::PreOrder>([&ss1](auto& a)
+		{
+			ss1 << a << " ";
+		});
+		ss1 << std::endl;
+		tree.traversal_recursive<Order::InOrder>([&ss1](auto& a)
+		{
+			ss1 << a << " ";
+		});
+		ss1 << std::endl;
+		auto i = tree.search(3);
+		assert(i == 3);
+		assert(ss1.str() == ans);
+
+		tree.remove(2);
+
+		auto ans2 =
+			R"(
+4 1 0 -1 3 5 6 
+-1 0 1 3 4 5 6 
+4 0 -1 1 5 6 
+-1 0 1 4 5 6 
+4 0 -1 1 6 
+-1 0 1 4 6 
+)";
+		ss3 << std::endl;
+		tree.traversal_recursive<Order::PreOrder>([&ss3](auto& a)
+		{
+			ss3 << a << " ";
+		});
+		ss3 << std::endl;
+		tree.traversal_recursive<Order::InOrder>([&ss3](auto& a)
+		{
+			ss3 << a << " ";
+		});
+		ss3 << std::endl;
+
+		tree.remove(3);
+
+		tree.traversal_recursive<Order::PreOrder>([&ss3](auto& a)
+		{
+			ss3 << a << " ";
+		});
+		ss3 << std::endl;
+		tree.traversal_recursive<Order::InOrder>([&ss3](auto& a)
+		{
+			ss3 << a << " ";
+		});
+		ss3 << std::endl;
+
+		tree.remove(5);
+
+		tree.traversal_recursive<Order::PreOrder>([&ss3](auto& a)
+		{
+			ss3 << a << " ";
+		});
+		ss3 << std::endl;
+		tree.traversal_recursive<Order::InOrder>([&ss3](auto& a)
+		{
+			ss3 << a << " ";
+		});
+		ss3 << std::endl;
+
+		assert(ss3.str() == ans2);
+
+
+
+		auto tree2 = avl_tree<std::unique_ptr<int>, ptr_int_cmp<std::unique_ptr<int>>>();
+		tree2.insert(std::make_unique<int>(1));
+		tree2.insert(std::make_unique<int>(3));
+		tree2.insert(std::make_unique<int>(2));
+		tree2.insert(std::make_unique<int>(6));
+		tree2.insert(std::make_unique<int>(5));
+
+		auto& uniptr_3 = tree2.search(3);
+		assert(3 == *uniptr_3);
+
+		auto tree3 = avl_tree<int, std::less<>, nop_unique_ptr, nop_ptr_maker>();
+		tree3.insert(3);
+		tree3.insert(4);
+		tree3.insert(5);
+		tree3.insert(6);
+		tree3.insert(2);
+		tree3.insert(1);
+		tree3.insert(0);
+		tree3.insert(-1);
+
+		ss2 << std::endl;
+		tree3.traversal_recursive<Order::PreOrder>([&ss2](auto& a)
+		{
+			ss2 << a << " ";
+		});
+		ss2 << std::endl;
+		tree3.traversal_recursive<Order::InOrder>([&ss2](auto& a)
+		{
+			ss2 << a << " ";
+		});
+		ss2 << std::endl;
+		assert(ss2.str() == ans);
+
+		tree3.remove(4);
+
+		auto ans3 =
+			R"(
+2 0 -1 1 4 3 6 
+-1 0 1 2 3 4 6 
+2 0 -1 1 4 3 6 5 
+-1 0 1 2 3 4 5 6 
+2 0 -1 1 5 3 6 
+-1 0 1 2 3 5 6 
+)";
+
+		auto tree4 = avl_tree<int>();
+		tree4.insert(3);
+		tree4.insert(4);
+		tree4.insert(5);
+		tree4.insert(6);
+		tree4.insert(2);
+		tree4.insert(1);
+		tree4.insert(0);
+		tree4.insert(-1);
+
+		tree4.remove(5);
+
+		auto t4_it = tree4.begin();
+		assert(*t4_it == -1);
+		assert(*++t4_it == 0);
+		assert(*t4_it++ == 0);
+		assert(*t4_it == 1);
+
+		assert(*(t4_it + 2) == 3);
+
+		auto sum = 0;
+		for(auto x: tree4) {
+			sum += x;
+		}
+		assert(-1 + 0 + 1 + 2 + 3 + 4 + 6 == sum);
+		ss4 << std::endl;
+		tree4.traversal_recursive<Order::PreOrder>([&ss4](auto& a)
+		{
+			ss4 << a << " ";
+		});
+		ss4 << std::endl;
+		tree4.traversal_recursive<Order::InOrder>([&ss4](auto& a)
+		{
+			ss4 << a << " ";
+		});
+		ss4 << std::endl;
+
+		tree4.insert(5);
+
+		tree4.traversal_recursive<Order::PreOrder>([&ss4](auto& a)
+		{
+			ss4 << a << " ";
+		});
+		ss4 << std::endl;
+		tree4.traversal_recursive<Order::InOrder>([&ss4](auto& a)
+		{
+			ss4 << a << " ";
+		});
+		ss4 << std::endl;
+
+		tree4.remove(4);
+
+		tree4.traversal_recursive<Order::PreOrder>([&ss4](auto& a)
+		{
+			ss4 << a << " ";
+		});
+		ss4 << std::endl;
+		tree4.traversal_recursive<Order::InOrder>([&ss4](auto& a)
+		{
+			ss4 << a << " ";
+		});
+		ss4 << std::endl;
+		assert(ans3 == ss4.str());
+
+		std::vector<int> v(100);
+		iota(begin(v), end(v), 0);
+		auto tree5 = avl_tree<int>();
+
+		std::random_device rd;
+		std::mt19937 g(rd());
+		shuffle(v.begin(), v.end(), g);
+		for (auto in : v) {
+			tree5.insert(in);
+		}
+		assert(tree5.rank(9) == 9);
+		assert(tree5.nth(9) == 9);
+		assert(tree5.nth(12) == 12);
+		assert(tree5.remove(9));
+		assert(tree5.nth(9) == 10);
+		assert(tree5.nth(23) == 24);
+		assert(!tree5.remove(9));
+		assert(tree5.nth(9) == 10);
+		assert(tree5.insert(9));
+		assert(!tree5.insert(9));
+		assert(!tree5.insert(20));
+
+		try {
+			tree5.search(1000);
+			throw std::runtime_error("std::out_of_range expected");
+		}
+		catch (std::out_of_range& e) {
+			assert(std::string(e.what()) == "not found");
+		}
+
+		try {
+			tree5.nth(1000);
+			throw std::runtime_error("std::out_of_range expected");
+		}
+		catch (std::out_of_range& e) {
+			assert(std::string(e.what()) == "too large");
+		}
+
+		std::uniform_int_distribution<int> dis(0, 99);
+		while (tree5.size() > 50) {
+			tree5.remove(dis(g));
+		}
+
+		using psi = std::pair<size_t, int>;
+		struct psi_cmp
+		{
+			bool operator()(psi const& a, size_t b) const
+			{
+				return a.first < b;
+			}
+
+			bool operator()(size_t a, psi const& b) const
+			{
+				return a < b.first;
+			}
+
+			bool operator()(psi const& a, psi const& b) const
+			{
+				return a.first < b.first;
+			}
+		};
+		auto psi_tree = avl_tree<psi, psi_cmp>();
+		psi_tree.insert(std::make_pair(1U, -1));
+		psi_tree.insert(std::make_pair(2U, 2));
+		psi_tree.insert(std::make_pair(3U, -3));
+		psi_tree.insert(std::make_pair(4U, 4));
+		psi_tree.search_pair_key(3) = 3;
+		assert(psi_tree.search_pair_key(1) == -1);
+		assert(psi_tree.search(3).second == 3);
+
+		auto s1 = std::make_shared<int>(1);
+		auto s2 = std::make_shared<int>(2);
+		auto s3 = std::make_shared<int>(3);
+		auto s4 = std::make_shared<int>(4);
+		auto s5 = std::make_shared<int>(5);
+		auto s6 = std::make_shared<int>(6);
+		{
+			//, ptr_int_cmp<std::shared_ptr<int>
+			auto shared_tree = avl_tree<std::shared_ptr<int>, ptr_int_cmp<std::shared_ptr<int>>>();
+
+
+			shared_tree.insert(std::shared_ptr<int>(s1));
+			shared_tree.insert(std::shared_ptr<int>(s2));
+			shared_tree.insert(std::shared_ptr<int>(s3));
+			shared_tree.insert(std::shared_ptr<int>(s4));
+			shared_tree.insert(std::shared_ptr<int>(s5));
+			shared_tree.insert(std::shared_ptr<int>(s6));
+
+			assert(shared_tree.search(3) == s3);
+
+			assert(s1.use_count() == 2);
+		}
+		assert(s1.use_count() == 1);
+	}
+#ifdef Use_Wcout
+	std::wcout << L"AVL 测试完成" << std::endl;
+#else //Use_Wcout
+	std::cout << "AVL test complete" << std::endl;
+#endif //Use_Wcout
+	//++End AVL test
+#endif
+
 	return 0;
 }

@@ -43,13 +43,13 @@ set(ENABLE_Kruskal true CACHE BOOL "If Kruskal enabled. Dependent on SparseMatri
 
 set(ENABLE_SparseMatrix true CACHE BOOL "If SparseMatrix enabled. Require compiler with fold expression support.")
 
-include_directories(${DsExp_SOURCE_DIR}/src)
+set(ENABLE_AVL true CACHE BOOL "If AVL enabled.")
 
 add_subdirectory(src)
 
 enable_testing()
 
-add_executable(DsExp main.cpp)
+add_executable(DsExp main.cpp main.h)
 
 if(USE_FOLDEXP)
   target_compile_definitions(DsExp PRIVATE Use_FoldExp)
@@ -79,6 +79,7 @@ endif()
 
 if(NOT ENABLE_BinaryTree)
   target_compile_definitions(DsExp PRIVATE BinaryTree_disabled)
+  set(ENABLE_AVL false CACHE BOOL "If AVL enabled." FORCE)
 endif()
 
 if(NOT ENABLE_Dijkstra)
@@ -87,6 +88,10 @@ endif()
 
 if(NOT ENABLE_Kruskal)
   target_compile_definitions(DsExp PRIVATE Kruskal_disabled)
+endif()
+
+if(NOT ENABLE_AVL)
+  target_compile_definitions(DsExp PRIVATE AVL_disabled)
 endif()
 
 target_link_libraries(DsExp DsExpLib)
