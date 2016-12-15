@@ -575,17 +575,18 @@ R"(
 		tree4.remove(5);
 
 		auto t4_it = tree4.begin();
-		std::cout << *t4_it << std::endl;
-		std::cout << *++t4_it << std::endl;
-		std::cout << *t4_it++ << std::endl;
-		std::cout << *t4_it << std::endl;
+		assert(*t4_it == -1);
+		assert(*++t4_it == 0);
+		assert(*t4_it++ == 0);
+		assert(*t4_it == 1);
 
-		std::cout << *(t4_it + 2) << std::endl;
+		assert(*(t4_it + 2) == 3);
 
+		auto sum = 0;
 		for(auto x: tree4) {
-			std::cout << x << std::endl;
+			sum += x;
 		}
-
+		assert(-1 + 0 + 1 + 2 + 3 + 4 + 6 == sum);
 		ss4 << std::endl;
 		tree4.traversal_recursive<Order::PreOrder>([&ss4](auto& a)
 		{
@@ -686,13 +687,13 @@ R"(
 				return a.first < b.first;
 			}
 		};
-
 		auto psi_tree = avl_tree<psi, psi_cmp>();
 		psi_tree.insert(std::make_pair(1U, -1));
 		psi_tree.insert(std::make_pair(2U, 2));
 		psi_tree.insert(std::make_pair(3U, -3));
 		psi_tree.insert(std::make_pair(4U, 4));
-		psi_tree.search_pair_key(3ULL) = 3;
+		psi_tree.search_pair_key(3) = 3;
+		assert(psi_tree.search_pair_key(1) == -1);
 		assert(psi_tree.search(3).second == 3);
 
 		auto s1 = std::make_shared<int>(1);
