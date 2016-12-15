@@ -37,10 +37,6 @@ public:
 	P<binary_tree<T, P>> left;
 	P<binary_tree<T, P>> right;
 
-	virtual std::remove_reference_t<T>* operator->(){
-		return &data;
-	}
-
 	/**
 	 * \brief 二叉树递归遍历
 	 * \tparam O 遍历方式

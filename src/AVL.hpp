@@ -89,10 +89,6 @@ private:
 		template<typename K>
 		explicit avl_node(K&& val) : bt_t(avl_data<T>(std::forward<K>(val)))
 		{ };
-
-		avl_data<T>* operator->() override {
-			return &(this->data);
-		}
 	};
 
 	template<typename V>
@@ -109,6 +105,12 @@ private:
 
 		avl_it() :current(0), pt(nullptr)
 		{ }
+
+		friend iterator operator+(difference_type i, iterator const& a) {
+			auto res = avl_it(a);
+			res.current += i;
+			return res;
+		}
 
 		avl_it operator++() {
 			++current;
@@ -142,12 +144,6 @@ private:
 			return this;
 		}
 
-		avl_it operator+(difference_type i) {
-			auto res = avl_it(*this);
-			res.current += i;
-			return res;
-		}
-
 		avl_it operator-(difference_type i) {
 			auto res = avl_it(*this);
 			res.current -= i;
@@ -158,12 +154,9 @@ private:
 			return current - i.current;
 		}
 
-		friend iterator operator+(difference_type i, iterator const& a) {
-			auto res = avl_it(a);
-			res.current += i;
-			return res;
+		avl_it operator+(difference_type i) {
+			return i + *this;
 		}
-
 
 		bool operator==(avl_it const& a) const {
 			return a.current == current && a.pt == pt;
@@ -421,7 +414,7 @@ private:
 	static T& search_impl(K&& t, node_t const& cur, size_type& s)
 	{
 		if (!cur) {
-			throw std::out_of_range("");
+			throw std::out_of_range("not found");
 		}
 
 		auto cnt = comp(cur->data.val, t);
@@ -441,7 +434,7 @@ private:
 	static T& nth_impl(size_type s, node_t const& cur)
 	{
 		if (s > get_size(cur)) {
-			throw std::out_of_range("");
+			throw std::out_of_range("too large");
 		}
 		difference_type det = s - get_size(cur->left) - 1;
 		if (!det) {

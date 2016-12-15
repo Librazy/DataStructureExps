@@ -581,7 +581,6 @@ R"(
 		std::cout << *t4_it << std::endl;
 
 		std::cout << *(t4_it + 2) << std::endl;
-		std::cout << *(static_cast<avl_tree<int>::difference_type>(3) + t4_it) << std::endl;
 
 		for(auto x: tree4) {
 			std::cout << x << std::endl;
@@ -645,6 +644,24 @@ R"(
 		assert(!tree5.remove(9));
 		assert(tree5.nth(9) == 10);
 		assert(tree5.insert(9));
+		assert(!tree5.insert(9));
+		assert(!tree5.insert(20));
+
+		try {
+			tree5.search(1000);
+			throw std::runtime_error("std::out_of_range expected");
+		}
+		catch (std::out_of_range& e) {
+			assert(std::string(e.what()) == "not found");
+		}
+
+		try {
+			tree5.nth(1000);
+			throw std::runtime_error("std::out_of_range expected");
+		}
+		catch (std::out_of_range& e) {
+			assert(std::string(e.what()) == "too large");
+		}
 
 		std::uniform_int_distribution<int> dis(0, 99);
 		while (tree5.size() > 50) {
