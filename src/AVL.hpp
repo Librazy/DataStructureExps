@@ -194,7 +194,6 @@ private:
 
 		using iterator_category = std::random_access_iterator_tag;
 		using value_type = V;
-		using size_type = size_t;
 		using difference_type = ptrdiff_t;
 		using reference = V&;
 		using const_reference = V const&;
@@ -883,7 +882,7 @@ public:
 	{
 		std::for_each(il.begin(), il.end(), [&](auto& ele)
 		{
-			insert(ele);
+			this->insert(ele);
 		});
 	}
 
@@ -898,7 +897,7 @@ public:
 	{
 		std::for_each(b, e, [&](auto& ele)
 		{
-			insert(ele);
+			this->insert(ele);
 		});
 	}
 
@@ -914,7 +913,7 @@ public:
 	{
 		std::for_each(b, e, [&](auto& ele)
 		{
-			insert(ele);
+			this->insert(ele);
 		});
 	}
 
@@ -930,7 +929,7 @@ public:
 	{
 		std::for_each(b, e, [&](auto& ele)
 		{
-			insert(ele);
+			this->insert(ele);
 		});
 	}
 
@@ -947,7 +946,7 @@ public:
 	{
 		std::for_each(b, e, [&](auto& ele)
 		{
-			insert(ele);
+			this->insert(ele);
 		});
 	}
 
