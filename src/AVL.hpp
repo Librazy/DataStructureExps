@@ -4,7 +4,9 @@
 
 #ifndef AVL_defined
 
+// ReSharper disable CppUnusedIncludeDirective
 #include <memory>
+#include <cstddef>
 #include "BinaryTree.hpp"
 
 /**
