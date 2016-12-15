@@ -7,6 +7,7 @@
 // ReSharper disable CppUnusedIncludeDirective
 #include <memory>
 #include <cstddef>
+#include <algorithm>
 #include "BinaryTree.hpp"
 
 /**
