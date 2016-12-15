@@ -384,12 +384,12 @@ private:
 	/**
 	 * \brief 比较器
 	 */
-	static key_compare comp;
+	key_compare comp;
 
 	/**
 	 * \brief 节点构造器
 	 */
-	static node_make maker;
+	node_make maker;
 
 	/**
 	 * \brief 根节点
@@ -651,7 +651,7 @@ private:
 	 * \return 目标存储引用
 	 */
 	template <typename K>
-	static T& search_impl(K&& t, node_t const& cur, size_type& s)
+	T& search_impl(K&& t, node_t const& cur, size_type& s) const
 	{
 		if (!cur) {
 			throw std::out_of_range("not found");
@@ -700,7 +700,7 @@ private:
 	 * \return 是否插入
 	 */
 	template <typename K>
-	static bool insert_impl(K&& t, node_t& cur) noexcept
+	bool insert_impl(K&& t, node_t& cur) noexcept
 	{
 		if(!cur) {
 			cur = maker.template make<avl_node>(std::forward<K>(t));
@@ -799,7 +799,7 @@ private:
 	 * \return 是否删除
 	 */
 	template <typename K>
-	static bool remove_impl(K&& t, node_t& cur)
+	bool remove_impl(K&& t, node_t& cur)
 	{
 		if (!cur) {
 			return false;
@@ -840,15 +840,113 @@ public:
 	/**
 	 * \brief 默认构造
 	 */
-	avl_tree() noexcept
+	avl_tree() noexcept : comp(key_compare()), maker(node_make())
 	{ }
 
 	/**
 	 * \brief 使用给定存储初始化根节点
 	 * \param t 根节点存储
 	 */
-	explicit avl_tree(T&& t) noexcept : root(maker.template make<avl_node>(std::forward<T>(t)))
+	explicit avl_tree(T&& t) noexcept : comp(key_compare()), maker(node_make())
 	{ }
+
+	/**
+	 * \brief 使用给定比较器
+	 * \param t 比较器
+	 */
+	explicit avl_tree(key_compare const& t) noexcept : comp(t), maker(node_make())
+	{ }
+
+	/**
+	 * \brief 使用给定节点构造器
+	 * \param t 构造器
+	 */
+	explicit avl_tree(node_make const& t) noexcept : comp(key_compare()), maker(t)
+	{ }
+
+	/**
+	 * \brief 使用给定比较器与节点构造器
+	 * \param c 比较器
+	 * \param m 构造器
+	 */
+	avl_tree(key_compare const& c, node_make const& m) noexcept : comp(c), maker(m)
+	{ }
+
+	/**
+	 * \brief 使用初始化列表
+	 * \param il 初始化列表
+	 */
+	avl_tree(std::initializer_list<value_type> il) : comp(key_compare()), maker(node_make())
+	{
+		std::for_each(il.begin(), il.end(), [&](auto& ele)
+		{
+			insert(ele);
+		});
+	}
+
+	/**
+	 * \brief 使用迭代器范围
+	 * \tparam It 输入迭代器类型
+	 * \param b 头迭代器
+	 * \param e 尾迭代器
+	 */
+	template<typename It>
+	avl_tree(It b, It e) : comp(key_compare()), maker(node_make())
+	{
+		std::for_each(b, e, [&](auto& ele)
+		{
+			insert(ele);
+		});
+	}
+
+	/**
+	 * \brief 使用给定比较器与迭代器范围
+	 * \tparam It 输入迭代器类型
+	 * \param b 头迭代器
+	 * \param e 尾迭代器
+	 * \param t 比较器
+	 */
+	template<typename It>
+	avl_tree(It b, It e, key_compare const& t) : comp(t), maker(node_make())
+	{
+		std::for_each(b, e, [&](auto& ele)
+		{
+			insert(ele);
+		});
+	}
+
+	/**
+	 * \brief 使用给定节点构造器与迭代器范围
+	 * \tparam It 输入迭代器类型
+	 * \param b 头迭代器
+	 * \param e 尾迭代器
+	 * \param t 构造器
+	 */
+	template<typename It>
+	avl_tree(It b, It e, node_make const& t) : comp(key_compare()), maker(t)
+	{
+		std::for_each(b, e, [&](auto& ele)
+		{
+			insert(ele);
+		});
+	}
+
+	/**
+	 * \brief 使用给定比较器与节点构造器与迭代器范围
+	 * \tparam It 输入迭代器类型
+	 * \param b 头迭代器
+	 * \param e 尾迭代器
+	 * \param c 比较器
+	 * \param m 构造器
+	 */
+	template<typename It>
+	avl_tree(It b, It e, key_compare const& c, node_make const& m) : comp(c), maker(m)
+	{
+		std::for_each(b, e, [&](auto& ele)
+		{
+			insert(ele);
+		});
+	}
 
 	/**
 	 * \brief 移动构造
@@ -856,7 +954,46 @@ public:
 	 */
 	avl_tree(avl_tree&& a) noexcept
 	{
-		std::swap(a.root, root);
+		swap(a);
+	}
+
+	/**
+	 * \brief 移动赋值
+	 * \param a 目标AVL
+	 */
+	avl_tree& operator=(avl_tree&& a) noexcept
+	{
+		swap(a);
+		return *this;
+	}
+
+	/**
+	 * \brief 初始化列表赋值
+	 * \param il 初始化列表
+	 */
+	avl_tree& operator=(std::initializer_list<value_type> il) noexcept
+	{
+		avl_tree tmp(il);
+		swap(tmp);
+		return *this;
+	}
+
+	/**
+	 * \brief 获取key_compare实例
+	 * \return key_compare实例
+	 */
+	key_compare key_comp() const noexcept
+	{
+		return comp;
+	}
+
+	/**
+	 * \brief 获取value_compare实例
+	 * \return value_compare实例
+	 */
+	value_compare value_comp() const noexcept
+	{
+		return comp;
 	}
 
 	/**
@@ -983,9 +1120,11 @@ public:
 	 * \brief 交换AVL
 	 * \param another 目标AVL
 	 */
-	void swap(avl_tree another) noexcept
+	void swap(avl_tree& another) noexcept
 	{
 		std::swap(root, another.root);
+		std::swap(another.maker, maker);
+		std::swap(another.comp, comp);
 	}
 
 	/**
@@ -1059,12 +1198,6 @@ public:
 		}
 	}
 };
-
-template<typename T, typename Compare,template<class...> class P, typename Make>
-Compare avl_tree<T, Compare, P, Make>::comp = key_compare();
-
-template<typename T, typename Compare,template<class...> class P, typename Make>
-Make avl_tree<T, Compare, P, Make>::maker = node_make();
 
 #define AVL_defined
 

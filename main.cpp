@@ -727,6 +727,11 @@ R"(
 			assert(s1.use_count() == 2);
 		}
 		assert(s1.use_count() == 1);
+
+		auto tree6 = avl_tree<int>({ 1, 2, 4, 8, 16 });
+		assert(tree6.nth(0) == 1);
+		tree6 = { 100, 200, 400, 800 };
+		assert(tree6.rank(100) == 0);
 	}
 #ifdef Use_Wcout
 	std::wcout << L"AVL 测试完成" << std::endl;
