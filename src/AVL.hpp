@@ -597,7 +597,7 @@ public:
 	template <typename K>
 	size_type rank(K&& t) const
 	{
-		auto res = 0ULL;
+		size_type res = 0;
 		search_impl(std::forward<K>(t), root, res);
 		return res;
 	}
@@ -693,8 +693,8 @@ Compare avl_tree<T, Compare, P, Make>::comp = key_compare();
 template<typename T, typename Compare,template<class...> class P, typename Make>
 Make avl_tree<T, Compare, P, Make>::maker = node_make();
 
-template<typename T, typename Compare,template<class...> class P, typename Make>
-typename avl_tree<T, Compare, P, Make>::avl_it operator+(typename avl_tree<T, Compare, P, Make>::difference_type i, typename avl_tree<T, Compare, P, Make>::avl_it const& a) {
+template<typename T, typename Compare,template<class...> class P, typename Make, typename V>
+typename avl_tree<T, Compare, P, Make>::avl_it<V> operator+(typename avl_tree<T, Compare, P, Make>::difference_type i, typename avl_tree<T, Compare, P, Make>::avl_it<V> const& a) {
 	auto res = avl_it(a);
 	res.current += i;
 	return res;
