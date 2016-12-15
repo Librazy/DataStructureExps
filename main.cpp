@@ -582,6 +582,14 @@ R"(
 
 		assert(*(t4_it + 2) == 3);
 
+		std::vector<int> to_vector;
+		copy(tree4.begin(), tree4.end(),
+			back_inserter(to_vector));
+
+		assert(to_vector.size() == 7);
+
+		assert(std::is_partitioned(tree4.begin(), tree4.end(), [](auto i) { return i < 4; }));
+
 		auto sum = 0;
 		for(auto x: tree4) {
 			sum += x;

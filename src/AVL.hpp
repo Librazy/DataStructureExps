@@ -4,7 +4,6 @@
 
 #ifndef AVL_defined
 
-#include <cstdint>
 #include <memory>
 #include "BinaryTree.hpp"
 
@@ -123,7 +122,7 @@ public:
 	using key_type = T;
 	using value_type = T;
 	using size_type = size_t;
-	using difference_type = int64_t;
+	using difference_type = ptrdiff_t;
 	using key_compare = Compare;
 	using value_compare = Compare;
 	using node_make = Make;
@@ -189,6 +188,14 @@ private:
 
 	public:
 		friend class avl_tree;
+
+		using iterator_category = std::random_access_iterator_tag;
+		using value_type = V;
+		using size_type = size_t;
+		using difference_type = ptrdiff_t;
+		using reference = V&;
+		using const_reference = V const&;
+		using pointer = V*;
 
 		/**
 		 * \brief 默认构造
@@ -301,7 +308,7 @@ private:
 		 * \return ==
 		 */
 		bool operator==(avl_it const& a) const {
-			return a.current == current;
+			return current == a.current;
 		}
 
 		/**
@@ -310,7 +317,7 @@ private:
 		 * \return <
 		 */
 		bool operator<(avl_it const& a) const {
-			return a.current < current;
+			return current < a.current;
 		}
 
 		/**
@@ -319,7 +326,7 @@ private:
 		 * \return >
 		 */
 		bool operator>(avl_it const& a) const {
-			return a.current > current;
+			return current > a.current;
 		}
 		
 		/**
@@ -328,7 +335,7 @@ private:
 		 * \return <=
 		 */
 		bool operator<=(avl_it const& a) const {
-			return a.current <= current;
+			return current <= a.current;
 		}
 
 		/**
@@ -337,7 +344,7 @@ private:
 		 * \return >=
 		 */
 		bool operator>=(avl_it const& a) const {
-			return a.current >= current;
+			return current >= a.current;
 		}
 
 		/**
@@ -346,14 +353,14 @@ private:
 		 * \return !=
 		 */
 		bool operator!=(avl_it const& a) const {
-			return a.current != current;
+			return current != a.current;
 		}
 
 		/**
 		 * \brief **O(log n) **解引用
 		 * \return 指向的元素的引用
 		 */
-		V& operator*() {
+		reference operator*() {
 			return (*pt).nth(current);
 		}
 
@@ -361,14 +368,14 @@ private:
 		 * \brief **O(log n) **解指针
 		 * \return 指向的元素的指针
 		 */
-		V* operator->() {
+		pointer operator->() {
 			return &((*pt).nth(current));
 		}
 		/**
 		 * \brief **O(log n) **解引用偏移量
 		 * \return 指向的给定偏移量元素的引用
 		 */
-		V& operator[](size_type s)
+		reference operator[](size_type s)
 		{
 			return &((*pt).nth(current + s));
 		}
@@ -394,7 +401,7 @@ private:
 	 * \param cur 给定节点
 	 * \return 子树高
 	 */
-	static size_t get_height(node_t const& cur)
+	static size_type get_height(node_t const& cur)
 	{
 		if(cur) {
 			return cur->data.height;
@@ -407,7 +414,7 @@ private:
 	 * \param cur 给定节点
 	 * \return 子树大小
 	 */
-	static size_t get_size(node_t const& cur)
+	static size_type get_size(node_t const& cur)
 	{
 		if (cur) {
 			return cur->data.size;
