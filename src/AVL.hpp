@@ -158,7 +158,12 @@ private:
 			return current - i.current;
 		}
 
-		friend avl_it<V> operator+(difference_type i, avl_it<V> const& a);
+		friend iterator operator+(difference_type i, iterator const& a) {
+			auto res = avl_it(a);
+			res.current += i;
+			return res;
+		}
+
 
 		bool operator==(avl_it const& a) const {
 			return a.current == current && a.pt == pt;
@@ -692,13 +697,6 @@ Compare avl_tree<T, Compare, P, Make>::comp = key_compare();
 
 template<typename T, typename Compare,template<class...> class P, typename Make>
 Make avl_tree<T, Compare, P, Make>::maker = node_make();
-
-template<typename T, typename Compare,template<class...> class P, typename Make, typename V>
-typename avl_tree<T, Compare, P, Make>::avl_it<V> operator+(typename avl_tree<T, Compare, P, Make>::difference_type i, typename avl_tree<T, Compare, P, Make>::avl_it<V> const& a) {
-	auto res = avl_it(a);
-	res.current += i;
-	return res;
-}
 
 #define AVL_defined
 

@@ -581,6 +581,7 @@ R"(
 		std::cout << *t4_it << std::endl;
 
 		std::cout << *(t4_it + 2) << std::endl;
+		std::cout << *(static_cast<avl_tree<int>::difference_type>(3) + t4_it) << std::endl;
 
 		for(auto x: tree4) {
 			std::cout << x << std::endl;
