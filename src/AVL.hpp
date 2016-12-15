@@ -158,7 +158,7 @@ private:
 			return current - i.current;
 		}
 
-		friend avl_it operator+(difference_type i, avl_it const& a);
+		friend avl_it<V> operator+(difference_type i, avl_it<V> const& a);
 
 		bool operator==(avl_it const& a) const {
 			return a.current == current && a.pt == pt;
