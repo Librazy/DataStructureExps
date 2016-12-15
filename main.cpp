@@ -732,6 +732,19 @@ R"(
 		assert(tree6.nth(0) == 1);
 		tree6 = { 100, 200, 400, 800 };
 		assert(tree6.rank(100) == 0);
+
+		auto cmp = std::greater<int>();
+		auto tree7 = avl_tree<int, std::greater<int>>(tree6.cbegin(), tree6.cend(), cmp);
+		assert(tree7.rank(100) == 3);
+		auto tree8 = avl_tree<int, std::greater<int>>(tree6.cbegin(), tree6.cend(), tree7.key_comp());
+		assert(tree8.rank(200) == 2);
+		auto tree9 = avl_tree<int, std::greater<int>>(tree7.value_comp());
+		assert(tree9.empty());
+		assert(tree9.insert(1));
+		assert(tree9.insert(3));
+		assert(tree9.insert(2));
+		assert(tree9.nth(2) == 1);
+
 	}
 #ifdef Use_Wcout
 	std::wcout << L"AVL 测试完成" << std::endl;

@@ -116,7 +116,6 @@ struct ptr_maker<std::unique_ptr>
  */
 template<typename T, typename Compare = std::less<>,template<class...> class P = std::unique_ptr, typename Make = ptr_maker<P>>
 class avl_tree{
-	template<typename V>
 	class avl_it;
 	struct avl_node;
 public:
@@ -131,8 +130,8 @@ public:
 	using node_make = Make;
 	using reference = T&;
 	using const_reference = T const&;
-	using iterator = avl_it<const T>;
-	using const_iterator = avl_it<const T>;
+	using iterator = avl_it;
+	using const_iterator = avl_it;
 
 private:
 
@@ -165,9 +164,7 @@ private:
 
 	/**
 	 * \brief 迭代器类型
-	 * \tparam V 解引用类型
 	 */
-	template<typename V>
 	class avl_it
 	{
 		/**
@@ -179,25 +176,25 @@ private:
 		/**
 		 * \brief 所属容器指针
 		 */
-		avl_tree* pt;
+		avl_tree const* pt;
 
 		/**
 		 * \brief 私有构造
 		 * \param current 数据索引
 		 * \param pt 所属容器指针
 		 */
-		avl_it(size_type current, avl_tree* pt) :current(current), pt(pt)
+		avl_it(size_type current, avl_tree const* pt) :current(current), pt(pt)
 		{ }
 
 	public:
 		friend class avl_tree;
 
 		using iterator_category = std::random_access_iterator_tag;
-		using value_type = V;
+		using value_type = T;
 		using difference_type = ptrdiff_t;
-		using reference = V&;
-		using const_reference = V const&;
-		using pointer = V*;
+		using reference = T&;
+		using const_reference = T const&;
+		using pointer = T const*;
 
 		/**
 		 * \brief 默认构造
@@ -211,7 +208,7 @@ private:
 		 * \param a 迭代器
 		 * \return 目标迭代器
 		 */
-		friend iterator operator+(difference_type i, iterator const& a) {
+		friend avl_it operator+(difference_type i, avl_it const& a) {
 			auto res = avl_it(a);
 			res.current += i;
 			return res;
@@ -360,9 +357,9 @@ private:
 
 		/**
 		 * \brief **O(log n) **解引用
-		 * \return 指向的元素的引用
+		 * \return 指向的元素的只读引用
 		 */
-		reference operator*() {
+		const_reference operator*() {
 			return (*pt).nth(current);
 		}
 
@@ -375,9 +372,9 @@ private:
 		}
 		/**
 		 * \brief **O(log n) **解引用偏移量
-		 * \return 指向的给定偏移量元素的引用
+		 * \return 指向的给定偏移量元素的只读引用
 		 */
-		reference operator[](size_type s)
+		const_reference operator[](size_type s)
 		{
 			return &((*pt).nth(current + s));
 		}
@@ -1115,7 +1112,7 @@ public:
 	 */
 	bool empty() const noexcept
 	{
-		return root;
+		return !static_cast<bool>(root);
 	}
 
 	/**
