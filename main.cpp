@@ -745,6 +745,31 @@ R"(
 		assert(tree9.insert(2));
 		assert(tree9.nth(2) == 1);
 
+		auto tree10 = avl_tree_aa<int, std::less<>, FreelistAllocator<int>>();
+		tree10.insert(1);
+		tree10.insert(3);
+		tree10.insert(4);
+		tree10.insert(6);
+		tree10.insert(8);
+		tree10.insert(2);
+		tree10.remove(1);
+		tree10.remove(6);
+		tree10.remove(3);
+
+		auto psi_tree_aa = avl_tree_aa<psi, psi_cmp, FreelistAllocator<psi>>();
+		psi_tree_aa.insert(std::make_pair(1U, -1));
+		psi_tree_aa.insert(std::make_pair(2U, 2));
+		psi_tree_aa.insert(std::make_pair(3U, -3));
+		psi_tree_aa.insert(std::make_pair(4U, 4));
+		psi_tree_aa.search_pair_key(3) = 3;
+		assert(psi_tree_aa.search_pair_key(1) == -1);
+		assert(psi_tree_aa.search(3).second == 3);
+
+		auto tree10_moved = move(tree10);
+		assert(tree10_moved.size() == 3);
+		assert(tree10_moved.search(8) == 8);
+		assert(tree10_moved.rank(8) == 2);
+
 	}
 #ifdef Use_Wcout
 	std::wcout << L"AVL 测试完成" << std::endl;

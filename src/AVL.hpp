@@ -1198,6 +1198,66 @@ public:
 	}
 };
 
+/**
+ * \brief 擦除删除器类型的unique_ptr
+ * \tparam T 指针类型
+ */
+template <typename T>
+using unique_ptr_erasured = std::unique_ptr<T, std::function<void(void*)>>;
+
+/**
+ * \brief 使用给定分配器的节点构造器
+ * \tparam Allocator 分配器类型
+ */
+template<typename Allocator>
+struct ptr_maker_aa
+{
+	/**
+	 * \brief 分配器
+	 */
+	Allocator allocator;
+
+	/**
+	 * \brief 使用给定分配器初始化
+	 * \param allocator 分配器
+	 */
+	explicit ptr_maker_aa(Allocator const& allocator): allocator(allocator)
+	{ }
+
+	/**
+	 * \brief 默认构造
+	 */
+	ptr_maker_aa(): allocator()
+	{ }
+
+	/**
+	 * \brief 构造给定类型节点
+	 * \tparam K 传入数据类型
+	 * \param arg 传入数据
+	 * \return 节点
+	 */
+	template<typename N, typename K>
+	unique_ptr_erasured<N> make(K&& arg){
+		static typename std::allocator_traits<Allocator>::template rebind_alloc<N> node_allocator;
+		N* place = node_allocator.allocate(1);
+		return unique_ptr_erasured<N>(new (place)N(std::forward<K>(arg)), [](void* ptr)
+		{
+			auto nptr = reinterpret_cast<N*>(ptr);
+			nptr->~N();
+			node_allocator.deallocate(nptr, 1);
+		});
+	};
+};
+
+/**
+ * \brief 使用给定分配器类型的AVL树
+ * \tparam T 存储类型
+ * \tparam Compare 比较器类型
+ * \tparam Allocator 分配器类型
+ */
+template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
+using avl_tree_aa = avl_tree<T, Compare, unique_ptr_erasured, ptr_maker_aa<Allocator>>;
+
 #define AVL_defined
 
 #endif
