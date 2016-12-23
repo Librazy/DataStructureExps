@@ -106,6 +106,34 @@ struct ptr_maker<std::unique_ptr>
 	};
 };
 
+/**
+	* \brief 节点类型
+	*/
+template<typename T, template<class...> class P>
+struct avl_node : binary_tree<avl_data<T>, P>
+{
+	using bt_t = binary_tree<avl_data<T>, P>;
+	/**
+		* \brief 虚析构
+		*/
+	virtual ~avl_node() {}
+
+	/**
+		* \brief 默认构造
+		*/
+	avl_node() : bt_t(avl_data<T>())
+	{ };
+
+	/**
+		* \brief 使用给定数据构造
+		* \tparam K 传入数据类型
+		* \param val 传入数据
+		*/
+	template<typename K>
+	explicit avl_node(K&& val) : bt_t(avl_data<T>(std::forward<K>(val)))
+	{ };
+};
+
 
 /**
  * \brief AVL树
@@ -117,9 +145,9 @@ struct ptr_maker<std::unique_ptr>
 template<typename T, typename Compare = std::less<>,template<class...> class P = std::unique_ptr, typename Make = ptr_maker<P>>
 class avl_tree{
 	class avl_it;
-	struct avl_node;
 public:
 	using bt_t = binary_tree<avl_data<T>, P>;
+	using avl_node_t = avl_node<T, P>;
 	using node_t = P<bt_t>;
 	using key_type = T;
 	using value_type = T;
@@ -134,33 +162,6 @@ public:
 	using const_iterator = avl_it;
 
 private:
-
-
-	/**
-	 * \brief 节点类型
-	 */
-	struct avl_node : bt_t
-	{
-		/**
-		 * \brief 虚析构
-		 */
-		virtual ~avl_node() {}
-
-		/**
-		 * \brief 默认构造
-		 */
-		avl_node() : bt_t(avl_data<T>())
-		{ };
-
-		/**
-		 * \brief 使用给定数据构造
-		 * \tparam K 传入数据类型
-		 * \param val 传入数据
-		 */
-		template<typename K>
-		explicit avl_node(K&& val) : bt_t(avl_data<T>(std::forward<K>(val)))
-		{ };
-	};
 
 	/**
 	 * \brief 迭代器类型
@@ -702,7 +703,7 @@ private:
 	bool insert_impl(K&& t, node_t& cur) noexcept
 	{
 		if(!cur) {
-			cur = maker.template make<avl_node>(std::forward<K>(t));
+			cur = maker.template make<avl_node_t>(std::forward<K>(t));
 			return true;
 		}
 
@@ -1209,9 +1210,11 @@ using unique_ptr_erasured = std::unique_ptr<T, std::function<void(void*)>>;
  * \brief 使用给定分配器的节点构造器
  * \tparam Allocator 分配器类型
  */
-template<typename Allocator>
+template<typename T, typename Allocator>
 struct ptr_maker_aa
 {
+	using avl_node_t = avl_node<T, unique_ptr_erasured>;
+
 	/**
 	 * \brief 分配器
 	 */
@@ -1221,14 +1224,16 @@ struct ptr_maker_aa
 	 * \brief 使用给定分配器初始化
 	 * \param allocator 分配器
 	 */
-	explicit ptr_maker_aa(Allocator const& allocator): allocator(allocator)
+	explicit ptr_maker_aa(Allocator const& allocator) : allocator(allocator)
 	{ }
 
 	/**
 	 * \brief 默认构造
 	 */
-	ptr_maker_aa(): allocator()
+	ptr_maker_aa()
 	{ }
+
+	typename std::allocator_traits<Allocator>::template rebind_alloc<avl_node_t> node_allocator;
 
 	/**
 	 * \brief 构造给定类型节点
@@ -1237,10 +1242,10 @@ struct ptr_maker_aa
 	 * \return 节点
 	 */
 	template<typename N, typename K>
-	unique_ptr_erasured<N> make(K&& arg){
-		static typename std::allocator_traits<Allocator>::template rebind_alloc<N> node_allocator;
+	unique_ptr_erasured<N> make(K&& arg)
+	{
 		N* place = node_allocator.allocate(1);
-		return unique_ptr_erasured<N>(new (place)N(std::forward<K>(arg)), [](void* ptr)
+		return unique_ptr_erasured<N>(new (place)N(std::forward<K>(arg)), [&](void* ptr)
 		{
 			auto nptr = reinterpret_cast<N*>(ptr);
 			nptr->~N();
@@ -1256,7 +1261,7 @@ struct ptr_maker_aa
  * \tparam Allocator 分配器类型
  */
 template<typename T, typename Compare = std::less<>, typename Allocator = std::allocator<T>>
-using avl_tree_aa = avl_tree<T, Compare, unique_ptr_erasured, ptr_maker_aa<Allocator>>;
+using avl_tree_aa = avl_tree<T, Compare, unique_ptr_erasured, ptr_maker_aa<T, Allocator>>;
 
 #define AVL_defined
 
