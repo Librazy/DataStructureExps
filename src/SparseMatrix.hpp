@@ -150,9 +150,8 @@ public:
 	/// @brief AxB与BxC的矩阵乘积
 	/// @return 乘积
 	/// @param m2 目标矩阵
-	/// @tparam DimA 矩阵1的行数
-	/// @tparam DimB 矩阵1的列数即矩阵2的行数
 	/// @tparam DimC 矩阵2的列数
+	/// DimA 矩阵1的行数 DimB 矩阵1的列数即矩阵2的行数
 	template <size_t DimC>
 	sparse_matrix2d<T, DimA, DimC> Mul(sparse_matrix2d<T, DimB, DimC> const& m2) const noexcept;
 
