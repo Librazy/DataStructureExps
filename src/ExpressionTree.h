@@ -52,7 +52,7 @@ struct binary_expression : expression
 	std::unique_ptr<expression> second;
 	bin_op op;
 
-	binary_expression(bin_op op, std::unique_ptr<expression>&& first, std::unique_ptr<expression>&& second);
+	binary_expression(bin_op op, std::unique_ptr<expression> first, std::unique_ptr<expression> second);
 	double eval() override;
 };
 

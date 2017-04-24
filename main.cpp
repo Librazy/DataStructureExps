@@ -267,7 +267,7 @@ R"(
 		}
 
 		try{
-			auto brokenExp = binary_expression(static_cast<bin_op>(1),std::make_unique<number_expression>(1),std::make_unique<number_expression>(1));
+			auto brokenExp = binary_expression(static_cast<bin_op>(1), std::make_unique<number_expression>(1), std::make_unique<number_expression>(1));
 			brokenExp.eval();
 			throw std::runtime_error("str_exception expected");
 		}catch(str_exception& e){
@@ -575,6 +575,8 @@ R"(
 		tree4.remove(5);
 
 		auto t4_it = tree4.begin();
+		auto t4_it2 = tree4.end();
+		assert(t4_it2 - t4_it == 7);
 		assert(*t4_it == -1);
 		assert(*++t4_it == 0);
 		assert(*t4_it++ == 0);

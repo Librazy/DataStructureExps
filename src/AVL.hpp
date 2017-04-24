@@ -278,7 +278,7 @@ private:
 		 * \param i 偏移量
 		 * \return 目标迭代器
 		 */
-		avl_it operator-(difference_type i) {
+		avl_it operator-(difference_type i) const {
 			auto res = avl_it(*this);
 			res.current -= i;
 			return res;
@@ -289,7 +289,7 @@ private:
 		 * \param i 目标迭代器
 		 * \return 偏移量
 		 */
-		difference_type operator-(avl_it const& i) {
+		difference_type operator-(avl_it const& i) const {
 			return current - i.current;
 		}
 
@@ -298,7 +298,7 @@ private:
 		 * \param i 偏移量
 		 * \return 目标迭代器
 		 */
-		avl_it operator+(difference_type i) {
+		avl_it operator+(difference_type i) const {
 			return i + *this;
 		}
 

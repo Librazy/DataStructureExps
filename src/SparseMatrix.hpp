@@ -103,8 +103,8 @@ public:
 
 	/// @brief 静态边界检查的设置
 	/// @param ele 值
-	/// @tparam DimA 行坐标
-	/// @tparam DimB 列坐标
+	/// @tparam DimAs 行坐标
+	/// @tparam DimBs 列坐标
 	template<size_t DimAs, size_t DimBs>
 	void set(T ele) noexcept;
 

@@ -18,7 +18,7 @@ double number_expression::eval()
 	return value;
 }
 
-binary_expression::binary_expression(bin_op op, std::unique_ptr<expression>&& first, std::unique_ptr<expression>&& second) :
+binary_expression::binary_expression(bin_op op, std::unique_ptr<expression> first, std::unique_ptr<expression> second) :
 	first(move(first)), second(move(second)), op(op)
 { }
 

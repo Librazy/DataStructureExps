@@ -25,7 +25,7 @@ struct nop_ptr_maker
 		static N storage[100];
 		storage[count].data.val = arg;
 		return nop_unique_ptr<N>(storage + count++);
-	};
+	}
 };
 
 template <typename P>
