@@ -57,6 +57,7 @@ int main()
 #endif
 
 		//auto mat0 = sparse_matrix2d<int, 2, 3>({ { 1,1,0,4 },{ 0,0,4,4 } }); //将会触发编译器报错：Col size doesn't match
+		
 		int out;
 
 		auto mat = sparse_matrix2d<int, 2, 3>({ { 1,1,0 },{ 0,0,4 } });
