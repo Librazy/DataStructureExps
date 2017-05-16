@@ -352,7 +352,7 @@ constexpr sparse_matrix2d<T, DimA, DimC> sparse_matrix2d<T, DimA, DimB>::Mul(spa
 		for (size_t i = 0; i != DimC; ++i) {
 			T a = T();
 			for (size_t j = 0; j != DimB; ++j) {
-				T val;
+				T val = T();
 				if ((val = m2.get_unchecked(j, i)) != 0) {
 					a += ele.second*val;
 				}
